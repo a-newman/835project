@@ -1,4 +1,16 @@
 import pygame
+class ColorMap:
+  BLACK = (0,0,0)
+  BLUE =(0,0,255)
+  GREEN = (0,255,0)
+  RED = (255,0,0)
+  WHITE = (255,255,255)
+  AQUA = (0,255,255)
+  FUCHSIA = (255,0,255)
+  YELLOW = (255,255,0)
+  GREY = (200,200,200)
+
+
 class Button:
   def __init__(self,screen, pose=(None,None), dimensions=(None,None),text=None,font_color=None, hoverColor=None,staticColor=None):
     self.screen = screen;
@@ -83,5 +95,5 @@ def button_test():
  
   # Close the window and quit.
   pygame.quit()
-button_test()
+#button_test()
 
