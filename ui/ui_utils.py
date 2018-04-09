@@ -6,12 +6,15 @@ class Button:
     self.y = pose[1];
     self.h = dimensions[0];
     self.w = dimensions[1];
-    self.font = pygame.font.Font(None, 20)
+    self.font_size=20;
+    self.font = pygame.font.Font(None, 100)
     self.text = text;
     self.font_color = font_color;
     self.hoverColor = hoverColor;
     self.staticColor = staticColor;
     self.color = self.staticColor;
+  def set_font(self):
+    self.font=pygame.font.Font(None, self.font_size)
 
   def is_hovered(self):
     pos = pygame.mouse.get_pos()
@@ -60,8 +63,10 @@ def button_test():
 
     button.x = 250;
     button.y = 250;
-    button.h = 50;
-    button.w = 100;
+    button.h = 100;
+    button.w = 200;
+    button.font_size = 100;
+    button.set_font()
     button.text = "setup"
     button.font_color = BLACK;
     button.hoverColor = GREEN
