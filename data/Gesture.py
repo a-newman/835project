@@ -3,18 +3,15 @@ class DataSet:
     Multiple gesture sets with labels.
     """
     def __init__(self, name, filepath): 
-        self.gesture_names_to_ids = {}
-        self.gestures = {} 
+        self.gestures = {} # maps gesture names to gsets
         self.name = name
         self.filepath = filepath
 
     def make_gesture_class(self, gesture_name): 
-        if gesture_name in self.gesture_names_to_ids: 
+        if gesture_name in self.gestures: 
             return
         else: 
-            gesture_id = len(self.gesture_names_to_ids)
-            self.gesture_names_to_ids[gesture_name] = gesture_id
-            self.gestures[gesture_id] = GestureSet(label=gesture_id)
+            self.gestures[gesture_name] = GestureSet(label=gesture_name)
 
     def store_gesture_example(self, gesture_name, sequence): 
         try: 

@@ -15,7 +15,7 @@ if __name__ == "__main__":
 	with open(CLASSIFIERS_BASE_PATH + config['classifier_file']) as infile: 
 		classifier = pkl.load(infile) # trained classifier 
 
-	classifier.load(); # does any required preprocessing
+	classifier.prep(); # does any required preprocessing
 
 	# classifier.update(label, sample)
 
