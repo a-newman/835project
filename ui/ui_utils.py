@@ -15,14 +15,14 @@ class Button:
 
   def is_hovered(self):
     pos = pygame.mouse.get_pos()
-    return self.x <= pos[0] and self.x + self.w > pos[0] and \
-               self.y <= pos[1] and self.y + self.h > pos[1];
+    return self.x-self.w/2 <= pos[0] and self.x + self.w/2 > pos[0] and \
+               self.y-self.h <= pos[1] and self.y > pos[1];
 
   def draw(self):
     surf = self.font.render(self.text, True, self.font_color)
-    rect = (self.x, self.y, self.w, self.h)
-    x0 = self.x + (self.w - surf.get_width())/2
-    y0 = self.y + (self.h - surf.get_height())/2
+    rect = (self.x-self.w/2, self.y-self.h, self.w, self.h)
+    x0 = self.x-self.w/2 + (self.w - surf.get_width())/2
+    y0 = self.y-self.h + (self.h - surf.get_height())/2
     self.screen.fill(self.color, rect)
     self.screen.blit(surf, (x0, y0))
   def show(self):
@@ -38,9 +38,9 @@ def button_test():
   '''
   pygame.init()
   BLACK = (0, 0, 0)
-  WHITE = (255, 255, 255)
-  GREEN = (0, 255, 0)
-  BLUE = (0,0,255)
+  WHITE = (155, 155, 155)
+  GREEN = (0, 155, 0)
+  BLUE = (123,35,155)
   RED = (255, 0, 0)
   size = (500, 500)
   screen = pygame.display.set_mode(size)
