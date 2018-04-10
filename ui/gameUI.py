@@ -1,7 +1,5 @@
 import pygame
-from displayState import Idle, Setup, Start, Wait, Feedback
-import start_state_logic 
-import 
+from displayState import Idle, Setup, Start, Recording, Processing, Feedback
 class WordGameUI:
   IDLE = 0;
   SETUP = 1;
@@ -9,11 +7,13 @@ class WordGameUI:
   RECORDING = 3;
   PROCESSING = 4
   FEEDBACK=5;
-  def __init__(self, hieght=64, width = 64):
+  def __init__(self, hieght=500, width = 500):
     self.h = hieght
     self.w =  width
     self.state = self.IDLE;
-  def display_logic():
+    pygame.init()
+    self.screen = pygame.display.set_mode((hieght,width))
+  def display_logic(self):
 
     if self.state == self.IDLE:
       self.idle()
@@ -42,13 +42,18 @@ class WordGameUI:
       - If the button is clicked transition to SETUP
       - otherwise stay IDLE
     '''
-    #TODO
-    pass 
+    interface = Idle(self.screen);
+    status = interface.dispLoop();
+    if status:
+      self.state = self.SETUP
+      self.display_logic();
+
+
   def setup(self):
     '''
     1. Display the SETUP user interface
       - plain page with a nice back ground 
-      - has big button start says "start"
+      - has big button that says "start"
       - Contains a quick instruction on what happens after button click
       - dropdown menu for choosing countdown to performing the actions
     2. Make the transition to START when appropriate
@@ -56,7 +61,11 @@ class WordGameUI:
       - otherwise stay SETUP
     '''
     #TODO
-    pass
+    interface = Setup(self.screen);
+    status = interface.dispLoop();
+    if status:
+      self.state = self.START
+      self.display_logic();
   def start(self):
     '''
     1. show the START state game display
@@ -104,5 +113,5 @@ def options():
   pass 
 if __name__=="__main__":
   args = options()
-  game = WordGameUI(args);
+  game = WordGameUI()
   game.display_logic()

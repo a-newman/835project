@@ -1,5 +1,6 @@
 import pygame
 from ui_utils import Button, ColorMap
+
 class Idle:
   def __init__(self, screen, params = {}):
 
@@ -9,7 +10,7 @@ class Idle:
     self.frame_rate = 30;
 
   def setupButton(self):
-    button =  Button(screen);
+    button =  Button(self.screen);
     button.x = 250;
     button.y = 250;
     button.w = 200;
@@ -33,15 +34,92 @@ class Idle:
           return False;
         elif event.type==pygame.MOUSEBUTTONDOWN:
           if button.is_hovered():
-            print "Clicked!!!"
+            print "You have clicked for setup!"
             return True;
-      screen.fill(self.bg_color);
+      self.screen.fill(self.bg_color);
       button.show()
 
       pygame.display.flip();
       self.clock.tick(self.frame_rate);
-pygame.init()
-size = (500,500)
-screen = pygame.display.set_mode(size)
-idle = Idle(screen)
-idle.dispLoop()
+# pygame.init()
+# size = (500,500)
+# screen = pygame.display.set_mode(size)
+# idle = Idle(screen)
+# idle.dispLoop()
+
+class Setup:
+  def __init__(self, screen):
+    self.screen = screen;
+    self.bg_color = ColorMap.WHITE;
+    self.clock  = pygame.time.Clock();
+    self.frame_rate = 30;
+  def startButton(self):
+    button =  Button(self.screen);
+    button.x = 250;
+    button.y = 250;
+    button.w = 200;
+    button.h = 100;
+    button.font_size = 60;
+    button.set_font()
+    button.text = "Start";
+    button.font_color = ColorMap.BLACK;
+    button.hoverColor = ColorMap.GREEN;
+    button.staticColor = ColorMap.GREY;
+    return button;
+
+  def dispLoop(self):
+    button = self.startButton()
+    loop = True 
+    while loop:
+      for event in pygame.event.get():
+        if event.type==pygame.QUIT:
+          loop = False;
+          pygame.quit();
+          return False;
+        elif event.type==pygame.MOUSEBUTTONDOWN:
+          if button.is_hovered():
+            print "You're ready to start!"
+            return True;
+      self.screen.fill(self.bg_color);
+      button.show()
+
+      pygame.display.flip();
+      self.clock.tick(self.frame_rate);
+
+
+
+class Start:
+  def __init__(self, screen):
+    self.screen = screen;
+    self.bg_color = ColorMap.WHITE;
+    self.clock  = pygame.time.Clock();
+    self.frame_rate = 30;
+  def dispLoop(self):
+    pass 
+
+class Recording:
+  def __init__(self, screen):
+    self.screen = screen;
+    self.bg_color = ColorMap.WHITE;
+    self.clock  = pygame.time.clock();
+    self.frame_rate = 30;
+  def dispLoop(self):
+    pass
+class Processing:
+  def __init__(self, screen):
+    self.screen = screen;
+    self.bg_color = ColorMap.WHITE;
+    self.clock  = pygame.time.Clock();
+    self.frame_rate = 30;
+  def dispLoop(self):
+    pass 
+
+class Feedback:
+  def __init__(self, screen):
+    self.screen = screen;
+    self.bg_color = ColorMap.WHITE;
+    self.clock  = pygame.time.Clock();
+    self.frame_rate = 30;
+  def dispLoop(self):
+    pass 
+  
