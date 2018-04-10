@@ -1,27 +1,39 @@
 import json 
 import pkl
+import pythonreader
+from data import Gesture, dset_ops
 
 CLASSIFIERS_BASE_PATH = "recognize/classifiers/"
+CONFIG = None
+CLASSIFIER = None
+DATASET_NAME = None
 
-CLASSIFIERS = {
-	'dtree': None # should map to a pickle file 
-}
+tmp_testing_gesture = None # buffer a gesture in testing mode here; wait for feedback
+					       # on whether we guessed right to write it to the db 
 
-def grab_data(): 
-	with open('SkeletonBasics-D2D/tmpfifo', 'r') as infile: 
-        lines = infile.readlines()
-    # TODO: parse, pick frames, put into a proper Gesture or something
+def process_gesture_test(): 
+	seq = pythonreader.get_data()
+	tmp_testing_gesture = seq
+	pred_gesture = CLASSIFIER.classify(seq)
+
+def process_gesture_practice(gesture_name): 
+	seq = pythonreader.get_data()
+	if CONFIG.save_data: 
+		dset_ops.add_gesture_example(DATASET_NAME, gesture_name, seq)
+	if CONFIG.mutate_classifier: 
+		CLASSIFIER.update(gesture_name, seq)
+		CLASSIFIER.save()
 
 if __name__ == "__main__": 
 	# load the config file 
 	with open('config.json', 'r') as infile: 
-		config = json.load(infile)
+		CONFIG = json.load(infile)
+
+	DATASET_NAME = CONFIG.dataset
 
 	with open(CLASSIFIERS_BASE_PATH + config['classifier_file']) as infile: 
-		classifier = pkl.load(infile) # trained classifier 
+		CLASSIFIER = pkl.load(infile) # trained classifier 
 
 	classifier.prep(); # does any required preprocessing
 
-	# classifier.update(label, sample)
-
-	# classifier.classify(sample)
+	# START UP THE UI

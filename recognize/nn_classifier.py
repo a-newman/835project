@@ -1,12 +1,14 @@
 import Classifier
 from data import dset_ops
+from normalize_frames import resize_seq
 
 class NNClassifier(Classifier): 
-	def __init__(self, dset_name, k=3): 
+	def __init__(self, dset_name, k=3, num_frames=30): 
 		Classifier.__init__(self)
 		self.dset_name = dset_name
 		self.k = k
 		self.cached_dset = None
+		self.num_frames = num_frames
 
 	def prep(self): 
 	"""
@@ -65,6 +67,8 @@ class NNClassifier(Classifier):
 		super(Classifier, self).save();
 
 	def _get_feat_vec(self, seq): 
+		# reduce to the right number of frames 
+		seq = resize_seq(seq, self.num_frames)
 	    vec = np.hstack([np.array(f.frame) for f in seq.frames])
 	    return vec
 

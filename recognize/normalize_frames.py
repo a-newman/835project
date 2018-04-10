@@ -1,31 +1,32 @@
 from Gesture import Sequence, GestureSet
 import math
 
-def normalize_frames(gesture_sets, num_frames):
-    """
-    Normalizes the number of Frames in each Sequence in each GestureSet
-    :param gesture_sets: the list of GesturesSets
-    :param num_frames: the number of frames to normalize to
-    :return: a list of GestureSets where all Sequences have the same number of Frames
-    """
-    new_sets = []
-    for gset in gesture_sets: 
-        label = gset.label 
-        sequences = gset.sequences
-        new_sequences = []
-        for seq in sequences: 
-            frames = seq.frames
+# def normalize_frames(gesture_sets, num_frames):
+#     """
+#     Normalizes the number of Frames in each Sequence in each GestureSet
+#     :param gesture_sets: the list of GesturesSets
+#     :param num_frames: the number of frames to normalize to
+#     :return: a list of GestureSets where all Sequences have the same number of Frames
+#     """
+#     new_sets = []
+#     for gset in gesture_sets: 
+#         label = gset.label 
+#         sequences = gset.sequences
+#         new_sequences = []
+#         for seq in sequences: 
+#             frames = seq.frames
 
-            # for now, assume this is positive 
-            new_frames = resize(frames, num_frames)
+#             # for now, assume this is positive 
+#             new_frames = resize(frames, num_frames)
 
-            new_seq = Sequence(new_frames, label)
-            new_sequences.append(new_seq)
-        new_gesture = GestureSet(new_sequences, label)
-        new_sets.append(new_gesture)
-    return new_sets 
+#             new_seq = Sequence(new_frames, label)
+#             new_sequences.append(new_seq)
+#         new_gesture = GestureSet(new_sequences, label)
+#         new_sets.append(new_gesture)
+#     return new_sets 
 
-def resize(frames, n): 
+def resize_seq(seq, n): 
+    frames = seq.frames
     delta = n - len(frames)
 
     #base case 
