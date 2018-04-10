@@ -1,3 +1,5 @@
+from enum import Enum 
+
 class DataSet: 
     """ 
     Multiple gesture sets with labels.
@@ -47,45 +49,30 @@ class Frame:
     """
     A data structure to hold a frame of a gesture - (x,y,z) points
     """
-
     def __init__(self, frame):
         self.frame = frame
 
-    def head(self):
-        return self.frame[0:3]
+    def data_for(bodypart): 
+        return self.frame[bodypart : bodypart + 3]
 
-    def neck(self):
-        return self.frame[3:6]
-
-    def left_shoulder(self):
-        return self.frame[6:9]
-
-    def left_elbow(self):
-        return self.frame[9:12]
-
-    def left_hand(self):
-        return self.frame[12:15]
-
-    def right_shoulder(self):
-        return self.frame[15:18]
-
-    def right_elbow(self):
-        return self.frame[18:21]
-
-    def right_hand(self):
-        return self.frame[21:24]
-
-    def torso(self):
-        return self.frame[24:27]
-
-    def left_hip(self):
-        return self.frame[27:30]
-
-    def right_hip(self):
-        return self.frame[30:]
-
-
-# Main Script to load Gestures.MAT into python objects
-# Gestures = scipy.io.loadmat('gesture_dataset.mat')
-# gestures = Gestures['gestures']
-# gesture_sets = [GestureSet(g) for g in gestures[0]]
+class BodyParts(Enum): 
+    HIP_CENTER = 0
+    SPINE = 1
+    SHOULDER_CENTER = 2
+    HEAD = 3
+    SHOULDER_LEFT = 4
+    ELBOW_LEFT = 5
+    WRIST_LEFT = 6
+    HAND_LEFT = 7
+    SHOULDER_RIGHT = 8
+    ELBOW_RIGHT = 9
+    WRIST_RIGHT = 10
+    HAND_RIGHT = 11
+    HIP_LEFT = 12
+    KNEE_LEFT = 13
+    ANKLE_LEFT = 14
+    FOOT_LEFT = 15
+    HIP_RIGHT = 16
+    KNEE_RIGHT = 17
+    ANKLE_RIGHT = 18
+    FOOT_RIGHT = 19
