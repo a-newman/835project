@@ -12,7 +12,7 @@ class WordGameUI:
     self.w =  width
     self.state = self.IDLE;
     pygame.init()
-    self.screen = pygame.display.set_mode((hieght,width))
+    self.screen = pygame.display.set_mode((hieght,width),pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE)
   def display_logic(self):
 
     if self.state == self.IDLE:

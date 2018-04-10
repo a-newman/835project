@@ -1,6 +1,6 @@
 import pygame
 from ui_utils import Button, ColorMap, CountDown
-
+pic =  pygame.image.load('images/background.jpg')
 class Idle:
   def __init__(self, screen, params = {}):
 
@@ -26,17 +26,24 @@ class Idle:
   def dispLoop(self):
     button  = self.setupButton()
     loop  = True
+    b_x = -100;
+    b_y = -100;
     while loop:
       for event in pygame.event.get():
         if event.type==pygame.QUIT:
           loop = False;
           pygame.quit();
           return False;
-        elif event.type==pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.VIDEORESIZE:
+          self.screen=pygame.display.set_mode(event.dict['size'],pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE)
+          self.screen.blit(pygame.transform.scale(pic,event.dict['size']),(0,0))
+          pygame.display.flip()
+        if event.type==pygame.MOUSEBUTTONDOWN:
           if button.is_hovered():
             print "You have clicked for setup!"
             return True;
       self.screen.fill(self.bg_color);
+      self.screen.blit(pic,(-1,-1))
       button.show()
 
       pygame.display.flip();
@@ -79,11 +86,16 @@ class Setup:
           loop = False;
           pygame.quit();
           return False;
-        elif event.type==pygame.MOUSEBUTTONDOWN:
+        if event.type==pygame.MOUSEBUTTONDOWN:
           if button.is_hovered():
             print "You're ready to start!"
             return True;
+        if event.type == pygame.VIDEORESIZE:
+          self.screen=pygame.display.set_mode(event.dict['size'],pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE)
+          self.screen.blit(pygame.transform.scale(pic,event.dict['size']),(0,0))
+          pygame.display.flip()
       self.screen.fill(self.bg_color);
+      self.screen.blit(pic,(0,0))
       button.show()
 
       pygame.display.flip();
@@ -127,30 +139,34 @@ class Start:
     loop = True;
     value = 'finished';
     cd = self.countSetup();
-    button  = self.backButton()
-    count = None
+    button  = self.backButton();
+    count = None;
     while loop:
       for event in pygame.event.get():
           if event.type == pygame.QUIT:
               loop = False;
               value = 'quit';
           if event.type == pygame.USEREVENT:
-            count = cd.count()
+            count = cd.count();
           if event.type == pygame.MOUSEBUTTONDOWN:
             if button.is_hovered():
               loop = False;
               value = 'back';
+          if event.type == pygame.VIDEORESIZE:
+            self.screen=pygame.display.set_mode(event.dict['size'],pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE)
+            self.screen.blit(pygame.transform.scale(pic,event.dict['size']),(0,0))
+            pygame.display.flip()
 
-      self.screen.fill(ColorMap.WHITE)
-      cd.show()
-      button.show()
+      self.screen.fill(ColorMap.WHITE);
+      cd.show();
+      button.show();
       if count=='go':
         loop = False;
    
-      pygame.display.flip()
+      pygame.display.flip();
    
       # --- Limit to 60 frames per second
-      self.clock.tick(60)
+      self.clock.tick(60);
     return value;
 
 
@@ -172,7 +188,7 @@ class Recording:
     button.font_color = ColorMap.RED;
     button.hoverColor = ColorMap.WHITE;
     button.staticColor = ColorMap.WHITE;
-    return button
+    return button;
 
 
   def dispLoop(self):
@@ -188,7 +204,12 @@ class Recording:
           if button.is_hovered():
             print "You have clicked for setup!"
             return True;
+        if event.type == pygame.VIDEORESIZE:
+          self.screen=pygame.display.set_mode(event.dict['size'],pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE)
+          self.screen.blit(pygame.transform.scale(pic,event.dict['size']),(0,0))
+          pygame.display.flip()
       self.screen.fill(self.bg_color);
+      self.screen.blit(pic,(0,0))
       button.show()
 
       pygame.display.flip();
@@ -226,7 +247,12 @@ class Processing:
           if button.is_hovered():
             print "You have clicked for setup!"
             return True;
+        if event.type == pygame.VIDEORESIZE:
+          self.screen=pygame.display.set_mode(event.dict['size'],pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE)
+          self.screen.blit(pygame.transform.scale(pic,event.dict['size']),(0,0))
+          pygame.display.flip()
       self.screen.fill(self.bg_color);
+      self.screen.blit(pic,(0,0))
       button.show()
 
       pygame.display.flip();
@@ -238,13 +264,14 @@ class Feedback:
     self.bg_color = ColorMap.WHITE;
     self.clock  = pygame.time.Clock();
     self.frame_rate = 30;
+    self.mergin=self.screen.get_width()*.02;
     ## lose parameters 
     self.sf_x = self.screen.get_width()*.45;
-    self.sf_y = self.screen.get_height()*.95;
+    self.sf_y = self.screen.get_height();
     self.sf_txt = (self.screen.get_width()*.5, self.screen.get_height()*.35)
     ## victory parameters
     self.hf_x = self.screen.get_width()*.45;
-    self.hf_y = self.screen.get_height()*.95;
+    self.hf_y = self.screen.get_height();
     self.hf_txt = (self.screen.get_width()*.5, self.screen.get_height()*.35)
     ### Exit parameters 
     self.exit_text = (self.screen.get_width()*.5,self.screen.get_height()*.55)
@@ -254,25 +281,33 @@ class Feedback:
     s_surf = reaction.render(txt1, True, ColorMap.RED)
     c_surf = cmplmt.render(txt2, True, ColorMap.BLUE)
     
-    if s_surf.get_width()+mergin>self.screen.get_width:
+    if s_surf.get_width()+self.mergin>self.screen.get_width:
       fnt_s1-=2;
       self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2)
-    if c_surf.get_width()+mergin>self.screen.get_width:
+    if c_surf.get_width()+self.mergin>self.screen.get_width:
       fnt_s2-=2;
       self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2)
     if ratio>1:
-      fnt_s1/=ratio
+      fnt_s1/=ratio;
     else:
-      fnt_s2*=ratio
-    offset = s_surf.get_height()
+      fnt_s2*=ratio;
+    offset = s_surf.get_height();
 
-    x0 = dims[0];
-    y0 = dims[1];
-    self.screen.blit(s_surf,(x0-s_surf.get_width(),y0));
-    self.screen.blit(c_surf,(x0-c_surf.get_width(),y0+offset));
+    x0 = self.screen.get_width();
+    y0 = dims[1]-s_surf.get_width()/2;
+    y1 = dims[1]-c_surf.get_width()/2;
+    ###
+    sx_mod = x0*(1-(float(s_surf.get_width())/x0));
+    cx_mod = x0*(1-(float(c_surf.get_width())/x0));
+    s_x = sx_mod/2;
+    c_x = cx_mod/2;
+    self.screen.blit(s_surf,(s_x,y0));
+    self.screen.blit(c_surf,(c_x,y0+offset));
   def imageDisp(self,img,dims):
     x_0 = dims[0]-img.get_width()/2;
-    y_0 = dims[0]- img.get_height()/2;
+    y_0 = dims[1]- img.get_height()-self.mergin;
+    print "image coordinates: ",x_0,y_0;
+    print "images dims:", img.get_width(), img.get_width()
     self.screen.blit(img,(x_0,y_0));
 
 
@@ -282,7 +317,8 @@ class Feedback:
     txt2 = "NEXT TIME";
     fnt_s1 = 80;
     fnt_s2 = 50;
-    self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2);
+    ratio=fnt_s2/float(fnt_s1);
+    self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2,ratio);
 
   def victoryText(self):
     dims= self.hf_txt;
@@ -290,7 +326,8 @@ class Feedback:
     txt2 = "YOU DID IT!";
     fnt_s1 = 80;
     fnt_s2 = 50;
-    self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2);
+    ratio=fnt_s2/float(fnt_s1);
+    self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2,ratio);
   def loseDisp(self):
     face = pygame.image.load('images/sad_face.png');
     self.imageDisp(face,(self.sf_x,self.sf_y))
@@ -308,7 +345,8 @@ class Feedback:
     txt2 = "GOOD LUCK!";
     fnt_s1 = 30;
     fnt_s2 = 50;
-    self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2);
+    ratio=fnt_s2/float(fnt_s1);
+    self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2,ratio);
   def dispLoop(self):
     '''
     if random number x is greator than .5:
@@ -319,6 +357,7 @@ class Feedback:
       Show them a sad face!
       tell them they didn't get it
     ''' 
+    value = True;
     pygame.time.set_timer(pygame.USEREVENT, 1000);
     count = 3;
     #########
@@ -326,18 +365,24 @@ class Feedback:
     number = random.random()
     #########
     if number<.5:
-      loop= True
+      loop= True;
       text  = self.loseText()
       disp = self.loseDisp()
       while loop:
         for event in pygame.event.get():
           if event.type==pygame.QUIT:
             loop = False;
+            value = False;
             pygame.quit();
         ###Timer herer
           if event.type==pygame.USEREVENT:
             count-=1;
+          if event.type == pygame.VIDEORESIZE:
+            self.screen=pygame.display.set_mode(event.dict['size'],pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE)
+            self.screen.blit(pygame.transform.scale(pic,event.dict['size']),(0,0))
+            pygame.display.flip()
         self.screen.fill(self.bg_color);
+        self.screen.blit(pic,(0,0))
         #text.show()
         #disp.show()
         if count==0:
@@ -361,6 +406,7 @@ class Feedback:
             count-=1;
 
         self.screen.fill(self.bg_color);
+        self.screen.blit(pic,(0,0))
         if count==0:
           loop =  False
         self.victoryText()
@@ -381,12 +427,14 @@ class Feedback:
             count-=1;
         ##Timer here
       self.screen.fill(self.bg_color);
+      self.screen.blit(pic,(0,0))
       self.nextWord()
 
       pygame.display.flip();
       self.clock.tick(self.frame_rate);
       if count==0:
         loop= False
+    return value;
 
 
 
