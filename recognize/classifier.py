@@ -14,7 +14,7 @@ class Classifier:
 	"""
 		raise NotImplementedError()
 
-	def update(self, lable, sample): 
+	def update(self, label, sample): 
 	"""
 	Take in a new sample of someone (either teacher or student) performing the action
 	Update/improve the model based on this example

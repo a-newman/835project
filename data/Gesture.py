@@ -14,12 +14,10 @@ class DataSet:
             self.gestures[gesture_name] = GestureSet(label=gesture_name)
 
     def store_gesture_example(self, gesture_name, sequence): 
-        try: 
-            g_id = self.gesture_names_to_ids[gesture_name]
-        except KeyError: 
+        if gesture_name not in self.gestures: 
             raise RuntimeError("Not a valid gesture")
 
-        self.gestures[g_id].sequences.append(sequence)
+        self.gestures[gesture_name].sequences.append(sequence)
 
 class GestureSet:
     """
@@ -40,9 +38,9 @@ class Sequence:
     A sequence is a single gesture composed of ordered frames
     """
 
-    def __init__(self, frames, label):
+    def __init__(self, frames, timestamp):
         self.frames = frames
-        self.label = label
+        self.timestamp = timestamp
 
 
 class Frame:
