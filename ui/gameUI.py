@@ -97,9 +97,12 @@ class WordGameUI:
       - Wait for a notification from backend indicating end of recording
       - When the notification arrives, transition to PROCESSING
     '''
-    #TODO
+    interface = Recording(self.screen);
+    status = interface.dispLoop();
+    if status:
+      self.state = self.PROCESSING
+      self.display_logic();
 
-    pass
   def processing(self):
     '''
     1. Show the PROCESSING state display
@@ -108,6 +111,11 @@ class WordGameUI:
       - Waiting a call from the backend with a result 
       - When the result arrives go to FEEDBACK
     '''
+    interface = Processing(self.screen);
+    status = interface.dispLoop();
+    if status:
+      self.state = self.FEEDBACK
+      self.display_logic();
   def feedback(self):
     '''
     1. Display the feedback to the user
@@ -116,8 +124,12 @@ class WordGameUI:
     2. Make the appropriate state transitions
       - When feedback giving is done- go to START
     '''
-    #TODO
-    pass 
+    interface = Feedback(self.screen);
+    status = interface.dispLoop();
+    if status:
+      self.state = self.START
+      self.display_logic();
+    
 def options():
   #TODO
   pass 
