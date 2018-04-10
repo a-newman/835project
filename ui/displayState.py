@@ -53,6 +53,9 @@ class Setup:
     self.bg_color = ColorMap.WHITE;
     self.clock  = pygame.time.Clock();
     self.frame_rate = 30;
+    #TODO
+    #1. add the menu 
+    #2. add the text
   def startButton(self):
     button =  Button(self.screen);
     button.x = 250;
@@ -95,7 +98,10 @@ class Start:
     self.clock  = pygame.time.Clock();
     self.frame_rate = 30;
   def dispLoop(self):
-    pass 
+    timer = pygame.time.set_timer(pygame.USEREVENT, 1000);
+    loop = True;
+    while loop:
+      
 
 class Recording:
   def __init__(self, screen):

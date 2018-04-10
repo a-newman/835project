@@ -96,5 +96,55 @@ def button_test():
   # Close the window and quit.
   pygame.quit()
 #button_test()
+class CountDown(Button):
+  def __init__(self,screen, second=20):
+    Button.__init__(self, screen)
+    self.counts = ['go','GO!']+range(second);
+  def count(self):
+    self.text = str(self.counts.pop());
+    return self.text
+def countDown_test():
+  pygame.init()
+  size  = (500,500)
+  screen = pygame.display.set_mode(size);
+  pygame.display.set_caption("My Game");
+  clock = pygame.time.Clock()
+  pygame.time.set_timer(pygame.USEREVENT, 1000)
+
+  cd = CountDown(screen)
+  cd.x = 250;
+  cd.y = 250;
+  cd.h = 200;
+  cd.w = 200;
+  cd.font_size= 100;
+  cd.font = pygame.font.Font(None, 100)
+  cd.font_color = ColorMap.BLACK;
+  cd.hoverColor = ColorMap.GREY;
+  cd.staticColor = ColorMap.GREY;
+
+  loop = True
+  count = None
+  while loop:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            loop = False;
+        if event.type == pygame.USEREVENT:
+          count = cd.count()
+
+    screen.fill(ColorMap.WHITE)
+    cd.show()
+    if count=='go':
+      loop = False;
+ 
+    pygame.display.flip()
+ 
+    # --- Limit to 60 frames per second
+    clock.tick(60)
+  pygame.quit()
+
+countDown_test()
+
+
+
 
 
