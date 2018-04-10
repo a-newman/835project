@@ -79,7 +79,16 @@ class WordGameUI:
     3. Make the appropriate backend calls 
       - When countdown expires tell the backend to handle recording 
     '''
-    pass 
+    interface = Start(self.screen);
+    status = interface.dispLoop();
+    if status=='back':
+      self.state = self.SETUP
+      self.display_logic();
+    elif status=='finished':
+      self.state = self.RECORDING
+      self.display_logic();
+    else:
+      pygame.quit()
   def recording(self):
     '''
     1. Show the RECORDING state display
@@ -89,6 +98,7 @@ class WordGameUI:
       - When the notification arrives, transition to PROCESSING
     '''
     #TODO
+
     pass
   def processing(self):
     '''

@@ -142,7 +142,7 @@ def countDown_test():
     clock.tick(60)
   pygame.quit()
 
-countDown_test()
+##countDown_test()
 
 
 
