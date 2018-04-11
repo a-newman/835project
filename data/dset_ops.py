@@ -49,6 +49,10 @@ def exists(name):
     index = _load_index()
     return name in index 
 
+def get_defined_gestures(name): 
+    dset = _load_dset(name)
+    return list(dset.gestures.keys())
+
 def _load_dset(name): 
     index = _load_index()
 

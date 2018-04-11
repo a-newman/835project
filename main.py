@@ -3,6 +3,7 @@ import pickle
 import pythonreader
 from data import Gesture, dset_ops
 from ui.gameUI import WordGameUI
+from recognize import nn_classifier
 
 CLASSIFIERS_BASE_PATH = "recognize/classifiers/"
 CONFIG = None
@@ -36,10 +37,12 @@ if __name__ == "__main__":
 
 	wordlist = dset_ops.get_defined_gestures(DATASET_NAME)
 
-	with open(CLASSIFIERS_BASE_PATH + config['classifier_file']) as infile: 
-		CLASSIFIER = pkl.load(infile) # trained classifier 
+	# with open(CLASSIFIERS_BASE_PATH + config['classifier_file']) as infile: 
+	# 	CLASSIFIER = pkl.load(infile) # trained classifier 
 
-	classifier.prep(); # does any required preprocessing
+	# classifier.prep(); # does any required preprocessing
+
+	CLASSIFIER = nn_classifier.NNClassifier(DATASET_NAME)
 
 	backend = {
 		'words': wordlist,
