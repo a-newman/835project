@@ -19,7 +19,8 @@ def get_data():
         if len(body_points) != 20:
             continue
         body_points = [point.strip().split(" ") for point in body_points]
-        frame = Gesture.Frame(_flatten(body_points))
+        coords = [float(point) for point in _flatten(body_points)]
+        frame = Gesture.Frame(coords)
         frames.append(frame)
     timestamp = time.time() 
     seq = Gesture.Sequence(frames, timestamp)

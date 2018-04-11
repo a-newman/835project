@@ -306,9 +306,9 @@ HRESULT CSkeletonBasics::CreateFirstConnected()
     return hr;
 }
 
-void CSkeletonBasics::recordData(NUI_SKELETON_FRAME& skeletonFrame) {
+void CSkeletonBasics::recordData(NUI_SKELETON_DATA& skel) {
     // just look at the first skeleton
-    NUI_SKELETON_DATA& skeleton = skeletonFrame.SkeletonData[0];
+    //NUI_SKELETON_DATA& skeleton = skeletonFrame.SkeletonData[0];
     //if (skeleton.eTrackingState != NUI_SKELETON_TRACKED) {
         // if it doesn't have full data, ignore
 	//	fs << "failed" << std::endl;
@@ -319,13 +319,13 @@ void CSkeletonBasics::recordData(NUI_SKELETON_FRAME& skeletonFrame) {
     // get the head just to test,
     
 	std::string out = ""; 
-	for (Vector4& pos : skeleton.SkeletonPositions) {
+	for (Vector4& pos : skel.SkeletonPositions) {
 		std::string add = std::to_string(pos.x) + " " + std::to_string(pos.y) + " " + std::to_string(pos.z) + ", "; 
 		out = out + add;
 	}
 	out = out + "\n";
 	
-	std::size_t maxSize = 100;
+	std::size_t maxSize = 60;
 	if (q.size() < maxSize) {
 		q.push_back(out);
 	} else {
@@ -339,7 +339,7 @@ void CSkeletonBasics::recordData(NUI_SKELETON_FRAME& skeletonFrame) {
 		outputStr = outputStr + s + "\n";
 	}
 
-	// open the file, write, close 
+	// write
 	fs << outputStr << std::endl;
 }
 
@@ -358,9 +358,6 @@ void CSkeletonBasics::ProcessSkeleton()
 
     // smooth out the skeleton data
     m_pNuiSensor->NuiTransformSmooth(&skeletonFrame, NULL);
-
-    // HOOK TO SAVE THE DATA 
-    recordData(skeletonFrame);
 
     // Endure Direct2D is ready to draw
     hr = EnsureDirect2DResources( );
@@ -385,6 +382,8 @@ void CSkeletonBasics::ProcessSkeleton()
         {
             // We're tracking the skeleton, draw it
             DrawSkeleton(skeletonFrame.SkeletonData[i], width, height);
+			recordData(skeletonFrame.SkeletonData[i]);
+			// HOOK TO SAVE THE DATA 
         }
         else if (NUI_SKELETON_POSITION_ONLY == trackingState)
         {
