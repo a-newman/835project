@@ -1,6 +1,7 @@
 import json 
 import pickle
 import pythonreader
+from time import sleep
 from data import Gesture, dset_ops
 from ui.gameUI import WordGameUI
 from recognize import nn_classifier
@@ -13,11 +14,13 @@ DATASET_NAME = None
 tmp_testing_gesture = None # buffer a gesture in testing mode here; wait for feedback
 					       # on whether we guessed right to write it to the db 
 
-def process_gesture_test(): 
+def process_gesture_test(ui_object): 
+	#sleep(2)
 	seq = pythonreader.get_data()
 	tmp_testing_gesture = seq
 	pred_gesture = CLASSIFIER.classify(seq)
-	return pred_gesture
+	ui_object.word = pred_gesture 
+	return 
 
 def process_gesture_practice(gesture_name): 
 	seq = pythonreader.get_data()
