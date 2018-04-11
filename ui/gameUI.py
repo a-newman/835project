@@ -13,6 +13,12 @@ class WordGameUI:
     self.state = self.IDLE;
     pygame.init()
     self.screen = pygame.display.set_mode((hieght,width),pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE)
+    self._idle = Idle(self.screen)
+    self._setup = Setup(self.screen)
+    self._start = Start(self.screen)
+    self._recording = Recording(self.screen)
+    self._processing = Processing(self.screen)
+    self._feedback = Feedback(self.screen)
   def display_logic(self):
 
     if self.state == self.IDLE:
@@ -42,7 +48,7 @@ class WordGameUI:
       - If the button is clicked transition to SETUP
       - otherwise stay IDLE
     '''
-    interface = Idle(self.screen);
+    interface = self._idle;
     status = interface.dispLoop();
     if status:
       self.state = self.SETUP
@@ -61,7 +67,7 @@ class WordGameUI:
       - otherwise stay SETUP
     '''
     #TODO
-    interface = Setup(self.screen);
+    interface = self._setup;
     status = interface.dispLoop();
     if status:
       self.state = self.START
@@ -79,7 +85,8 @@ class WordGameUI:
     3. Make the appropriate backend calls 
       - When countdown expires tell the backend to handle recording 
     '''
-    interface = Start(self.screen);
+
+    interface = self._start;
     status = interface.dispLoop();
     if status=='back':
       self.state = self.SETUP
@@ -89,6 +96,7 @@ class WordGameUI:
       self.display_logic();
     else:
       pygame.quit()
+    
   def recording(self):
     '''
     1. Show the RECORDING state display
@@ -97,7 +105,7 @@ class WordGameUI:
       - Wait for a notification from backend indicating end of recording
       - When the notification arrives, transition to PROCESSING
     '''
-    interface = Recording(self.screen);
+    interface = self._recording;
     status = interface.dispLoop();
     if status:
       self.state = self.PROCESSING
@@ -111,7 +119,7 @@ class WordGameUI:
       - Waiting a call from the backend with a result 
       - When the result arrives go to FEEDBACK
     '''
-    interface = Processing(self.screen);
+    interface = self._processing;
     status = interface.dispLoop();
     if status:
       self.state = self.FEEDBACK
@@ -124,7 +132,7 @@ class WordGameUI:
     2. Make the appropriate state transitions
       - When feedback giving is done- go to START
     '''
-    interface = Feedback(self.screen);
+    interface = self._feedback;
     status = interface.dispLoop();
     if status:
       self.state = self.START

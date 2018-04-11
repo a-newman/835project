@@ -1,5 +1,5 @@
 import pygame
-from ui_utils import Button, ColorMap, CountDown
+from ui_utils import Button, ColorMap, CountDown, CircularArray
 pic =  pygame.image.load('images/background.jpg')
 class Idle:
   def __init__(self, screen, params = {}):
@@ -109,12 +109,16 @@ class Start:
     self.bg_color = ColorMap.WHITE;
     self.clock  = pygame.time.Clock();
     self.frame_rate = 30;
+    self.mergin = 12;
+    world_list =  ['run', 'sit','clap','kick','turn','kneel','dap','spin'];
+    self.arr = CircularArray(world_list);
   def countSetup(self):
     cd = CountDown(self.screen)
-    cd.x = 250;
-    cd.y = 250;
-    cd.h = 200;
-    cd.w = 200;
+    cd.h = 150;
+    cd.w = 150;
+    cd.x = self.screen.get_width()/2;
+    cd.y = self.screen.get_height()-10;
+    
     cd.font_size= 100;
     cd.font = pygame.font.Font(None, 100)
     cd.font_color = ColorMap.BLACK;
@@ -123,10 +127,10 @@ class Start:
     return cd
   def backButton(self):
     button =  Button(self.screen);
-    button.w = 200;
-    button.h = 100;
+    button.w = 100;
+    button.h = 50;
     button.x = self.screen.get_width()-button.w-10;
-    button.y = self.screen.get_height()-button.h-10;
+    button.y = self.screen.get_height()-10;
     button.font_size = 60;
     button.set_font()
     button.text = "GoBack";
@@ -134,6 +138,32 @@ class Start:
     button.hoverColor = ColorMap.GREEN;
     button.staticColor = ColorMap.GREY;
     return button;
+
+  def dspWord(self,word,fnt_s):
+    font = pygame.font.Font(None, fnt_s);
+    surf = font.render(word, True, ColorMap.RED)
+    if surf.get_width()+self.mergin>self.screen.get_width:
+      fnt_s-=2;
+      self.dspWord(word,fnt_s)
+    x0 = self.screen.get_width();
+    y0 = self.screen.get_width()/5;
+    x_mod = x0*(1-(float(surf.get_width())/x0));
+    
+    x = x_mod/2;
+  
+    self.screen.blit(surf,(x,y0));
+  def get_word(self,rand = False):
+    word = None;
+    if rand:
+      word = self.arr.randRoll();
+    else:
+      word = self.arr.roll();
+    return word 
+  def dispWord(self,word):
+    word = "word: "+word;
+    fnt_s = 100;
+    self.dspWord(word,fnt_s);
+    
   def dispLoop(self):
     pygame.time.set_timer(pygame.USEREVENT, 1000);
     loop = True;
@@ -141,6 +171,7 @@ class Start:
     cd = self.countSetup();
     button  = self.backButton();
     count = None;
+    word = self.get_word()
     while loop:
       for event in pygame.event.get():
           if event.type == pygame.QUIT:
@@ -160,6 +191,7 @@ class Start:
       self.screen.fill(ColorMap.WHITE);
       cd.show();
       button.show();
+      self.dispWord(word)
       if count=='go':
         loop = False;
    
@@ -178,10 +210,14 @@ class Recording:
     self.frame_rate = 30;
   def recordButton(self):
     button =  Button(self.screen);
-    button.w = 100;
-    button.h = 100;
-    button.x = 250;
-    button.y = 250;
+    if self.screen.get_width()<self.screen.get_height():
+      button.w = self.screen.get_width()/3;
+      button.h = self.screen.get_width()/5;
+    else:
+      button.w = self.screen.get_height()/3;
+      button.h = self.screen.get_height()/5;
+    button.x = self.screen.get_width()/2;
+    button.y = self.screen.get_height()/2;
     button.font_size = 100;
     button.set_font()
     button.text = "Recording..";
@@ -195,6 +231,7 @@ class Recording:
     button  = self.recordButton()
     loop  = True
     while loop:
+
       for event in pygame.event.get():
         if event.type==pygame.QUIT:
           loop = False;
@@ -209,7 +246,7 @@ class Recording:
           self.screen.blit(pygame.transform.scale(pic,event.dict['size']),(0,0))
           pygame.display.flip()
       self.screen.fill(self.bg_color);
-      self.screen.blit(pic,(0,0))
+      #self.screen.blit(pic,(0,0))
       button.show()
 
       pygame.display.flip();
@@ -223,10 +260,14 @@ class Processing:
   
   def recordButton(self):
     button =  Button(self.screen);
-    button.w = 100;
-    button.h = 100;
-    button.x = 250;
-    button.y = 250;
+    if self.screen.get_width()<self.screen.get_height():
+      button.w = self.screen.get_width()/3;
+      button.h = self.screen.get_width()/5;
+    else:
+      button.w = self.screen.get_height()/3;
+      button.h = self.screen.get_height()/5;
+    button.x = self.screen.get_width()/2;
+    button.y = self.screen.get_height()/2;
     button.font_size = 100;
     button.set_font()
     button.text = "Processing..";
@@ -252,7 +293,7 @@ class Processing:
           self.screen.blit(pygame.transform.scale(pic,event.dict['size']),(0,0))
           pygame.display.flip()
       self.screen.fill(self.bg_color);
-      self.screen.blit(pic,(0,0))
+      #self.screen.blit(pic,(0,0))
       button.show()
 
       pygame.display.flip();
@@ -382,7 +423,7 @@ class Feedback:
             self.screen.blit(pygame.transform.scale(pic,event.dict['size']),(0,0))
             pygame.display.flip()
         self.screen.fill(self.bg_color);
-        self.screen.blit(pic,(0,0))
+        #self.screen.blit(pic,(0,0))
         #text.show()
         #disp.show()
         if count==0:
@@ -406,7 +447,7 @@ class Feedback:
             count-=1;
 
         self.screen.fill(self.bg_color);
-        self.screen.blit(pic,(0,0))
+        #self.screen.blit(pic,(0,0))
         if count==0:
           loop =  False
         self.victoryText()
@@ -427,7 +468,7 @@ class Feedback:
             count-=1;
         ##Timer here
       self.screen.fill(self.bg_color);
-      self.screen.blit(pic,(0,0))
+      #self.screen.blit(pic,(0,0))
       self.nextWord()
 
       pygame.display.flip();
