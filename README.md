@@ -1,11 +1,11 @@
 ### Proposed UI-Backend interfacing 
 The backend provides the following.
 1. A pre-trained Model
-2. A function that takes a time interval(in seconds),  collects the data for that time interval, uses the model to classify the gesture, and finally returns a score the for the performed gesture. 
+2. A function that takes a time interval(in seconds) and a model,  collects the data for that time interval, uses the model to classify the gesture, and finally returns a score for the performed gesture. 
 The UI is responsible for 
 1. Loading the model 
 2. Determing the time interval for the user gesture performances to be recorded
-3. Calling the backend to collect the data with the this interval
+3. Calling the backend to collect the data with the interval
 
 ### BackEnd TODO: 
 - [ ] Normalize frames from the Kinect by position (set x, y, z to 0)? 

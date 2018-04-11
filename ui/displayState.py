@@ -43,7 +43,7 @@ class Idle:
             print "You have clicked for setup!"
             return True;
       self.screen.fill(self.bg_color);
-      self.screen.blit(pic,(-1,-1))
+      #self.screen.blit(pic,(-1,-1))
       button.show()
 
       pygame.display.flip();
@@ -110,7 +110,7 @@ class Start:
     self.clock  = pygame.time.Clock();
     self.frame_rate = 30;
     self.mergin = 12;
-    world_list =  ['run', 'sit','clap','kick','turn','kneel','dap','spin'];
+    world_list =  ['run', 'sit','clap','kick','turnaround','kneel','dap','spin'];
     self.arr = CircularArray(world_list);
   def countSetup(self):
     cd = CountDown(self.screen)
