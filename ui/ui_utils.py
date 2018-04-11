@@ -104,7 +104,7 @@ def button_test():
 class CountDown(Button):
   def __init__(self,screen, second=5):
     Button.__init__(self, screen)
-    self.counts = ['go','GO!']+range(second);
+    self.counts = ['go','GO!']+list(range(second));
   def count(self):
     self.text = str(self.counts.pop());
     return self.text

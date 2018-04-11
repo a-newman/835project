@@ -40,7 +40,7 @@ class Idle:
           pygame.display.flip()
         if event.type==pygame.MOUSEBUTTONDOWN:
           if button.is_hovered():
-            print "You have clicked for setup!"
+            print("You have clicked for setup!")
             return True;
       self.screen.fill(self.bg_color);
       #self.screen.blit(pic,(-1,-1))
@@ -88,7 +88,7 @@ class Setup:
           return False;
         if event.type==pygame.MOUSEBUTTONDOWN:
           if button.is_hovered():
-            print "You're ready to start!"
+            print("You're ready to start!")
             return True;
         if event.type == pygame.VIDEORESIZE:
           self.screen=pygame.display.set_mode(event.dict['size'],pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE)
@@ -142,7 +142,7 @@ class Start:
   def dspWord(self,word,fnt_s):
     font = pygame.font.Font(None, fnt_s);
     surf = font.render(word, True, ColorMap.RED)
-    if surf.get_width()+self.mergin>self.screen.get_width:
+    if surf.get_width()+self.mergin > self.screen.get_width():
       fnt_s-=2;
       self.dspWord(word,fnt_s)
     x0 = self.screen.get_width();
@@ -239,7 +239,7 @@ class Recording:
           return False;
         elif event.type==pygame.MOUSEBUTTONDOWN:
           if button.is_hovered():
-            print "You have clicked for setup!"
+            print("You have clicked for setup!")
             return True;
         if event.type == pygame.VIDEORESIZE:
           self.screen=pygame.display.set_mode(event.dict['size'],pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE)
@@ -286,7 +286,7 @@ class Processing:
           return False;
         elif event.type==pygame.MOUSEBUTTONDOWN:
           if button.is_hovered():
-            print "You have clicked for setup!"
+            print("You have clicked for setup!")
             return True;
         if event.type == pygame.VIDEORESIZE:
           self.screen=pygame.display.set_mode(event.dict['size'],pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE)
@@ -322,10 +322,10 @@ class Feedback:
     s_surf = reaction.render(txt1, True, ColorMap.RED)
     c_surf = cmplmt.render(txt2, True, ColorMap.BLUE)
     
-    if s_surf.get_width()+self.mergin>self.screen.get_width:
+    if s_surf.get_width()+self.mergin>self.screen.get_width():
       fnt_s1-=2;
       self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2)
-    if c_surf.get_width()+self.mergin>self.screen.get_width:
+    if c_surf.get_width()+self.mergin>self.screen.get_width():
       fnt_s2-=2;
       self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2)
     if ratio>1:
@@ -346,10 +346,10 @@ class Feedback:
     self.screen.blit(c_surf,(c_x,y0+offset));
   def imageDisp(self,img,dims):
     x_0 = dims[0]-img.get_width()/2;
-    y_0 = dims[1]- img.get_height()-self.mergin;
-    print "image coordinates: ",x_0,y_0;
-    print "images dims:", img.get_width(), img.get_width()
-    self.screen.blit(img,(x_0,y_0));
+    y_0 = dims[1]- img.get_height()-self.mergin
+    print("image coordinates: ",x_0,y_0)
+    print("images dims:", img.get_width(), img.get_width())
+    self.screen.blit(img,(x_0,y_0))
 
 
   def loseText(self):
