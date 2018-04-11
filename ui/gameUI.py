@@ -1,5 +1,5 @@
 import pygame
-from displayState import Idle, Setup, Start, Recording, Processing, Feedback
+from ui.displayState import Idle, Setup, Start, Recording, Processing, Feedback
 class WordGameUI:
   IDLE = 0;
   SETUP = 1;
@@ -137,11 +137,3 @@ class WordGameUI:
     if status:
       self.state = self.START
       self.display_logic();
-    
-def options():
-  #TODO
-  pass 
-if __name__=="__main__":
-  args = options()
-  game = WordGameUI()
-  game.display_logic()

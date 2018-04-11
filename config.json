@@ -1,6 +1,6 @@
 {
 	"classifier": "nn",
-	"dataset": "Project Studio 1",
+	"dataset": "Practice",
 	"save_data": true,
 	"mutate_classifier": false
 }

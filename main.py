@@ -1,7 +1,8 @@
 import json 
-import pkl
+import pickle
 import pythonreader
 from data import Gesture, dset_ops
+from ui.gameUI import WordGameUI
 
 CLASSIFIERS_BASE_PATH = "recognize/classifiers/"
 CONFIG = None
@@ -15,6 +16,7 @@ def process_gesture_test():
 	seq = pythonreader.get_data()
 	tmp_testing_gesture = seq
 	pred_gesture = CLASSIFIER.classify(seq)
+	return pred_gesture
 
 def process_gesture_practice(gesture_name): 
 	seq = pythonreader.get_data()
@@ -23,17 +25,28 @@ def process_gesture_practice(gesture_name):
 	if CONFIG.mutate_classifier: 
 		CLASSIFIER.update(gesture_name, seq)
 		CLASSIFIER.save()
+	return seq
 
 if __name__ == "__main__": 
 	# load the config file 
 	with open('config.json', 'r') as infile: 
 		CONFIG = json.load(infile)
 
-	DATASET_NAME = CONFIG.dataset
+	DATASET_NAME = CONFIG['dataset']
+
+	wordlist = dset_ops.get_defined_gestures(DATASET_NAME)
 
 	with open(CLASSIFIERS_BASE_PATH + config['classifier_file']) as infile: 
 		CLASSIFIER = pkl.load(infile) # trained classifier 
 
 	classifier.prep(); # does any required preprocessing
 
-	# START UP THE UI
+	backend = {
+		'words': wordlist,
+		'get_classification': process_gesture_test,
+		'record_delay': 2
+	}
+
+	# UI 
+	game = WordGameUI(backend)
+	game.display_logic()

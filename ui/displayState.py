@@ -1,6 +1,6 @@
 import pygame
-from ui_utils import Button, ColorMap, CountDown, CircularArray
-pic =  pygame.image.load('images/background.jpg')
+from ui.ui_utils import Button, ColorMap, CountDown, CircularArray
+pic =  pygame.image.load('ui/images/background.jpg')
 class Idle:
   def __init__(self, screen, params = {}):
 
