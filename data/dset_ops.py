@@ -2,10 +2,11 @@ import json
 import os
 import pickle
 import re
-from Gesture import DataSet
+from data.Gesture import DataSet
 
-BASE_PATH = 'sets/'
+BASE_PATH = 'data/sets/'
 INDEX_PATH = BASE_PATH + 'index.json'
+ALLOW_DELETE = set(['Practice'])
 
 def make_dset(name, safe=True): 
     # creates a new empty data set
@@ -29,9 +30,24 @@ def make_dset(name, safe=True):
         dset = DataSet(name=name, filepath=file_path)
         pickle.dump(dset, outfile)
 
-    # save index
-    with open(INDEX_PATH, 'w') as outfile: 
-        json.dump(index, outfile)
+    _save_index(index)
+
+def delete_dset(name): 
+    if name not in ALLOW_DELETE: # extra check to make sure you mean it 
+        raise RuntimeError("Delete is not enabled for this set.")
+
+    index = _load_index()
+    try: 
+        index.pop(name)
+    except KeyError: 
+        raise RuntimeError("Dataset does not exist")
+
+    _save_index(index)
+    
+
+def exists(name): 
+    index = _load_index()
+    return name in index 
 
 def _load_dset(name): 
     index = _load_index()
@@ -66,3 +82,7 @@ def _load_index():
     with open(INDEX_PATH, 'r') as infile: 
         index = json.load(infile)
         return index
+
+def _save_index(index): 
+    with open(INDEX_PATH, 'w') as outfile: 
+        json.dump(index, outfile)

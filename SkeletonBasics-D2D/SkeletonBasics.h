@@ -102,7 +102,7 @@ private:
     /// Handle new skeleton data
     /// </summary>
     void                    ProcessSkeleton();
-    void                    recordData(NUI_SKELETON_FRAME& skeletonFrame);
+    void                    recordData(NUI_SKELETON_DATA& skel);
 
     /// <summary>
     /// Ensure necessary Direct2d resources are created

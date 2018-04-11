@@ -1,4 +1,4 @@
-from Gesture import Sequence, GestureSet
+from data.Gesture import Sequence, GestureSet
 import math
 
 # def normalize_frames(gesture_sets, num_frames):
@@ -25,8 +25,7 @@ import math
 #         new_sets.append(new_gesture)
 #     return new_sets 
 
-def resize_seq(seq, n): 
-    frames = seq.frames
+def resize_seq(frames, n): 
     delta = n - len(frames)
 
     #base case 
@@ -47,4 +46,4 @@ def resize_seq(seq, n):
             new_frames.append(frames[i]) 
     
     # recurse 
-    return resize(new_frames, n)
+    return resize_seq(new_frames, n)
