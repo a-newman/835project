@@ -12,14 +12,16 @@ class WordGameUI:
     self.w =  width
     self.state = self.IDLE;
     self.backend_map = backend_map;
+    self.test_word = None;
+    self.result_word = None;
     pygame.init()
     self.screen = pygame.display.set_mode((hieght,width),pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE)
     self._idle = Idle(self.screen)
     self._setup = Setup(self.screen)
-    self._start = Start(self.screen, backend = self.backend_map)
-    self._recording = Recording(self.screen, backend=self.backend_map)
-    self._processing = Processing(self.screen, backend = self.backend_map)
-    self._feedback = Feedback(self.screen, backend = self.backend_map)
+    self._start = Start(self.screen,ui = self, backend = self.backend_map)
+    self._recording = Recording(self.screen,ui = self ,backend=self.backend_map)
+    self._processing = Processing(self.screen,ui = self, backend = self.backend_map)
+    self._feedback = Feedback(self.screen,ui = self, backend = self.backend_map)
   def display_logic(self):
 
     if self.state == self.IDLE:

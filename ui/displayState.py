@@ -5,8 +5,7 @@ import threading
 BASE_IMAGE_PATH = "ui/images/" 
 
 pic =  pygame.image.load(BASE_IMAGE_PATH + 'background.jpg')
-test_word = None;
-result_word = None;
+
 class Idle:
   def __init__(self, screen, params = {}):
 
@@ -110,7 +109,8 @@ class Setup:
 
 
 class Start:
-  def __init__(self, screen, backend={}):
+  def __init__(self, screen,ui = None, backend={}):
+    self.ui = ui;
     self.screen = screen;
     self.bg_color = ColorMap.WHITE;
     self.clock  = pygame.time.Clock();
@@ -164,7 +164,7 @@ class Start:
       word = self.arr.randRoll();
     else:
       word = self.arr.roll();
-    test_word = word
+    self.ui.test_word = word
     return word 
   def dispWord(self,word):
     word = "word: "+word;
@@ -211,7 +211,8 @@ class Start:
 
 
 class Recording:
-  def __init__(self, screen, backend={}):
+  def __init__(self, screen, ui=None,backend={}):
+    self.ui = ui;
     self.screen = screen;
     self.bg_color = ColorMap.WHITE;
     self.clock  = pygame.time.Clock();
@@ -262,16 +263,18 @@ class Recording:
         if event.type==pygame.USEREVENT:
           counter-=1
       if counter==0:
-        result_word = self.word;
+        self.ui.result_word = self.word;
         loop=False
       self.screen.fill(self.bg_color);
       #self.screen.blit(pic,(0,0))
       button.show()
 
       pygame.display.flip();
+      #print("resulting word: ",self.word)
       self.clock.tick(self.frame_rate);
 class Processing:
-  def __init__(self, screen,backend={}):
+  def __init__(self, screen,ui=None,backend={}):
+    self.ui = ui;
     self.screen = screen;
     self.bg_color = ColorMap.WHITE;
     self.clock  = pygame.time.Clock();
@@ -319,7 +322,8 @@ class Processing:
       self.clock.tick(self.frame_rate);
 
 class Feedback:
-  def __init__(self, screen, backend={}):
+  def __init__(self, screen,ui=None ,backend={}):
+    self.ui = ui;
     self.screen = screen;
     self.bg_color = ColorMap.WHITE;
     self.clock  = pygame.time.Clock();
@@ -366,8 +370,8 @@ class Feedback:
   def imageDisp(self,img,dims):
     x_0 = dims[0]-img.get_width()/2;
     y_0 = dims[1]- img.get_height()-self.mergin
-    print("image coordinates: ",x_0,y_0)
-    print("images dims:", img.get_width(), img.get_width())
+    #print("image coordinates: ",x_0,y_0)
+    #print("images dims:", img.get_width(), img.get_width())
     self.screen.blit(img,(x_0,y_0))
 
 
@@ -394,7 +398,7 @@ class Feedback:
   def display_result(self):
     dims  = (self.screen.get_width()*.75, self.screen.get_height()*.75)
     txt1 = "You Did:"
-    txt2 = result_word
+    txt2 = self.ui.result_word
     fnt_s1 = 80;
     fnt_s2 = 90;
     ratio=fnt_s2/float(fnt_s1);
@@ -432,7 +436,8 @@ class Feedback:
     import random 
     number = random.random()
     #########
-    if test_word==result_word:
+    #print('test:',self.ui.test_word,'resulting:',self.ui.result_word);
+    if self.ui.test_word!=self.ui.result_word:
       loop= True;
       text  = self.loseText()
       disp = self.loseDisp()
