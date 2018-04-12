@@ -9,6 +9,7 @@ class ColorMap:
   FUCHSIA = (255,0,255)
   YELLOW = (255,255,0)
   GREY = (200,200,200)
+  SKY = (0, 51, 102);
 
 
 class Button:

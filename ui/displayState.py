@@ -128,16 +128,16 @@ class Start:
     self.arr = CircularArray(world_list);
   def countSetup(self):
     cd = CountDown(self.screen)
-    cd.h = 150;
-    cd.w = 150;
-    cd.x = self.screen.get_width()/2;
+    cd.h = 200;
+    cd.w = 200;
+    cd.x = self.screen.get_width()/2.2;
     cd.y = self.screen.get_height()-10;
     
-    cd.font_size= 100;
-    cd.font = pygame.font.Font(None, 100)
-    cd.font_color = ColorMap.BLACK;
-    cd.hoverColor = ColorMap.GREY;
-    cd.staticColor = ColorMap.GREY;
+    cd.font_size= 150;
+    cd.font = pygame.font.Font(None, 150)
+    cd.font_color = ColorMap.RED;
+    cd.hoverColor = ColorMap.SKY;
+    cd.staticColor = ColorMap.SKY;
     return cd
   def backButton(self):
     button =  Button(self.screen);
@@ -155,7 +155,7 @@ class Start:
 
   def dspWord(self,word,fnt_s):
     font = pygame.font.Font(None, fnt_s);
-    surf = font.render(word, True, ColorMap.RED)
+    surf = font.render(word, True, ColorMap.WHITE)
     if surf.get_width()+self.mergin > self.screen.get_width():
       fnt_s-=2;
       self.dspWord(word,fnt_s)
@@ -348,20 +348,20 @@ class Feedback:
     self.frame_rate = 30;
     self.mergin=self.screen.get_width()*.02;
     ## lose parameters 
-    self.sf_x = self.screen.get_width()*.45;
+    self.sf_x = self.screen.get_width()*.48;
     self.sf_y = self.screen.get_height();
-    self.sf_txt = (self.screen.get_width()*.5, self.screen.get_height()*.30)
+    self.sf_txt = (self.screen.get_width()*.5, self.screen.get_height()*.38)
     ## victory parameters
     self.hf_x = self.screen.get_width()*.45;
     self.hf_y = self.screen.get_height();
-    self.hf_txt = (self.screen.get_width()*.5, self.screen.get_height()*.35)
+    self.hf_txt = (self.screen.get_width()*.5, self.screen.get_height()*.38)
     ### Exit parameters 
     self.exit_text = (self.screen.get_width()*.5,self.screen.get_height()*.55)
-  def doubletxt(self,txt1,txt2,dims,fnt_s1,fnt_s2,ratio):
+  def doubletxt(self,txt1,txt2,dims,fnt_s1,fnt_s2,ratio,clr1=ColorMap.RED,clr2=ColorMap.BLUE):
     reaction = pygame.font.Font(None, fnt_s1);
     cmplmt = pygame.font.Font(None, fnt_s2);
-    s_surf = reaction.render(txt1, True, ColorMap.RED)
-    c_surf = cmplmt.render(txt2, True, ColorMap.BLUE)
+    s_surf = reaction.render(txt1, True, clr1)
+    c_surf = cmplmt.render(txt2, True, clr2)
     
     if s_surf.get_width()+self.mergin>self.screen.get_width():
       fnt_s1-=2;
@@ -393,34 +393,34 @@ class Feedback:
     self.screen.blit(img,(x_0,y_0))
 
 
-  def loseText(self):
+  def loseText(self,clr1=ColorMap.RED,clr2=ColorMap.RED):
     dims= self.sf_txt;
     txt1 = 'SORRY!';
-    txt2 = "NEXT TIME";
+    txt2 = "YOU HAD: "+self.ui.result_word;
     fnt_s1 = 80;
     fnt_s2 = 50;
     ratio=fnt_s2/float(fnt_s1);
-    self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2,ratio);
+    self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2,ratio,clr1,clr2);
 
-  def victoryText(self):
+  def victoryText(self,clr1=ColorMap.GREEN,clr2=ColorMap.GREEN):
     dims= self.hf_txt;
     txt1 = 'GONGRATS!';
     txt2 = "YOU DID IT!";
     fnt_s1 = 80;
     fnt_s2 = 50;
     ratio=fnt_s2/float(fnt_s1);
-    self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2,ratio);
+    self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2,ratio,clr1,clr2);
   def loseDisp(self):
     face = pygame.image.load(BASE_IMAGE_PATH + 'sad_face.png');
     self.imageDisp(face,(self.sf_x,self.sf_y))
-  def display_result(self):
+  def display_result(self,clr1=None,clr2=None):
     dims  = (self.screen.get_width()*.55, self.screen.get_height()*.55)
-    txt1 = "You Did:"
+    txt1 = "You had:"
     txt2 = self.ui.result_word
     fnt_s1 = 50;
     fnt_s2 = 60;
     ratio=fnt_s2/float(fnt_s1);
-    self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2,ratio);
+    self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2,ratio,clr1,clr2);
 
 
 
@@ -429,14 +429,14 @@ class Feedback:
     face = pygame.image.load(BASE_IMAGE_PATH + 'happy_face.png');
     self.imageDisp(face,(self.hf_x,self.hf_y));
 
-  def nextWord(self):
+  def nextWord(self,clr1=ColorMap.WHITE,clr2=ColorMap.WHITE):
     dims= self.exit_text;
     txt1 = 'READY FOR THE NEXT WORD?';
     txt2 = "GOOD LUCK!";
     fnt_s1 = 30;
     fnt_s2 = 50;
     ratio=fnt_s2/float(fnt_s1);
-    self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2,ratio);
+    self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2,ratio,clr1,clr2);
   def dispLoop(self):
     '''
     if random number x is greator than .5:
@@ -483,7 +483,7 @@ class Feedback:
           loop = False
         self.loseText()
         self.loseDisp()
-        self.display_result();
+        #self.display_result();
 
         pygame.display.flip();
         self.clock.tick(self.frame_rate);
@@ -540,11 +540,11 @@ class Feedback:
 
 
 class myThread (threading.Thread):
-   def __init__(self, funct, obj):
+  def __init__(self, funct, obj):
     threading.Thread.__init__(self)
     self.funct = funct
     self.obj = obj;
-   def run(self):
+  def run(self):
     self.funct(self.obj)
 
 
