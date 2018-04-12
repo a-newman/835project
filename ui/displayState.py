@@ -396,7 +396,7 @@ class Feedback:
     face = pygame.image.load(BASE_IMAGE_PATH + 'sad_face.png');
     self.imageDisp(face,(self.sf_x,self.sf_y))
   def display_result(self):
-    dims  = (self.screen.get_width()*.65, self.screen.get_height()*.65)
+    dims  = (self.screen.get_width()*.55, self.screen.get_height()*.55)
     txt1 = "You Did:"
     txt2 = self.ui.result_word
     fnt_s1 = 80;
@@ -485,7 +485,7 @@ class Feedback:
           loop =  False
         self.victoryText()
         self.victoryDisp()
-        self.display_result();
+        #self.display_result();
 
         pygame.display.flip();
         self.clock.tick(self.frame_rate);
