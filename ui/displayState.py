@@ -1,5 +1,5 @@
 import pygame
-from ui.ui_utils import Button, ColorMap, CountDown, CircularArray
+from ui.ui_utils import Button, ColorMap, CountDown, CircularArray,scolling_backgrnd
 import threading
 
 BASE_IMAGE_PATH = "ui/images/" 
@@ -29,6 +29,9 @@ class Idle:
     return button;
     
   def dispLoop(self):
+    ###
+    bg_0,bg_1 = scolling_backgrnd(self.screen)
+    ###
     button  = self.setupButton()
     loop  = True
     b_x = -100;
@@ -49,6 +52,8 @@ class Idle:
             return True;
       self.screen.fill(self.bg_color);
       #self.screen.blit(pic,(-1,-1))
+      bg_0.move();
+      bg_1.move();
       button.show()
 
       pygame.display.flip();
@@ -83,6 +88,7 @@ class Setup:
     return button;
 
   def dispLoop(self):
+    bg_0,bg_1 = scolling_backgrnd(self.screen)
     button = self.startButton()
     loop = True 
     while loop:
@@ -100,7 +106,9 @@ class Setup:
           self.screen.blit(pygame.transform.scale(pic,event.dict['size']),(0,0))
           pygame.display.flip()
       self.screen.fill(self.bg_color);
-      self.screen.blit(pic,(0,0))
+      #self.screen.blit(pic,(0,0))
+      bg_0.move();
+      bg_1.move();
       button.show()
 
       pygame.display.flip();
@@ -172,6 +180,7 @@ class Start:
     self.dspWord(word,fnt_s);
     
   def dispLoop(self):
+    bg_0,bg_1 = scolling_backgrnd(self.screen)
     
     pygame.time.set_timer(pygame.USEREVENT, 1000);
     loop = True;
@@ -197,6 +206,8 @@ class Start:
             pygame.display.flip()
 
       self.screen.fill(ColorMap.WHITE);
+      bg_0.move();
+      bg_1.move();
       cd.show();
       button.show();
       self.dispWord(word)
@@ -206,7 +217,7 @@ class Start:
       pygame.display.flip();
    
       # --- Limit to 60 frames per second
-      self.clock.tick(60);
+      self.clock.tick(self.frame_rate);
     return value;
 
 
@@ -239,6 +250,8 @@ class Recording:
 
 
   def dispLoop(self):
+    bg_0,bg_1 = scolling_backgrnd(self.screen)
+
     thread = myThread(self.backend['get_classification'], self)
     thread.start()
     pygame.time.set_timer(pygame.USEREVENT, 1000);
@@ -267,6 +280,8 @@ class Recording:
         loop=False
       self.screen.fill(self.bg_color);
       #self.screen.blit(pic,(0,0))
+      bg_0.move();
+      bg_1.move();
       button.show()
 
       pygame.display.flip();
@@ -298,6 +313,7 @@ class Processing:
     button.staticColor = ColorMap.WHITE;
     return button 
   def dispLoop(self):
+    bg_0,bg_1 = scolling_backgrnd(self.screen)
     button  = self.recordButton()
     loop  = False;
     while loop:
@@ -316,6 +332,8 @@ class Processing:
           pygame.display.flip()
       self.screen.fill(self.bg_color);
       #self.screen.blit(pic,(0,0))
+      bg_0.move();
+      bg_1.move();
       button.show()
 
       pygame.display.flip();
@@ -429,6 +447,7 @@ class Feedback:
       Show them a sad face!
       tell them they didn't get it
     ''' 
+    bg_0,bg_1 = scolling_backgrnd(self.screen)
     value = True;
     pygame.time.set_timer(pygame.USEREVENT, 1000);
     count = 3;
@@ -458,6 +477,8 @@ class Feedback:
         #self.screen.blit(pic,(0,0))
         #text.show()
         #disp.show()
+        bg_0.move();
+        bg_1.move();
         if count==0:
           loop = False
         self.loseText()
@@ -480,6 +501,8 @@ class Feedback:
             count-=1;
 
         self.screen.fill(self.bg_color);
+        bg_0.move();
+        bg_1.move();
         #self.screen.blit(pic,(0,0))
         if count==0:
           loop =  False
@@ -503,6 +526,8 @@ class Feedback:
         ##Timer here
       self.screen.fill(self.bg_color);
       #self.screen.blit(pic,(0,0))
+      bg_0.move();
+      bg_1.move();
       self.nextWord();
       
 

@@ -221,6 +221,31 @@ def text_test():
     # --- Limit to 60 frames per second
     clock.tick(60)
 #text_test()
+class MovingGroundEffects:
+  def __init__(self, screen,image=None,x = -2,y=-2):
+    self.image = image;
+    self.screen = screen;
+    self.x = x;
+    self.y = y;
+  def flashing_stars(self):
+    pass
+  def draw(self):
+    i_w = self.image.get_width()
+    
+    if (i_w+self.x)<-1:
+      self.x = i_w;
+    self.screen.blit(self.image,(self.x,self.y));
+  def move(self):
+    self.x-=1;
+    self.draw()
+
+def scolling_backgrnd(screen,image='ui/images/space.jpg'):
+  _image=pygame.image.load(image)
+  bckObj = MovingGroundEffects(screen,image=_image)
+  bckObj1 = MovingGroundEffects(screen,image=_image,x=_image.get_width())
+  return bckObj,bckObj1
+
+
 
 
 
