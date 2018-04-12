@@ -332,7 +332,7 @@ class Feedback:
     ## lose parameters 
     self.sf_x = self.screen.get_width()*.45;
     self.sf_y = self.screen.get_height();
-    self.sf_txt = (self.screen.get_width()*.5, self.screen.get_height()*.35)
+    self.sf_txt = (self.screen.get_width()*.5, self.screen.get_height()*.30)
     ## victory parameters
     self.hf_x = self.screen.get_width()*.45;
     self.hf_y = self.screen.get_height();
@@ -399,8 +399,8 @@ class Feedback:
     dims  = (self.screen.get_width()*.55, self.screen.get_height()*.55)
     txt1 = "You Did:"
     txt2 = self.ui.result_word
-    fnt_s1 = 80;
-    fnt_s2 = 90;
+    fnt_s1 = 50;
+    fnt_s2 = 60;
     ratio=fnt_s2/float(fnt_s1);
     self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2,ratio);
 
