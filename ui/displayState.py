@@ -257,7 +257,7 @@ class Recording:
     pygame.time.set_timer(pygame.USEREVENT, 1000);
     button  = self.recordButton()
     loop  = True
-    counter = 4;
+    counter = 2;
     while loop:
 
       for event in pygame.event.get():
