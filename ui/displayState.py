@@ -1,7 +1,10 @@
 import pygame
 from ui.ui_utils import Button, ColorMap, CountDown, CircularArray
 import threading
-pic =  pygame.image.load('ui/images/background.jpg')
+
+BASE_IMAGE_PATH = "ui/images/" 
+
+pic =  pygame.image.load(BASE_IMAGE_PATH + 'background.jpg')
 test_word = None;
 result_word = None;
 class Idle:
@@ -386,7 +389,7 @@ class Feedback:
     ratio=fnt_s2/float(fnt_s1);
     self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2,ratio);
   def loseDisp(self):
-    face = pygame.image.load('images/sad_face.png');
+    face = pygame.image.load(BASE_IMAGE_PATH + 'sad_face.png');
     self.imageDisp(face,(self.sf_x,self.sf_y))
   def display_result(self):
     dims  = (self.screen.get_width()*.75, self.screen.get_height()*.75)
@@ -401,7 +404,7 @@ class Feedback:
 
 
   def victoryDisp(self):
-    face = pygame.image.load('images/happy_face.png');
+    face = pygame.image.load(BASE_IMAGE_PATH + 'happy_face.png');
     self.imageDisp(face,(self.hf_x,self.hf_y));
 
   def nextWord(self):
