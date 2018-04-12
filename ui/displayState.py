@@ -1,6 +1,9 @@
 import pygame
 from ui.ui_utils import Button, ColorMap, CountDown, CircularArray
+import threading
 pic =  pygame.image.load('ui/images/background.jpg')
+test_word = None;
+result_word = None;
 class Idle:
   def __init__(self, screen, params = {}):
 
@@ -104,13 +107,13 @@ class Setup:
 
 
 class Start:
-  def __init__(self, screen):
+  def __init__(self, screen, backend={}):
     self.screen = screen;
     self.bg_color = ColorMap.WHITE;
     self.clock  = pygame.time.Clock();
     self.frame_rate = 30;
     self.mergin = 12;
-    world_list =  ['run', 'sit','clap','kick','turnaround','kneel','dap','spin'];
+    world_list =  backend['words'];
     self.arr = CircularArray(world_list);
   def countSetup(self):
     cd = CountDown(self.screen)
@@ -158,6 +161,7 @@ class Start:
       word = self.arr.randRoll();
     else:
       word = self.arr.roll();
+    test_word = word
     return word 
   def dispWord(self,word):
     word = "word: "+word;
@@ -165,6 +169,7 @@ class Start:
     self.dspWord(word,fnt_s);
     
   def dispLoop(self):
+    
     pygame.time.set_timer(pygame.USEREVENT, 1000);
     loop = True;
     value = 'finished';
@@ -203,11 +208,13 @@ class Start:
 
 
 class Recording:
-  def __init__(self, screen):
+  def __init__(self, screen, backend={}):
     self.screen = screen;
     self.bg_color = ColorMap.WHITE;
     self.clock  = pygame.time.Clock();
     self.frame_rate = 30;
+    self.word = "None"
+    self.backend=backend
   def recordButton(self):
     button =  Button(self.screen);
     if self.screen.get_width()<self.screen.get_height():
@@ -228,8 +235,12 @@ class Recording:
 
 
   def dispLoop(self):
+    thread = myThread(self.backend['get_classification'], self)
+    thread.start()
+    pygame.time.set_timer(pygame.USEREVENT, 1000);
     button  = self.recordButton()
     loop  = True
+    counter = 4;
     while loop:
 
       for event in pygame.event.get():
@@ -237,7 +248,7 @@ class Recording:
           loop = False;
           pygame.quit();
           return False;
-        elif event.type==pygame.MOUSEBUTTONDOWN:
+        if event.type==pygame.MOUSEBUTTONDOWN:
           if button.is_hovered():
             print("You have clicked for setup!")
             return True;
@@ -245,6 +256,11 @@ class Recording:
           self.screen=pygame.display.set_mode(event.dict['size'],pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE)
           self.screen.blit(pygame.transform.scale(pic,event.dict['size']),(0,0))
           pygame.display.flip()
+        if event.type==pygame.USEREVENT:
+          counter-=1
+      if counter==0:
+        result_word = self.word;
+        loop=False
       self.screen.fill(self.bg_color);
       #self.screen.blit(pic,(0,0))
       button.show()
@@ -252,7 +268,7 @@ class Recording:
       pygame.display.flip();
       self.clock.tick(self.frame_rate);
 class Processing:
-  def __init__(self, screen):
+  def __init__(self, screen,backend={}):
     self.screen = screen;
     self.bg_color = ColorMap.WHITE;
     self.clock  = pygame.time.Clock();
@@ -277,7 +293,7 @@ class Processing:
     return button 
   def dispLoop(self):
     button  = self.recordButton()
-    loop  = True
+    loop  = False;
     while loop:
       for event in pygame.event.get():
         if event.type==pygame.QUIT:
@@ -300,7 +316,7 @@ class Processing:
       self.clock.tick(self.frame_rate);
 
 class Feedback:
-  def __init__(self, screen):
+  def __init__(self, screen, backend={}):
     self.screen = screen;
     self.bg_color = ColorMap.WHITE;
     self.clock  = pygame.time.Clock();
@@ -372,6 +388,14 @@ class Feedback:
   def loseDisp(self):
     face = pygame.image.load('images/sad_face.png');
     self.imageDisp(face,(self.sf_x,self.sf_y))
+  def display_result(self):
+    dims  = (self.screen.get_width()*.75, self.screen.get_height()*.75)
+    txt1 = "You Did:"
+    txt2 = result_word
+    fnt_s1 = 80;
+    fnt_s2 = 90;
+    ratio=fnt_s2/float(fnt_s1);
+    self.doubletxt(txt1,txt2,dims,fnt_s1,fnt_s2,ratio);
 
 
 
@@ -405,7 +429,7 @@ class Feedback:
     import random 
     number = random.random()
     #########
-    if number<.5:
+    if test_word==result_word:
       loop= True;
       text  = self.loseText()
       disp = self.loseDisp()
@@ -469,7 +493,8 @@ class Feedback:
         ##Timer here
       self.screen.fill(self.bg_color);
       #self.screen.blit(pic,(0,0))
-      self.nextWord()
+      self.nextWord();
+      self.display_result();
 
       pygame.display.flip();
       self.clock.tick(self.frame_rate);
@@ -479,6 +504,13 @@ class Feedback:
 
 
 
+class myThread (threading.Thread):
+   def __init__(self, funct, obj):
+    threading.Thread.__init__(self)
+    self.funct = funct
+    self.obj = obj;
+   def run(self):
+    self.funct(self.obj)
 
 
 

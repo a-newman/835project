@@ -7,18 +7,19 @@ class WordGameUI:
   RECORDING = 3;
   PROCESSING = 4
   FEEDBACK=5;
-  def __init__(self, hieght=500, width = 500):
+  def __init__(self, hieght=500, width = 500, backend_map = {}):
     self.h = hieght
     self.w =  width
     self.state = self.IDLE;
+    self.backend_map = backend_map;
     pygame.init()
     self.screen = pygame.display.set_mode((hieght,width),pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE)
     self._idle = Idle(self.screen)
     self._setup = Setup(self.screen)
-    self._start = Start(self.screen)
-    self._recording = Recording(self.screen)
-    self._processing = Processing(self.screen)
-    self._feedback = Feedback(self.screen)
+    self._start = Start(self.screen, backend = self.backend_map)
+    self._recording = Recording(self.screen, backend=self.backend_map)
+    self._processing = Processing(self.screen, backend = self.backend_map)
+    self._feedback = Feedback(self.screen, backend = self.backend_map)
   def display_logic(self):
 
     if self.state == self.IDLE:

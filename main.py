@@ -54,5 +54,5 @@ if __name__ == "__main__":
 	}
 
 	# UI 
-	game = WordGameUI(backend)
+	game = WordGameUI(backend_map=backend)
 	game.display_logic()
