@@ -108,7 +108,8 @@ class WordGameUI:
     '''
     interface = self._recording;
     status = interface.dispLoop();
-    if status:
+    #if status:
+    if True:
       self.state = self.PROCESSING
       self.display_logic();
 
@@ -122,7 +123,8 @@ class WordGameUI:
     '''
     interface = self._processing;
     status = interface.dispLoop();
-    if status:
+    #if status:
+    if True:
       self.state = self.FEEDBACK
       self.display_logic();
   def feedback(self):

@@ -27,7 +27,7 @@ import math
 
 def resize_seq(frames, n): 
     if len(frames) == 0: 
-        throw RuntimeError("must provide at least one frame")
+        raise RuntimeError("must provide at least one frame")
     delta = n - len(frames)
 
     #base case 
