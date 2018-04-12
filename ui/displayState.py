@@ -396,7 +396,7 @@ class Feedback:
     face = pygame.image.load(BASE_IMAGE_PATH + 'sad_face.png');
     self.imageDisp(face,(self.sf_x,self.sf_y))
   def display_result(self):
-    dims  = (self.screen.get_width()*.75, self.screen.get_height()*.75)
+    dims  = (self.screen.get_width()*.65, self.screen.get_height()*.65)
     txt1 = "You Did:"
     txt2 = self.ui.result_word
     fnt_s1 = 80;
