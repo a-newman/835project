@@ -48,6 +48,7 @@ class NNClassifier(Classifier):
                     heapq.heappush(h, item)
                 else: 
                     heapq.heappushpop(h, item)
+                print(h)
 
         # now we have our size-k min heap; time to tally the votes 
         votes = {}
