@@ -231,7 +231,7 @@ class Recording:
     button.y = self.screen.get_height()/2;
     button.font_size = 100;
     button.set_font()
-    button.text = "Recording..";
+    button.text = "Recording...";
     button.font_color = ColorMap.RED;
     button.hoverColor = ColorMap.WHITE;
     button.staticColor = ColorMap.WHITE;
@@ -386,7 +386,7 @@ class Feedback:
 
   def victoryText(self):
     dims= self.hf_txt;
-    txt1 = 'GONGRAT!';
+    txt1 = 'GONGRATS!';
     txt2 = "YOU DID IT!";
     fnt_s1 = 80;
     fnt_s2 = 50;
@@ -462,6 +462,7 @@ class Feedback:
           loop = False
         self.loseText()
         self.loseDisp()
+        self.display_result();
 
         pygame.display.flip();
         self.clock.tick(self.frame_rate);
@@ -484,6 +485,7 @@ class Feedback:
           loop =  False
         self.victoryText()
         self.victoryDisp()
+        self.display_result();
 
         pygame.display.flip();
         self.clock.tick(self.frame_rate);
@@ -502,7 +504,7 @@ class Feedback:
       self.screen.fill(self.bg_color);
       #self.screen.blit(pic,(0,0))
       self.nextWord();
-      self.display_result();
+      
 
       pygame.display.flip();
       self.clock.tick(self.frame_rate);
