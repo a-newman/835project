@@ -32,3 +32,24 @@ Change directory to *ui* and run `python gameUI.py`
 Keep clicking the buttons to advance 
 
 For recording and processing states just click on the text to advance for now.
+
+### Prototype Feedback
+
+Timing issues 
+1. Waiting before action is too long 
+2. Recording time is too long
+Add more modes to the UI(Let me signal when ready to perform)
+1. Clicker(probably not hard to add)
+2. Speech (1) be careful with background noise given the distance from the screen (2) You could get the computer closer and use the computer's microphone for speech detection.
+3. Gesture 
+Confusing things
+1. What’s the countdown for?
+2. Why is it defualting to waving? Need none-of-the-above prediction
+You could add 
+1. More control over the words to be shown (1) Could go back to previous words (2) Could pause and start whenever (3) Let me choose the word
+3. Add a mode where you keep doing the action until you get it or get tired of it(signal pass).
+4. Could add demo window(pre-recorded video?)
+
+
+
+
