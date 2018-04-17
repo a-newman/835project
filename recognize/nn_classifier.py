@@ -5,7 +5,7 @@ import heapq
 import numpy as np
 
 class NNClassifier(Classifier): 
-    def __init__(self, dset_name, k=3, num_frames=30): 
+    def __init__(self, dset_name, k=1, num_frames=30): 
         super().__init__()
         self.dset_name = dset_name
         self.k = k
@@ -77,4 +77,5 @@ class NNClassifier(Classifier):
         return vec
 
     def _reload(self): 
+        print("reloading")
         self.cached_dset = dset_ops._load_dset(self.dset_name)

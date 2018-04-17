@@ -38,9 +38,11 @@ def delete_dset(name):
 
     index = _load_index()
     try: 
-        index.pop(name)
+        name = index.pop(name)
     except KeyError: 
         raise RuntimeError("Dataset does not exist")
+
+    os.remove(BASE_PATH + name);
 
     _save_index(index)
     
