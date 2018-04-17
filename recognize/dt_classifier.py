@@ -58,21 +58,6 @@ class DTClassifier(Classifier):
         self.clf = DecisionTreeClassifier(criterion='gini')
         self.clf.fit(self.X, self.Y)
 
-    def save(self, savepath=None): 
-        """
-            Save it
-        """
-        sp = None
-        if (savepath): 
-            sp = savepath
-        elif self.last_savepath: 
-            sp = self.last_savepath
-        else: 
-            raise RuntimeError("No save path provided")
-
-        with open(sp, 'wb') as outfile: 
-            pickle.dump(self, outfile)
-
     def _get_new_gid(self): 
         self.g_id_count += 1
         return self.g_id_count - 1 
