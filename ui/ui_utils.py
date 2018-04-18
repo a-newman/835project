@@ -293,6 +293,7 @@ class PykinectMembers:
   DEPTH_WINSIZE = 320,240
   VIDEO_WINSIZE = 640,480
   def __init__(self,screen):
+    self.screen_lock = thread.allocate();
     self.screen = []
     self.skeleton_to_depth_image = nui.SkeletonEngine.skeleton_to_depth_image
     self.kinect = nui.Runtime();
@@ -301,6 +302,8 @@ class PykinectMembers:
     self.draw_skeleton = True;
     self.video_display = False;
     self.skeletal_map = [];
+    self.skeletons = None;
+    self.draw_skeleton = True
     # recipe to get address of surface: http://archives.seul.org/pygame/users/Apr-2008/msg00218.html
     if hasattr(ctypes.pythonapi, 'Py_InitModule4'):
        Py_ssize_t = ctypes.c_int
@@ -349,10 +352,10 @@ class PykinectMembers:
     skltl.knee_right =self.pos_to_array(skeleton.SkeletonPositions[JointId.KneeRight]);
     return skltl;
 
-  def collect(self,skeletons):
+  def collect(self,skltns):
     sf = [];
-    for index, skeleton in enumerate(skeletons):
-      sk = map_skeleton(skeleton)
+    for index, sklton in enumerate(skltns):
+      sk = self.map_skeleton(skltn)
       sf.append(sk);
     skeletal_map.append(ScanFrame(sf));
 
@@ -362,10 +365,10 @@ class PykinectMembers:
     for position in itertools.islice(positions, 1, None):
       next = pSkelton.SkeletonPositions[position.value]
       
-      curstart = skeleton_to_depth_image(start, dispInfo.current_w, dispInfo.current_h) 
-      curend = skeleton_to_depth_image(next, dispInfo.current_w, dispInfo.current_h)
+      curstart = self.skeleton_to_depth_image(start, dispInfo.current_w, dispInfo.current_h) 
+      curend = self.skeleton_to_depth_image(next, dispInfo.current_w, dispInfo.current_h)
 
-      pygame.draw.line(screen, SKELETON_COLORS[index], curstart, curend, width)
+      pygame.draw.line(self.screen, SKELETON_COLORS[index], curstart, curend, width)
       
       start = next
   def surface_to_array(self,surface):
@@ -380,40 +383,40 @@ class PykinectMembers:
   def draw_skeletons(self,skeletons):
     for index, data in enumerate(skeletons):
       # draw the Head
-      HeadPos = skeleton_to_depth_image(data.SkeletonPositions[JointId.Head], dispInfo.current_w, dispInfo.current_h) 
-      draw_skeleton_data(data, index, SPINE, 10)
-      pygame.draw.circle(screen, SKELETON_COLORS[index], (int(HeadPos[0]), int(HeadPos[1])), 20, 0)
+      HeadPos = self.skeleton_to_depth_image(data.SkeletonPositions[JointId.Head], dispInfo.current_w, dispInfo.current_h) 
+      self.draw_skeleton_data(data, index, SPINE, 10)
+      pygame.draw.circle(self.screen, self.SKELETON_COLORS[index], (int(HeadPos[0]), int(HeadPos[1])), 20, 0)
   
       # drawing the limbs
-      draw_skeleton_data(data, index, LEFT_ARM)
-      draw_skeleton_data(data, index, RIGHT_ARM)
-      draw_skeleton_data(data, index, LEFT_LEG)
-      draw_skeleton_data(data, index, RIGHT_LEG)
+      self.draw_skeleton_data(data, index, self.LEFT_ARM)
+      self.draw_skeleton_data(data, index, self.RIGHT_ARM)
+      self.draw_skeleton_data(data, index, self.LEFT_LEG)
+      self.draw_skeleton_data(data, index, self.RIGHT_LEG)
   def depth_frame_ready(self,frame):
     if video_display:
       return
 
-    with screen_lock:
-      address = surface_to_array(screen)
+    with self.screen_lock:
+      address = self.surface_to_array(self.screen)
       frame.image.copy_bits(address)
       del address
-      if skeletons is not None and draw_skeleton:
-          draw_skeletons(skeletons)
+      if self.skeletons is not None and self.draw_skeleton:
+          self.draw_skeletons(skeletons)
       pygame.display.update()    
   def video_frame_ready(self,frame):
-    if not video_display:
+    if not self.video_display:
       return
 
-    with screen_lock:
-      address = surface_to_array(screen)
+    with self.screen_lock:
+      address = self.surface_to_array(self.screen)
       frame.image.copy_bits(address)
       del address
       if skeletons is not None and draw_skeleton:
-          draw_skeletons(skeletons)
+          self.draw_skeletons(skeletons)
       pygame.display.update()
   def post_frame(self,frame):
     try:
-      pygame.event.post(pygame.event.Event(KINECTEVENT, skeletons = frame.SkeletonData))
+      pygame.event.post(pygame.event.Event(self.KINECTEVENT, skeletons = frame.SkeletonData))
     except:
       # event queue full
       pass
@@ -421,8 +424,8 @@ class PykinectMembers:
     self.kinect.skeleton_frame_ready += self.post_frame
     self.kinect.depth_frame_ready += self.depth_frame_ready    
     self.kinect.video_frame_ready += self.video_frame_ready
-    kinect.video_stream.open(nui.ImageStreamType.Video, 2, nui.ImageResolution.Resolution640x480, nui.ImageType.Color);
-    kinect.depth_stream.open(nui.ImageStreamType.Depth, 2, nui.ImageResolution.Resolution320x240, nui.ImageType.Depth);
+    self.kinect.video_stream.open(nui.ImageStreamType.Video, 2, nui.ImageResolution.Resolution640x480, nui.ImageType.Color);
+    self.kinect.depth_stream.open(nui.ImageStreamType.Depth, 2, nui.ImageResolution.Resolution320x240, nui.ImageType.Depth);
 def testPykinect():
   DEPTH_WINSIZE = (800,800)
   screen = pygame.display.set_mode(DEPTH_WINSIZE,0,16)    
