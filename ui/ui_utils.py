@@ -1,5 +1,5 @@
 import pygame
-##### importing thngs pykinect
+##### import
 import thread
 import itertools
 import ctypes
@@ -187,7 +187,7 @@ class TextRender:
     self.font = pygame.font.Font(None, self.font_size);
     self.surf = self.font.render(self.word, True, ColorMap.RED)
     if self.mergin+self.surf.get_width()>self.screen.get_width():
-      remove = (self.mergin+self.surf.get_width())/float(screen.get_width());
+      remove = (self.mergin+self.surf.get_width())/float(self.screen.get_width());
       self.font_size+= (remove-1)*self.screen.get_width;
       self.render()
     x_0 = self.x_0-self.surf.get_width()/2;
@@ -253,48 +253,110 @@ def scolling_backgrnd(screen,image='ui/images/space.jpg'):
   bckObj = MovingGroundEffects(screen,image=_image)
   bckObj1 = MovingGroundEffects(screen,image=_image,x=_image.get_width())
   return bckObj,bckObj1
-class KinectWinds:
-  def __init__(self,screen, x=0, y=0):
-    self.screen = screen;
-    self.x  = x;
-    self.y =  y;
 
-  def is_vid_frame(self):
-    if not video_display:
-      return
 
-    with screen_lock:
-      address = surface_to_array(self.screen)
-      frame.image.copy_bits(address)
-      del address
-      if skeletons is not None and draw_skeleton:
-        self.draw_skeletons(skeletons)
-      pygame.display.update()
+class PykinectMembers:
+  SKELETON_COLORS = [THECOLORS["red"], 
+                   THECOLORS["blue"], 
+                   THECOLORS["green"], 
+                   THECOLORS["orange"], 
+                   THECOLORS["purple"], 
+                   THECOLORS["yellow"], 
+                   THECOLORS["violet"]]
 
-  def has_depth_frame(self,frame):
-    if video_display:
-      return
+  LEFT_ARM = (JointId.ShoulderCenter, 
+            JointId.ShoulderLeft, 
+            JointId.ElbowLeft, 
+            JointId.WristLeft, 
+            JointId.HandLeft)
+  RIGHT_ARM = (JointId.ShoulderCenter, 
+             JointId.ShoulderRight, 
+             JointId.ElbowRight, 
+             JointId.WristRight, 
+             JointId.HandRight)
+  LEFT_LEG = (JointId.HipCenter, 
+            JointId.HipLeft, 
+            JointId.KneeLeft, 
+            JointId.AnkleLeft, 
+            JointId.FootLeft)
+  RIGHT_LEG = (JointId.HipCenter, 
+             JointId.HipRight, 
+             JointId.KneeRight, 
+             JointId.AnkleRight, 
+             JointId.FootRight)
+  SPINE = (JointId.HipCenter, 
+         JointId.Spine, 
+         JointId.ShoulderCenter, 
+         JointId.Head)
+  KINECTEVENT = pygame.USEREVENT
+  RECORDEVENT = pygame.USEREVENT+1
+  DEPTH_WINSIZE = 320,240
+  VIDEO_WINSIZE = 640,480
+  def __init__(self,screen):
+    self.screen = []
+    self.skeleton_to_depth_image = nui.SkeletonEngine.skeleton_to_depth_image
+    self.kinect = nui.Runtime();
+    self.kinect.skeleton_engine.enabled = True;
+    self.full_screen = False;
+    self.draw_skeleton = True;
+    self.video_display = False;
+    self.skeletal_map = [];
+    # recipe to get address of surface: http://archives.seul.org/pygame/users/Apr-2008/msg00218.html
+    if hasattr(ctypes.pythonapi, 'Py_InitModule4'):
+       Py_ssize_t = ctypes.c_int
+    elif hasattr(ctypes.pythonapi, 'Py_InitModule4_64'):
+       Py_ssize_t = ctypes.c_int64
+    else:
+       raise TypeError("Cannot determine type of Py_ssize_t")
 
-    with screen_lock:
-      address = surface_to_array(self.screen)
-      frame.image.copy_bits(address)
-      del address
-      if skeletons is not None and self.draw_skeleton:
-          self.draw_skeletons(self.skeletons)
-      pygame.display.update()
-  def draw_skeletons(skeletons):
-    for index, data in enumerate(skeletons):
-      # draw the Head
-      HeadPos = skeleton_to_depth_image(data.SkeletonPositions[JointId.Head], dispInfo.current_w, dispInfo.current_h) 
-      draw_skeleton_data(data, index, SPINE, 10)
-      pygame.draw.circle(screen, SKELETON_COLORS[index], (int(HeadPos[0]), int(HeadPos[1])), 20, 0)
-  
-      # drawing the limbs
-      self.draw_skeleton_data(data, index, LEFT_ARM)
-      self.draw_skeleton_data(data, index, RIGHT_ARM)
-      self.draw_skeleton_data(data, index, LEFT_LEG)
-      self.draw_skeleton_data(data, index, RIGHT_LEG)
-  def draw_skeleton_data(pSkelton, index, positions, width = 4):
+    self._PyObject_AsWriteBuffer = ctypes.pythonapi.PyObject_AsWriteBuffer
+    self._PyObject_AsWriteBuffer.restype = ctypes.c_int
+    self._PyObject_AsWriteBuffer.argtypes = [ctypes.py_object,
+                                      ctypes.POINTER(ctypes.c_void_p),
+                                      ctypes.POINTER(Py_ssize_t)]
+
+  def pos_to_array(self,joint):
+    return [joint.x,joint.y,joint.z]
+
+  def map_skeleton(self,skeleton):
+    skltl = Skeletal();
+    skltl.head = self.pos_to_array(skeleton.SkeletonPositions[JointId.Head]);
+      
+    skltl.should_center = self.pos_to_array(skeleton.SkeletonPositions[JointId.ShoulderCenter]);
+    skltl.shoulder_left = self.pos_to_array(skeleton.SkeletonPositions[JointId.ShoulderLeft]);
+    skltl.shoulder_right = self.pos_to_array(skeleton.SkeletonPositions[JointId.ShoulderRight]);
+
+    skltl.elbow_left = self.pos_to_array(skeleton.SkeletonPositions[JointId.ElbowLeft]);
+    skltl.elbow_right = self.pos_to_array(skeleton.SkeletonPositions[JointId.ElbowRight]);
+
+    skltl.wrist_left = self.pos_to_array(skeleton.SkeletonPositions[JointId.WristLeft]);
+    skltl.wrist_right = self.pos_to_array(skeleton.SkeletonPositions[JointId.WristRight]);
+
+    skltl.hand_left =self.pos_to_array(skeleton.SkeletonPositions[JointId.HandLeft]);
+    skltl.hand_right =self.pos_to_array(skeleton.SkeletonPositions[JointId.HandRight]);
+
+    skltl.hip_center =self.pos_to_array(skeleton.SkeletonPositions[JointId.HipCenter]);
+    skltl.hip_left =self.pos_to_array(skeleton.SkeletonPositions[JointId.HipLeft]);
+    skltl.hip_right =self.pos_to_array(skeleton.SkeletonPositions[JointId.HandRight]);
+
+    skltl.ankle_left =self.pos_to_array(skeleton.SkeletonPositions[JointId.AnkleLeft]);
+    skltl.ankle_right =self.pos_to_array(skeleton.SkeletonPositions[JointId.AnkleRight]);
+
+    skltl.foot_left =self.pos_to_array(skeleton.SkeletonPositions[JointId.FootLeft]);
+    skltl.foot_right =self.pos_to_array(skeleton.SkeletonPositions[JointId.FootRight]);
+
+    skltl.knee_left =self.pos_to_array(skeleton.SkeletonPositions[JointId.KneeLeft]);
+    skltl.knee_right =self.pos_to_array(skeleton.SkeletonPositions[JointId.KneeRight]);
+    return skltl;
+
+  def collect(self,skeletons):
+    sf = [];
+    for index, skeleton in enumerate(skeletons):
+      sk = map_skeleton(skeleton)
+      sf.append(sk);
+    skeletal_map.append(ScanFrame(sf));
+
+  def draw_skeleton_data(self,pSkelton, index, positions, width = 4):
     start = pSkelton.SkeletonPositions[positions[0]]
        
     for position in itertools.islice(positions, 1, None):
@@ -306,6 +368,72 @@ class KinectWinds:
       pygame.draw.line(screen, SKELETON_COLORS[index], curstart, curend, width)
       
       start = next
+  def surface_to_array(self,surface):
+    buffer_interface = surface.get_buffer()
+    address = ctypes.c_void_p()
+    size = Py_ssize_t()
+    self._PyObject_AsWriteBuffer(buffer_interface,
+                        ctypes.byref(address), ctypes.byref(size))
+    bytes = (ctypes.c_byte * size.value).from_address(address.value)
+    bytes.object = buffer_interface
+    return bytes
+  def draw_skeletons(self,skeletons):
+    for index, data in enumerate(skeletons):
+      # draw the Head
+      HeadPos = skeleton_to_depth_image(data.SkeletonPositions[JointId.Head], dispInfo.current_w, dispInfo.current_h) 
+      draw_skeleton_data(data, index, SPINE, 10)
+      pygame.draw.circle(screen, SKELETON_COLORS[index], (int(HeadPos[0]), int(HeadPos[1])), 20, 0)
+  
+      # drawing the limbs
+      draw_skeleton_data(data, index, LEFT_ARM)
+      draw_skeleton_data(data, index, RIGHT_ARM)
+      draw_skeleton_data(data, index, LEFT_LEG)
+      draw_skeleton_data(data, index, RIGHT_LEG)
+  def depth_frame_ready(self,frame):
+    if video_display:
+      return
+
+    with screen_lock:
+      address = surface_to_array(screen)
+      frame.image.copy_bits(address)
+      del address
+      if skeletons is not None and draw_skeleton:
+          draw_skeletons(skeletons)
+      pygame.display.update()    
+  def video_frame_ready(self,frame):
+    if not video_display:
+      return
+
+    with screen_lock:
+      address = surface_to_array(screen)
+      frame.image.copy_bits(address)
+      del address
+      if skeletons is not None and draw_skeleton:
+          draw_skeletons(skeletons)
+      pygame.display.update()
+  def post_frame(self,frame):
+    try:
+      pygame.event.post(pygame.event.Event(KINECTEVENT, skeletons = frame.SkeletonData))
+    except:
+      # event queue full
+      pass
+  def run(self):
+    self.kinect.skeleton_frame_ready += self.post_frame
+    self.kinect.depth_frame_ready += self.depth_frame_ready    
+    self.kinect.video_frame_ready += self.video_frame_ready
+    kinect.video_stream.open(nui.ImageStreamType.Video, 2, nui.ImageResolution.Resolution640x480, nui.ImageType.Color);
+    kinect.depth_stream.open(nui.ImageStreamType.Depth, 2, nui.ImageResolution.Resolution320x240, nui.ImageType.Depth);
+def testPykinect():
+  DEPTH_WINSIZE = (800,800)
+  screen = pygame.display.set_mode(DEPTH_WINSIZE,0,16)    
+  pygame.display.set_caption('Python Kinect Demo')
+  skeletons = None;
+  screen.fill(THECOLORS["black"]);
+  mems = PykinectMembers(screen)
+  mems.run();
+
+
+
 
 
 
