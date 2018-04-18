@@ -29,6 +29,7 @@ from pygame.locals import *
 skeletal_map = []
 
 KINECTEVENT = pygame.USEREVENT
+RECORDEVENT = pygame+1
 DEPTH_WINSIZE = 320,240
 VIDEO_WINSIZE = 640,480
 pygame.init()
@@ -229,6 +230,7 @@ if __name__ == '__main__':
     pcount = 3;
     record = False;
     prep = True;
+    pygame.time.set_timer(RECORDEVENT, 1000);
     while not done:
         e = pygame.event.wait()
         dispInfo = pygame.display.Info()
