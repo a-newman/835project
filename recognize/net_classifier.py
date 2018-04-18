@@ -46,16 +46,11 @@ class NetClassifier(Classifier):
         """
         Given a sample, run the model on it and returns label of highest-scoring gesture
         """
-        print("seq", seq)
         frames = resize_seq(seq.frames, self.num_frames)
         sample = np.array([np.vstack(list(map(lambda x: x.frame, frames)))])
-        print("sample shape", sample.shape)
-        print("X shape", self.X.shape)
-        print("Y shape", self.Y.shape)
 
         probs = self.model.predict(sample)[0]
         prediction_id = np.argmax(probs)
-        print("prediction id", prediction_id)
         return self.g_ids_to_names[prediction_id]
 
     def train(self): 

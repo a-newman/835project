@@ -43,10 +43,8 @@ class DTClassifier(Classifier):
         Given a sample, run the model on it and returns label of highest-scoring gesture
         """
         # resize the seq 
-        print("seq", seq)
         frames = resize_seq(seq.frames, self.num_frames)
         sample = np.array([np.concatenate(list(map(lambda x: x.frame, frames)))])
-        print("sample shape", sample.shape)
 
         prediction_id = self.clf.predict(sample)[0]
         return self.g_ids_to_names[prediction_id]
@@ -63,7 +61,6 @@ class DTClassifier(Classifier):
         return self.g_id_count - 1 
 
     def _reload(self): 
-        print("reloading")
         self.cached_dset = dset_ops._load_dset(self.dset_name)
 
         # Convert the dataset into a form that is usable by this classifier 
@@ -82,5 +79,3 @@ class DTClassifier(Classifier):
                 labels.append(int(g_id))
 
         self.X, self.Y = np.vstack(samples), np.array(labels)
-        print("self.X shape", self.X.shape)
-        print("self.Y shape", self.Y.shape)
