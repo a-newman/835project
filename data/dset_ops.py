@@ -6,7 +6,7 @@ from data.Gesture import DataSet
 
 BASE_PATH = 'data/sets/'
 INDEX_PATH = BASE_PATH + 'index.json'
-ALLOW_DELETE = set(['Practice'])
+ALLOW_DELETE = set(['train', 'test'])
 
 def make_dset(name, safe=True): 
     # creates a new empty data set

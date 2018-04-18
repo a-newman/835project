@@ -1,28 +1,31 @@
-import pickle
+import numpy as np
+from keras.models import Model
+from keras.layers import Input, LSTM, Dense, concatenate
+
 from recognize.classifier import Classifier
 from recognize.normalize_frames import resize_seq
 from data import dset_ops
 
-import numpy as np 
-from sklearn.tree import DecisionTreeClassifier
-
-class DTClassifier(Classifier): 
+class NetClassifier(Classifier): 
     """
-    Classifies using a decision tree 
+    ABSTRACT CLASS serving as an interface for a classifier for use in the system 
     """
-    def __init__(self, dset_name, num_frames=30, test_ratio=.8): 
+    def __init__(self, dset_name, num_frames=30, batch_size=12, epochs=100, latent_dim=16): 
         super().__init__()
         self.last_savepath = None
         self.dset_name = dset_name
         self.num_frames = num_frames
-        self.test_ratio = test_ratio
-        self.cached_dset = None
 
         self.g_id_count = 0
         self.g_ids_to_names = {} 
         self.X = None
         self.Y = None
-        self.clf = None
+        self.model = None
+
+        # model params 
+        self.batch_size = batch_size
+        self.epochs = epochs
+        self.latent_dim = latent_dim
 
     def prep(self): 
         """
@@ -30,6 +33,7 @@ class DTClassifier(Classifier):
         Will be called on start-up. 
         """
         self._reload()
+        self._make_model()
 
     def update(self, label, sample): 
         """
@@ -42,19 +46,26 @@ class DTClassifier(Classifier):
         """
         Given a sample, run the model on it and returns label of highest-scoring gesture
         """
-        # resize the seq 
         frames = resize_seq(seq.frames, self.num_frames)
-        sample = np.array([np.concatenate(list(map(lambda x: x.frame, frames)))])
+        sample = np.array([np.vstack(list(map(lambda x: x.frame, frames)))])
 
-        prediction_id = self.clf.predict(sample)[0]
+        probs = self.model.predict(sample)[0]
+        prediction_id = np.argmax(probs)
         return self.g_ids_to_names[prediction_id]
 
     def train(self): 
         """
         Train the model
         """
-        self.clf = DecisionTreeClassifier(criterion='gini')
-        self.clf.fit(self.X, self.Y)
+        self.model.fit(
+          self.X,
+          self.Y,
+          epochs=self.epochs,
+          batch_size=self.batch_size,
+          verbose=1,
+          validation_split=0.0, # train on all available data 
+          shuffle=True
+        )
 
     def _get_new_gid(self): 
         self.g_id_count += 1
@@ -63,7 +74,6 @@ class DTClassifier(Classifier):
     def _reload(self): 
         self.cached_dset = dset_ops._load_dset(self.dset_name)
 
-        # Convert the dataset into a form that is usable by this classifier 
         samples, labels = [], []
         self.g_ids_to_names = {}
         self.g_id_count = 0 
@@ -74,8 +84,22 @@ class DTClassifier(Classifier):
 
             for seq in g.sequences: 
                 frames = resize_seq(seq.frames, self.num_frames)
-                sample = np.concatenate(list(map(lambda x: x.frame, frames))) # a sample is the concatenation of all the frames in a single seq
+                sample = np.vstack(list(map(lambda x: x.frame, frames)))
                 samples.append(sample)
-                labels.append(int(g_id))
+                labels.append(g_id)
 
-        self.X, self.Y = np.vstack(samples), np.array(labels)
+        self.X = np.array(samples) 
+        self.Y = np.vstack(labels) 
+
+    def _make_model(self): 
+        input_layer = Input(shape=(self.X.shape[1:]))
+        lstm = LSTM(self.latent_dim)(input_layer)
+        lstm_reversed = LSTM(self.latent_dim, go_backwards=True)(input_layer)
+        bidir = concatenate([lstm, lstm_reversed])
+
+        dense = Dense(self.latent_dim, activation='relu')(bidir)
+        pred = Dense(len(self.cached_dset.gestures), activation='softmax')(dense)
+
+        self.model = Model(inputs=input_layer, outputs=pred)
+        self.model.compile(loss="sparse_categorical_crossentropy", optimizer='adam', metrics=["acc"])
+

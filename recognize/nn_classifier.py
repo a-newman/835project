@@ -39,8 +39,8 @@ class NNClassifier(Classifier):
         for label, gset in self.cached_dset.gestures.items():
             for seq in gset.sequences: 
                 train_feat = self._get_feat_vec(seq)
-                print("test_feat", test_feat)
-                print("train_feat", train_feat)
+                #print("test_feat", test_feat)
+                #print("train_feat", train_feat)
                 dist = np.linalg.norm(test_feat - train_feat)
                 item = (-dist, label)
                 # add to heap 
@@ -48,7 +48,7 @@ class NNClassifier(Classifier):
                     heapq.heappush(h, item)
                 else: 
                     heapq.heappushpop(h, item)
-                print(h)
+                #print(h)
 
         # now we have our size-k min heap; time to tally the votes 
         votes = {}
@@ -59,7 +59,7 @@ class NNClassifier(Classifier):
         maxelt = max([(count, vote) for vote, count in votes.items()])[1]
         return maxelt
 
-    def train(): 
+    def train(self): 
         """
         Train the model
         """
