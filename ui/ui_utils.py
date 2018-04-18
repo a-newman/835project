@@ -1,4 +1,12 @@
 import pygame
+##### importing thngs pykinect
+import thread
+import itertools
+import ctypes
+import pykinect
+from pykinect import nui
+from pykinect.nui import JointId
+
 class ColorMap:
   BLACK = (0,0,0)
   BLUE =(0,0,255)
@@ -245,6 +253,62 @@ def scolling_backgrnd(screen,image='ui/images/space.jpg'):
   bckObj = MovingGroundEffects(screen,image=_image)
   bckObj1 = MovingGroundEffects(screen,image=_image,x=_image.get_width())
   return bckObj,bckObj1
+class KinectWinds:
+  def __init__(self,screen, x=0, y=0):
+    self.screen = screen;
+    self.x  = x;
+    self.y =  y;
+
+  def is_vid_frame(self):
+    if not video_display:
+      return
+
+    with screen_lock:
+      address = surface_to_array(self.screen)
+      frame.image.copy_bits(address)
+      del address
+      if skeletons is not None and draw_skeleton:
+        self.draw_skeletons(skeletons)
+      pygame.display.update()
+
+  def has_depth_frame(self,frame):
+    if video_display:
+      return
+
+    with screen_lock:
+      address = surface_to_array(self.screen)
+      frame.image.copy_bits(address)
+      del address
+      if skeletons is not None and self.draw_skeleton:
+          self.draw_skeletons(self.skeletons)
+      pygame.display.update()
+  def draw_skeletons(skeletons):
+    for index, data in enumerate(skeletons):
+      # draw the Head
+      HeadPos = skeleton_to_depth_image(data.SkeletonPositions[JointId.Head], dispInfo.current_w, dispInfo.current_h) 
+      draw_skeleton_data(data, index, SPINE, 10)
+      pygame.draw.circle(screen, SKELETON_COLORS[index], (int(HeadPos[0]), int(HeadPos[1])), 20, 0)
+  
+      # drawing the limbs
+      self.draw_skeleton_data(data, index, LEFT_ARM)
+      self.draw_skeleton_data(data, index, RIGHT_ARM)
+      self.draw_skeleton_data(data, index, LEFT_LEG)
+      self.draw_skeleton_data(data, index, RIGHT_LEG)
+  def draw_skeleton_data(pSkelton, index, positions, width = 4):
+    start = pSkelton.SkeletonPositions[positions[0]]
+       
+    for position in itertools.islice(positions, 1, None):
+      next = pSkelton.SkeletonPositions[position.value]
+      
+      curstart = skeleton_to_depth_image(start, dispInfo.current_w, dispInfo.current_h) 
+      curend = skeleton_to_depth_image(next, dispInfo.current_w, dispInfo.current_h)
+
+      pygame.draw.line(screen, SKELETON_COLORS[index], curstart, curend, width)
+      
+      start = next
+
+
+
 
 
 

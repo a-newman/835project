@@ -13,10 +13,11 @@
 # 
 # See the Apache Version 2.0 License for specific language governing
 # permissions and limitations under the License.
-
+from data_utils import *
 import thread
 import itertools
 import ctypes
+from ui_utils import TextRender
 
 import pykinect
 from pykinect import nui
@@ -25,6 +26,7 @@ from pykinect.nui import JointId
 import pygame
 from pygame.color import THECOLORS
 from pygame.locals import *
+skeletal_map = []
 
 KINECTEVENT = pygame.USEREVENT
 DEPTH_WINSIZE = 320,240
@@ -65,6 +67,50 @@ SPINE = (JointId.HipCenter,
          JointId.Head)
 
 skeleton_to_depth_image = nui.SkeletonEngine.skeleton_to_depth_image
+
+def pos_to_array(joint):
+  return [joint.x,joint.y,joint.z]
+
+def map_skeleton(skeleton):
+  skltl = Skeletal();
+  skltl.head = pos_to_array(skeleton.SkeletonPositions[JointId.Head]);
+    
+  skltl.should_center = pos_to_array(skeleton.SkeletonPositions[JointId.ShoulderCenter]);
+  skltl.shoulder_left = pos_to_array(skeleton.SkeletonPositions[JointId.ShoulderLeft]);
+  skltl.shoulder_right = pos_to_array(skeleton.SkeletonPositions[JointId.ShoulderRight]);
+
+  skltl.elbow_left = pos_to_array(skeleton.SkeletonPositions[JointId.ElbowLeft]);
+  skltl.elbow_right = pos_to_array(skeleton.SkeletonPositions[JointId.ElbowRight]);
+
+  skltl.wrist_left = pos_to_array(skeleton.SkeletonPositions[JointId.WristLeft]);
+  skltl.wrist_right = pos_to_array(skeleton.SkeletonPositions[JointId.WristRight]);
+
+  skltl.hand_left = pos_to_array(skeleton.SkeletonPositions[JointId.HandLeft]);
+  skltl.hand_right = pos_to_array(skeleton.SkeletonPositions[JointId.HandRight]);
+
+  skltl.hip_center = pos_to_array(skeleton.SkeletonPositions[JointId.HipCenter]);
+  skltl.hip_left = pos_to_array(skeleton.SkeletonPositions[JointId.HipLeft]);
+  skltl.hip_right = pos_to_array(skeleton.SkeletonPositions[JointId.HandRight]);
+
+  skltl.ankle_left = pos_to_array(skeleton.SkeletonPositions[JointId.AnkleLeft]);
+  skltl.ankle_right = pos_to_array(skeleton.SkeletonPositions[JointId.AnkleRight]);
+
+  skltl.foot_left = pos_to_array(skeleton.SkeletonPositions[JointId.FootLeft]);
+  skltl.foot_right = pos_to_array(skeleton.SkeletonPositions[JointId.FootRight]);
+
+  skltl.knee_left = pos_to_array(skeleton.SkeletonPositions[JointId.KneeLeft]);
+  skltl.knee_right = pos_to_array(skeleton.SkeletonPositions[JointId.KneeRight]);
+  return skltl;
+
+def collect(skeletons):
+  sf = [];
+  for index, skeleton in enumerate(skeletons):
+    sk = map_skeleton(skeleton)
+    sf.append(sk);
+  skeletal_map.append(ScanFrame(sf));
+
+
+
 
 def draw_skeleton_data(pSkelton, index, positions, width = 4):
     start = pSkelton.SkeletonPositions[positions[0]]
@@ -129,7 +175,6 @@ def depth_frame_ready(frame):
             draw_skeletons(skeletons)
         pygame.display.update()    
 
-
 def video_frame_ready(frame):
     if not video_display:
         return
@@ -180,15 +225,41 @@ if __name__ == '__main__':
 
     # main game loop
     done = False
-
+    rcount = 3;
+    pcount = 3;
+    record = False;
+    prep = True;
     while not done:
         e = pygame.event.wait()
         dispInfo = pygame.display.Info()
         if e.type == pygame.QUIT:
             done = True
             break
+        elif e.type = RECORDEVENT:
+          if record:
+            rcount-=1;
+            if rcount==0:
+              rcount=3;
+              prep = True
+
+          elif prep:
+            pcount-=1
+            
+            if pcount==0:
+              record = True;
+              prep = False;
+              pcount = 3;
+
         elif e.type == KINECTEVENT:
             skeletons = e.skeletons
+            if record:
+              collect(skeletons);
+            else:
+              skeletal_map = [];
+            if ready:
+              backend_funct(self,skeletal_map);
+              record = False;
+              ready = False;
             if draw_skeleton:
                 draw_skeletons(skeletons)
                 pygame.display.update()
@@ -212,3 +283,6 @@ if __name__ == '__main__':
                 kinect.camera.elevation_angle = kinect.camera.elevation_angle - 2
             elif e.key == K_x:
                 kinect.camera.elevation_angle = 2
+        if record:
+          text=TextRender(screen,'recording...');
+          text.show();
