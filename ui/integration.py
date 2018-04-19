@@ -138,10 +138,12 @@ class PykinectInt:
     self.mode = self.TRAIN;
     self.backend = backend;
     self.word = "None"
+    self.test_word = "None"
     self.backend_wait = True;
+    self.wordlist = CircularArray(backend['words'])
     #####Disp object
     self.counter = COUNTER;
-    self.action = Text(self.screen,w=100,h==50,pos=(485,0),text=self.word,color=THECOLORS['black']);
+    self.action = Text(self.screen,w=100,h==50,pos=(485,0),text=self.test_word,color=THECOLORS['black']);
     self.count = Text(self.screen,w=100,h==100,pos=(485,55),text=self.counter,color=THECOLORS['black']);
 
   def surface_to_array(self,surface):
@@ -285,16 +287,20 @@ class PykinectInt:
         thread.start()
         self.state = self.WAIT;
         self.backend_wait=True;
+        self.counter=COUNTER;
+
       else:
-        counter-=1;
+        self.counter-=1;
     elif e.type == KINECTEVENT:
       skeletons = e.skeletons
       self.collect(skeletons);
     
   def wait(self):
+    time.sleep(1);
     if not self.backend_wait:
       if self.mode = self.TRAING:
         self.state = self.RECORDING;
+        self.test_word=wordlist.roll();
       if self.mode = self.USER:
         self.state = self.FEEDBACK
 
