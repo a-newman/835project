@@ -400,9 +400,6 @@ class PykinectMembers:
       address = self.surface_to_array(self.screen)
       frame.image.copy_bits(address)
       del address
-      if self.skeletons is not None and self.draw_skeleton:
-          self.draw_skeletons(skeletons)
-      pygame.display.update()    
   def video_frame_ready(self,frame):
     if not self.video_display:
       return
