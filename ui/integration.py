@@ -190,6 +190,7 @@ class PykinectInt:
 
     skltl.knee_left =self.pos_to_array(skeleton.SkeletonPositions[JointId.KneeLeft]);
     skltl.knee_right =self.pos_to_array(skeleton.SkeletonPositions[JointId.KneeRight]);
+    skltl.spine =self.pos_to_array(skeleton.SkeletonPositions[JointId.spine]);
     return skltl;
 
   def collect(self,skltns):
@@ -257,7 +258,9 @@ class PykinectInt:
       self.disp()
       pygame.display.update()
   def dispWord(self):
-    self.action.show()
+    surf = pygame.Surface(200,200);
+    txt_render = TextRender(surf,self.test_word, font_color=THECOLORS['RED'], hover_color=THECOLORS['green']);
+    self.screen(surf,(488,0));
     
   def dispCount(self):
     self.count.show();
