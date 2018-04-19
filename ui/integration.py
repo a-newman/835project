@@ -13,6 +13,7 @@
 # 
 # See the Apache Version 2.0 License for specific language governing
 # permissions and limitations under the License.
+
 from data_utils import *
 import thread
 import itertools
@@ -26,6 +27,25 @@ from pykinect.nui import JointId
 import pygame
 from pygame.color import THECOLORS
 from pygame.locals import *
+class Text:
+  def __init__(self, parent, w=100, h=50, pos=(0,0), text = "None",color = THECOLORS['black']):
+    self.parent = parent;
+    self.pos = pos;
+    self.w = w;
+    self.h = w;
+    self.font_color = color;
+    self.text = text
+    self.font_size = self.w/len(text) - 10
+    font = pygame.font.Font(None, self.font_size);
+    txt_ob = font.render(self.text, True, self.font_color)
+    self.surf = pygame.Surface((w,h));
+  def show(sell):
+    parent.blit(self.surf,self.pos);
+
+    
+
+
+
 
 
 KINECTEVENT = pygame.USEREVENT
@@ -92,7 +112,18 @@ _PyObject_AsWriteBuffer.argtypes = [ctypes.py_object,
 class PykinectInt:
   DEPTH_WINSIZE = 320,240
   VIDEO_WINSIZE = 640,480
-  def __init__(self,screen):
+  ###states
+  IDLE = 0;
+  RECORDING = 1; 
+  FEEDBACK = 2;
+  WAIT = 3;
+  ###modes
+  USER = 0;
+  TRAIN = 1;
+  ####
+  COUNTER = 4
+
+  def __init__(self,screen,backend = {}):
     self.screen = screen;
     self.screen_lock = thread.allocate()
     self.draw_skeleton = True
@@ -103,6 +134,15 @@ class PykinectInt:
     self.DEPTH_WINSIZE = 320,240
     self.VIDEO_WINSIZE = 640,480
     self.skeletal_map = []
+    self.state = self.IDLE;
+    self.mode = self.TRAIN;
+    self.backend = backend;
+    self.word = "None"
+    self.backend_wait = True;
+    #####Disp object
+    self.counter = COUNTER;
+    self.action = Text(self.screen,w=100,h==50,pos=(485,0),text=self.word,color=THECOLORS['black']);
+    self.count = Text(self.screen,w=100,h==100,pos=(485,55),text=self.counter,color=THECOLORS['black']);
 
   def surface_to_array(self,surface):
     buffer_interface = surface.get_buffer()
@@ -192,6 +232,7 @@ class PykinectInt:
       if self.skeletons is not None and self.draw_skeleton:
         self.draw_skeletons(skeletons)
       self.screen.blit(depth_surface,(0,0))
+      self.disp()
       pygame.display.update()
       #print "deleted!"
   def video_frame_ready(self,frame):
@@ -208,7 +249,56 @@ class PykinectInt:
       self.screen.blit(vid_surface);
       if self.skeletons is not None and self.draw_skeleton:
           self.draw_skeletons(skeletons)
+      self.disp()
       pygame.display.update()
+  def dispWord(self):
+    self.action.show()
+    
+  def dispCount(self, word = self.count):
+    self.count.show();
+    pass 
+  def dispProcessing(self):
+    pass 
+  def dispSelectMenu(self):
+    pass 
+  def disp(self):
+    if self.state = RECORDING:
+      self.dispWord();
+      self.dispCount();
+    if self.state == WAIT:
+      self.dispProc();
+    if self.state = IDLE:
+      self.dispSelectMenu()
+
+  def idle(self):
+    self.state = RECORDING;
+  def collecting(self):
+    recording = True;
+    e = pygame.event.wait();
+    if e.type==RECORDEVENT:
+      if self.counter<=0:
+        self.backend_data = deepcopy(self.skeletal_map)
+        self.skeletal_map = []
+
+        thread = myThread(self.backend['get_classification'], self);
+
+        thread.start()
+        self.state = self.WAIT;
+        self.backend_wait=True;
+      else:
+        counter-=1;
+    elif e.type == KINECTEVENT:
+      skeletons = e.skeletons
+      self.collect(skeletons);
+    
+  def wait(self):
+    if not self.backend_wait:
+      if self.mode = self.TRAING:
+        self.state = self.RECORDING;
+      if self.mode = self.USER:
+        self.state = self.FEEDBACK
+
+
   def loop(self):
     pygame.display.set_caption('Python Kinect Demo')
     self.screen.fill(THECOLORS["black"])
@@ -297,10 +387,30 @@ class PykinectInt:
           kinect.camera.elevation_angle = kinect.camera.elevation_angle - 2
         elif e.key == K_x:
           kinect.camera.elevation_angle = 2
+      if self.state==IDLE:
+        self.idle()
+      if self.state==RECORDING:
+        self.collecting();
+      if self.state==WAIT:
+        self.wait();
 
 
-
-
+class myThread (threading.Thread):
+  def __init__(self, funct, obj):
+    threading.Thread.__init__(self)
+    self.funct = funct
+    self.obj = obj;
+  def run(self):
+    self.funct(self.obj)
+def backend_funct(obj):
+  print len(obj.backend_data)
+  obj.backend_wait = False;
+  obj.word = "YAY!"
+backend = {
+    'words': ['kick', 'wave','yawn','swim'],
+    'get_classification': backend_funct,
+    'record_delay': 2
+  }
 
 
 
@@ -308,5 +418,5 @@ if __name__ == '__main__':
   WINSIZE = 800,640;
   screen_lock = thread.allocate()
   screen = pygame.display.set_mode(WINSIZE,0,16)
-  mems = PykinectInt(screen);
+  mems = PykinectInt(screen, backend = backend);
   mems.loop();  
