@@ -198,7 +198,7 @@ class PykinectInt:
     for index, sklton in enumerate(skltns):
       sk = self.map_skeleton(sklton)
       sf.append(sk);
-    skeletal_map.append(ScanFrame(sf));
+    self.skeletal_map.append(ScanFrame(sf));
 
   def draw_skeleton_data(self,pSkelton, index, positions, width = 4):
     start = pSkelton.SkeletonPositions[positions[0]]
