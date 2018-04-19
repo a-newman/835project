@@ -146,8 +146,8 @@ class PykinectInt:
     self.wordlist = CircularArray(backend['words'])
     #####Disp object
     self.counter = self.COUNTER;
-    self.action = Text(self.screen,w=100, h=50,pos=(485,0),text=self.test_word,color=THECOLORS['black']);
-    self.count = Text(self.screen,w=100, h=100,pos=(485,55),text=str(self.counter),color=THECOLORS['black']);
+    self.action = Text(self.screen,w=100, h=50,pos=(485,0),text=self.test_word,color=THECOLORS['white']);
+    self.count = Text(self.screen,w=100, h=100,pos=(485,55),text=str(self.counter),color=THECOLORS['white']);
 
   def surface_to_array(self,surface):
     buffer_interface = surface.get_buffer()
@@ -295,6 +295,7 @@ class PykinectInt:
       else:
         self.counter-=1;
     elif e.type == KINECTEVENT:
+      print "collecting"
       skeletons = e.skeletons
       self.collect(skeletons);
     
@@ -366,7 +367,7 @@ class PykinectInt:
 
       elif e.type == KINECTEVENT:
           skeletons = e.skeletons
-          if record:
+          if self.state==self.RECORDING:
             mems.collect(skeletons);
           else:
             skeletal_map = [];
