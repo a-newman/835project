@@ -17,8 +17,11 @@
 from data_utils import *
 import thread
 import itertools
+from copy import deepcopy
+import time
 import ctypes
-from ui_utils import TextRender
+from ui_utils import TextRender,CircularArray
+import threading
 
 import pykinect
 from pykinect import nui
@@ -39,8 +42,8 @@ class Text:
     font = pygame.font.Font(None, self.font_size);
     txt_ob = font.render(self.text, True, self.font_color)
     self.surf = pygame.Surface((w,h));
-  def show(sell):
-    parent.blit(self.surf,self.pos);
+  def show(self):
+    self.parent.blit(self.surf,self.pos);
 
     
 
@@ -119,7 +122,7 @@ class PykinectInt:
   WAIT = 3;
   ###modes
   USER = 0;
-  TRAIN = 1;
+  TRAINING = 1;
   ####
   COUNTER = 4
 
@@ -135,16 +138,16 @@ class PykinectInt:
     self.VIDEO_WINSIZE = 640,480
     self.skeletal_map = []
     self.state = self.IDLE;
-    self.mode = self.TRAIN;
+    self.mode = self.TRAINING;
     self.backend = backend;
     self.word = "None"
     self.test_word = "None"
     self.backend_wait = True;
     self.wordlist = CircularArray(backend['words'])
     #####Disp object
-    self.counter = COUNTER;
-    self.action = Text(self.screen,w=100,h==50,pos=(485,0),text=self.test_word,color=THECOLORS['black']);
-    self.count = Text(self.screen,w=100,h==100,pos=(485,55),text=self.counter,color=THECOLORS['black']);
+    self.counter = self.COUNTER;
+    self.action = Text(self.screen,w=100, h=50,pos=(485,0),text=self.test_word,color=THECOLORS['black']);
+    self.count = Text(self.screen,w=100, h=100,pos=(485,55),text=str(self.counter),color=THECOLORS['black']);
 
   def surface_to_array(self,surface):
     buffer_interface = surface.get_buffer()
@@ -223,7 +226,7 @@ class PykinectInt:
   def depth_frame_ready(self,frame):
     if self.video_display:
       return
-    print "Adding depth........"
+    #print "Adding depth........"
     depth_surface = pygame.Surface(self.DEPTH_WINSIZE);
 
     with self.screen_lock:
@@ -238,10 +241,10 @@ class PykinectInt:
       pygame.display.update()
       #print "deleted!"
   def video_frame_ready(self,frame):
-    print "video_display: ",self.video_display
+    #print "video_display: ",self.video_display
     if not self.video_display:
       return
-    print "Adding......."
+    #print "Adding......."
     vid_surface = pygame.Surface(self.VIDEO_WINSIZE);
 
     with self.screen_lock:
@@ -256,7 +259,7 @@ class PykinectInt:
   def dispWord(self):
     self.action.show()
     
-  def dispCount(self, word = self.count):
+  def dispCount(self):
     self.count.show();
     pass 
   def dispProcessing(self):
@@ -264,16 +267,16 @@ class PykinectInt:
   def dispSelectMenu(self):
     pass 
   def disp(self):
-    if self.state = RECORDING:
+    if self.state == self.RECORDING:
       self.dispWord();
       self.dispCount();
-    if self.state == WAIT:
-      self.dispProc();
-    if self.state = IDLE:
+    if self.state == self.WAIT:
+      self.dispProcessing();
+    if self.state == self.IDLE:
       self.dispSelectMenu()
 
   def idle(self):
-    self.state = RECORDING;
+    self.state = self.RECORDING;
   def collecting(self):
     recording = True;
     e = pygame.event.wait();
@@ -287,7 +290,7 @@ class PykinectInt:
         thread.start()
         self.state = self.WAIT;
         self.backend_wait=True;
-        self.counter=COUNTER;
+        self.counter=self.COUNTER;
 
       else:
         self.counter-=1;
@@ -298,10 +301,10 @@ class PykinectInt:
   def wait(self):
     time.sleep(1);
     if not self.backend_wait:
-      if self.mode = self.TRAING:
+      if self.mode == self.TRAINING:
         self.state = self.RECORDING;
-        self.test_word=wordlist.roll();
-      if self.mode = self.USER:
+        self.test_word=self.wordlist.roll();
+      if self.mode == self.USER:
         self.state = self.FEEDBACK
 
 
@@ -393,11 +396,11 @@ class PykinectInt:
           kinect.camera.elevation_angle = kinect.camera.elevation_angle - 2
         elif e.key == K_x:
           kinect.camera.elevation_angle = 2
-      if self.state==IDLE:
+      if self.state==self.IDLE:
         self.idle()
-      if self.state==RECORDING:
+      if self.state==self.RECORDING:
         self.collecting();
-      if self.state==WAIT:
+      if self.state==self.WAIT:
         self.wait();
 
 
