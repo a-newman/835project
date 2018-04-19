@@ -29,7 +29,7 @@ from pygame.locals import *
 skeletal_map = []
 
 KINECTEVENT = pygame.USEREVENT
-RECORDEVENT = pygame+1
+RECORDEVENT = pygame.USEREVENT+1
 DEPTH_WINSIZE = 320,240
 VIDEO_WINSIZE = 640,480
 pygame.init()
@@ -174,6 +174,9 @@ def depth_frame_ready(frame):
         del address
         if skeletons is not None and draw_skeleton:
             draw_skeletons(skeletons)
+        if record:
+          text=TextRender(screen,'recording...');
+          text.show();
         pygame.display.update()    
 
 def video_frame_ready(frame):
@@ -186,6 +189,9 @@ def video_frame_ready(frame):
         del address
         if skeletons is not None and draw_skeleton:
             draw_skeletons(skeletons)
+        if record:
+          text=TextRender(screen,'recording...');
+          text.show();
         pygame.display.update()
 
 if __name__ == '__main__':
@@ -228,6 +234,7 @@ if __name__ == '__main__':
     done = False
     rcount = 3;
     pcount = 3;
+    ready = False
     record = False;
     prep = True;
     pygame.time.set_timer(RECORDEVENT, 1000);
@@ -237,7 +244,7 @@ if __name__ == '__main__':
         if e.type == pygame.QUIT:
             done = True
             break
-        elif e.type = RECORDEVENT:
+        elif e.type == RECORDEVENT:
           if record:
             rcount-=1;
             if rcount==0:
@@ -285,6 +292,4 @@ if __name__ == '__main__':
                 kinect.camera.elevation_angle = kinect.camera.elevation_angle - 2
             elif e.key == K_x:
                 kinect.camera.elevation_angle = 2
-        if record:
-          text=TextRender(screen,'recording...');
-          text.show();
+        

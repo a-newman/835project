@@ -6,7 +6,7 @@ import ctypes
 import pykinect
 from pykinect import nui
 from pykinect.nui import JointId
-
+from pygame.color import THECOLORS
 class ColorMap:
   BLACK = (0,0,0)
   BLUE =(0,0,255)
@@ -36,7 +36,7 @@ class Button:
     self.color = self.staticColor;
     self.mergin = 10;
   def set_font(self):
-    self.font=pygame.font.Font(None, self.font_size)
+    self.font=pygame.font.Font(None, int(self.font_size))
 
   def is_hovered(self):
     pos = pygame.mouse.get_pos()
@@ -176,19 +176,19 @@ class TextRender:
     self.screen = screen;
     self.x_0 = self.screen.get_width()/2;
     self.y_0 = self.screen.get_height()/2;
-    self.font_size = 100;
+    self.font_size = 50;
     self.mergin =  12
     self.ncolor = font_color;
     self.hover_color = hover_color;
     self.font_color = self.ncolor;
-    self.font = pygame.font.Font(None, self.font_size);
+    self.font = pygame.font.Font(None, int(self.font_size));
     self.surf = self.font.render(self.word, True, self.font_color)
   def render(self):
-    self.font = pygame.font.Font(None, self.font_size);
+    self.font = pygame.font.Font(None, int(self.font_size));
     self.surf = self.font.render(self.word, True, ColorMap.RED)
     if self.mergin+self.surf.get_width()>self.screen.get_width():
       remove = (self.mergin+self.surf.get_width())/float(self.screen.get_width());
-      self.font_size+= (remove-1)*self.screen.get_width;
+      self.font_size+= (remove-1)*self.screen.get_width();
       self.render()
     x_0 = self.x_0-self.surf.get_width()/2;
     y_0 =self.y_0-self.surf.get_height()/2;
@@ -254,7 +254,30 @@ def scolling_backgrnd(screen,image='ui/images/space.jpg'):
   bckObj1 = MovingGroundEffects(screen,image=_image,x=_image.get_width())
   return bckObj,bckObj1
 
+pygame.init();
+# recipe to get address of surface: http://archives.seul.org/pygame/users/Apr-2008/msg00218.html
+if hasattr(ctypes.pythonapi, 'Py_InitModule4'):
+   Py_ssize_t = ctypes.c_int
+elif hasattr(ctypes.pythonapi, 'Py_InitModule4_64'):
+   Py_ssize_t = ctypes.c_int64
+else:
+   raise TypeError("Cannot determine type of Py_ssize_t")
 
+_PyObject_AsWriteBuffer = ctypes.pythonapi.PyObject_AsWriteBuffer
+_PyObject_AsWriteBuffer.restype = ctypes.c_int
+_PyObject_AsWriteBuffer.argtypes = [ctypes.py_object,
+                                  ctypes.POINTER(ctypes.c_void_p),
+                                  ctypes.POINTER(Py_ssize_t)]
+
+def surface_to_array(surface):
+   buffer_interface = surface.get_buffer()
+   address = ctypes.c_void_p()
+   size = Py_ssize_t()
+   _PyObject_AsWriteBuffer(buffer_interface,
+                          ctypes.byref(address), ctypes.byref(size))
+   bytes = (ctypes.c_byte * size.value).from_address(address.value)
+   bytes.object = buffer_interface
+   return bytes
 class PykinectMembers:
   SKELETON_COLORS = [THECOLORS["red"], 
                    THECOLORS["blue"], 
@@ -294,29 +317,17 @@ class PykinectMembers:
   VIDEO_WINSIZE = 640,480
   def __init__(self,screen):
     self.screen_lock = thread.allocate();
-    self.screen = []
+    self.screen = screen
     self.skeleton_to_depth_image = nui.SkeletonEngine.skeleton_to_depth_image
     self.kinect = nui.Runtime();
     self.kinect.skeleton_engine.enabled = True;
     self.full_screen = False;
     self.draw_skeleton = True;
-    self.video_display = False;
+    self.video_display = True;
     self.skeletal_map = [];
     self.skeletons = None;
     self.draw_skeleton = True
-    # recipe to get address of surface: http://archives.seul.org/pygame/users/Apr-2008/msg00218.html
-    if hasattr(ctypes.pythonapi, 'Py_InitModule4'):
-       Py_ssize_t = ctypes.c_int
-    elif hasattr(ctypes.pythonapi, 'Py_InitModule4_64'):
-       Py_ssize_t = ctypes.c_int64
-    else:
-       raise TypeError("Cannot determine type of Py_ssize_t")
 
-    self._PyObject_AsWriteBuffer = ctypes.pythonapi.PyObject_AsWriteBuffer
-    self._PyObject_AsWriteBuffer.restype = ctypes.c_int
-    self._PyObject_AsWriteBuffer.argtypes = [ctypes.py_object,
-                                      ctypes.POINTER(ctypes.c_void_p),
-                                      ctypes.POINTER(Py_ssize_t)]
 
   def pos_to_array(self,joint):
     return [joint.x,joint.y,joint.z]
@@ -375,7 +386,7 @@ class PykinectMembers:
     buffer_interface = surface.get_buffer()
     address = ctypes.c_void_p()
     size = Py_ssize_t()
-    self._PyObject_AsWriteBuffer(buffer_interface,
+    _PyObject_AsWriteBuffer(buffer_interface,
                         ctypes.byref(address), ctypes.byref(size))
     bytes = (ctypes.c_byte * size.value).from_address(address.value)
     bytes.object = buffer_interface
@@ -393,21 +404,28 @@ class PykinectMembers:
       self.draw_skeleton_data(data, index, self.LEFT_LEG)
       self.draw_skeleton_data(data, index, self.RIGHT_LEG)
   def depth_frame_ready(self,frame):
-    if video_display:
+    if self.video_display:
       return
+    print "Adding depth........"
 
     with self.screen_lock:
-      address = self.surface_to_array(self.screen)
+      address = surface_to_array(self.screen)
       frame.image.copy_bits(address)
+      print "deleting..."
       del address
+      print "deleted!"
   def video_frame_ready(self,frame):
     if not self.video_display:
       return
+    print "Adding......."
 
     with self.screen_lock:
-      address = self.surface_to_array(self.screen)
+      address = surface_to_array(self.screen)
+      print "copying the address"
       frame.image.copy_bits(address)
+      print "deleting..."
       del address
+      print "deleted!"
       if skeletons is not None and draw_skeleton:
           self.draw_skeletons(skeletons)
       pygame.display.update()
@@ -424,13 +442,16 @@ class PykinectMembers:
     self.kinect.video_stream.open(nui.ImageStreamType.Video, 2, nui.ImageResolution.Resolution640x480, nui.ImageType.Color);
     self.kinect.depth_stream.open(nui.ImageStreamType.Depth, 2, nui.ImageResolution.Resolution320x240, nui.ImageType.Depth);
 def testPykinect():
-  DEPTH_WINSIZE = (800,800)
-  screen = pygame.display.set_mode(DEPTH_WINSIZE,0,16)    
+  DEPTH_WINSIZE = (500,500)
+  VIDEO_WINSIZE = 640,480
+  #pygame.init();
+  screen = pygame.display.set_mode(VIDEO_WINSIZE,0,16)    
   pygame.display.set_caption('Python Kinect Demo')
   skeletons = None;
   screen.fill(THECOLORS["black"]);
   mems = PykinectMembers(screen)
   mems.run();
+#testPykinect()
 
 
 
