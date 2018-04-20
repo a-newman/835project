@@ -141,7 +141,7 @@ class PykinectInt:
     self.mode = self.TRAINING;
     self.backend = backend;
     self.wordlist = CircularArray(backend['words'])
-    self.word = self.wordlist[0]
+    self.word = self.wordlist.roll()
     self.test_word = "None"
     self.backend_wait = True;
     
