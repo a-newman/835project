@@ -5,7 +5,6 @@ class Classifier(object):
 	ABSTRACT CLASS serving as an interface for a classifier for use in the system 
 	"""
 	def __init__(self): 
-		super().__init__()
 		self.last_savepath = None
 
 	def prep(self): 

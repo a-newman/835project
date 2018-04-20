@@ -11,7 +11,7 @@ class DTClassifier(Classifier):
     Classifies using a decision tree 
     """
     def __init__(self, dset_name, num_frames=30, test_ratio=.8): 
-        super().__init__()
+        super(DTClassifier, self).__init__()
         self.last_savepath = None
         self.dset_name = dset_name
         self.num_frames = num_frames

@@ -6,7 +6,7 @@ import numpy as np
 
 class NNClassifier(Classifier): 
     def __init__(self, dset_name, k=1, num_frames=30): 
-        super().__init__()
+        super(NNClassifier, self).__init__()
         self.dset_name = dset_name
         self.k = k
         self.cached_dset = None
