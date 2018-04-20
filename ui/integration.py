@@ -160,7 +160,7 @@ class PykinectInt:
     bytes.object = buffer_interface
     return bytes
   def pos_to_array(self,joint):
-    print "joint", joint
+    #print "joint", joint
     return [joint.x,joint.y,joint.z]
 
   def map_skeleton(self,skeleton):
@@ -250,8 +250,8 @@ class PykinectInt:
       del address
       if self.skeletons is not None and self.draw_skeleton:
         self.draw_skeletons(self.skeletons)
-      if self.state==self.RECORDING:
-        self.collect(self.skeletons);
+        if self.state==self.RECORDING:
+          self.collect(self.skeletons);
 
       self.screen.blit(depth_surface,(0,0))
       self.disp()
@@ -273,8 +273,8 @@ class PykinectInt:
       self.screen.blit(vid_surface);
       if self.skeletons is not None and self.draw_skeleton:
           self.draw_skeletons(self.skeletons)
-      if self.state==self.RECORDING:
-        self.collect(self.skeletons);
+        if self.state==self.RECORDING:
+          self.collect(self.skeletons);
       self.disp()
       pygame.display.update()
 
