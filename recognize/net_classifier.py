@@ -11,7 +11,7 @@ class NetClassifier(Classifier):
     ABSTRACT CLASS serving as an interface for a classifier for use in the system 
     """
     def __init__(self, dset_name, num_frames=30, batch_size=12, epochs=100, latent_dim=16): 
-        super().__init__()
+        super(NetClassifier, self).__init__()
         self.last_savepath = None
         self.dset_name = dset_name
         self.num_frames = num_frames
