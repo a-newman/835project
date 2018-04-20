@@ -44,6 +44,16 @@ def delete_dset(name):
     os.remove(BASE_PATH + name);
 
     _save_index(index)
+
+def refresh_dset(name): 
+    if name not in ALLOW_DELETE: 
+        raise RuntimeError("Refresh is not enabled for this set")
+    dset = _load_dset(name)
+    new_gestures = {} 
+    for gname, g in dset.gestures.items(): 
+        new_gestures[gname] = GestureSet(gname) 
+    dset.gestures = new_gestures
+    _save_dset(dset)
     
 
 def exists(name): 
