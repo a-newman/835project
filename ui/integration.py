@@ -258,9 +258,9 @@ class PykinectInt:
       self.disp()
       pygame.display.update()
   def dispWord(self):
-    surf = pygame.Surface(200,200);
-    txt_render = TextRender(surf,self.test_word, font_color=THECOLORS['RED'], hover_color=THECOLORS['green']);
-    self.screen(surf,(488,0));
+    surf = pygame.Surface((200,200));
+    txt_render = TextRender(surf,self.test_word, font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
+    self.screen.blit(surf,(588,0));
     
   def dispCount(self):
     self.count.show();
