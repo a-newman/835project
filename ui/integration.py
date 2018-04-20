@@ -140,10 +140,11 @@ class PykinectInt:
     self.state = self.IDLE;
     self.mode = self.TRAINING;
     self.backend = backend;
-    self.word = "None"
+    self.wordlist = CircularArray(backend['words'])
+    self.word = self.wordlist[0]
     self.test_word = "None"
     self.backend_wait = True;
-    self.wordlist = CircularArray(backend['words'])
+    
     #####Disp object
     self.counter = self.COUNTER;
     self.action = Text(self.screen,w=100, h=50,pos=(485,0),text=self.test_word,color=THECOLORS['white']);
