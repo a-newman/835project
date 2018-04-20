@@ -160,6 +160,7 @@ class PykinectInt:
     bytes.object = buffer_interface
     return bytes
   def pos_to_array(self,joint):
+    print "joint", joint
     return [joint.x,joint.y,joint.z]
 
   def map_skeleton(self,skeleton):
