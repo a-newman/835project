@@ -160,7 +160,7 @@ class PykinectInt:
     bytes.object = buffer_interface
     return bytes
   def pos_to_array(self,joint):
-    ##print "joint", joint
+    print "joint", joint
     return [joint.x,joint.y,joint.z]
 
   def map_skeleton(self,skeleton):
@@ -193,13 +193,15 @@ class PykinectInt:
     skltl.knee_left =self.pos_to_array(skeleton.SkeletonPositions[JointId.KneeLeft]);
     skltl.knee_right =self.pos_to_array(skeleton.SkeletonPositions[JointId.KneeRight]);
     skltl.spine =self.pos_to_array(skeleton.SkeletonPositions[JointId.spine]);
+    if not skltl.is_empty():
+      print "has data";
     return skltl;
-
   def collect(self,skltns):
     sf = [];
     for index, sklton in enumerate(skltns):
       sk = self.map_skeleton(sklton)
-      sf.append(sk);
+      if not sk.is_empty():
+        sf.append(sk);
     self.skeletal_map.append(ScanFrame(sf));
 
   def draw_skeleton_data(self,pSkelton, index, positions, width = 4):
@@ -247,11 +249,16 @@ class PykinectInt:
       #print "deleting..."
       del address
       if self.skeletons is not None and self.draw_skeleton:
-        self.draw_skeletons(skeletons)
+        self.draw_skeletons(self.skeletons)
+      if self.state==self.RECORDING:
+        self.collect(self.skeletons);
+
       self.screen.blit(depth_surface,(0,0))
       self.disp()
       pygame.display.update()
       #print "deleted!"
+
+
   def video_frame_ready(self,frame):
     #print "video_display: ",self.video_display
     if not self.video_display:
@@ -265,18 +272,27 @@ class PykinectInt:
       del address
       self.screen.blit(vid_surface);
       if self.skeletons is not None and self.draw_skeleton:
-          self.draw_skeletons(skeletons)
+          self.draw_skeletons(self.skeletons)
+      if self.state==self.RECORDING:
+        self.collect(self.skeletons);
       self.disp()
       pygame.display.update()
+
+
   def dispWord(self):
     surf = pygame.Surface((200,200));
     txt_render = TextRender(surf,self.test_word, font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
     self.screen.blit(surf,(588,0));
-    
+  
+
+
   def dispCount(self):
     surf = pygame.Surface((200,200));
     txt_render = TextRender(surf,str(self.counter), font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
     self.screen.blit(surf,(588,300));
+
+
+
   def dispProcessing(self):
     pass 
   def dispSelectMenu(self):
@@ -292,6 +308,11 @@ class PykinectInt:
 
   def idle(self):
     self.state = self.RECORDING;
+
+
+
+
+
   def collecting(self):
     recording = True;
     e = pygame.event.wait();
@@ -350,13 +371,6 @@ class PykinectInt:
     print('     u - Increase elevation angle')
     print('     j - Decrease elevation angle')
 
-    # main game loop
-    done = False
-    rcount = 3;
-    pcount = 3;
-    ready = False
-    record = False;
-    prep = True;
     pygame.time.set_timer(RECORDEVENT, 1000);
     while not done:
       e = pygame.event.wait()
@@ -368,6 +382,7 @@ class PykinectInt:
         if self.state == self.RECORDING:
           if self.counter<=0:
             self.backend_data = deepcopy(self.skeletal_map)
+            print "number of data points: ", self.backend_data
             self.skeletal_map = []
 
             thread = myThread(self.backend['save_sequence'], self);
@@ -382,6 +397,7 @@ class PykinectInt:
 
       elif e.type == KINECTEVENT:
           skeletons = e.skeletons
+          ###COLLECTING DATA
           if self.state==self.RECORDING:
             self.collect(skeletons);
           if self.draw_skeleton:
@@ -406,7 +422,7 @@ class PykinectInt:
           kinect.camera.elevation_angle = kinect.camera.elevation_angle - 2
         elif e.key == K_x:
           kinect.camera.elevation_angle = 2
-      if self.state==self.RECORDING:
+      if self.state==self.IDLE:
         self.collecting();
       if self.state==self.WAIT:
         self.wait();

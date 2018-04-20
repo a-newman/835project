@@ -73,4 +73,17 @@ def text_test():
 
     # --- Limit to 60 frames per second
     clock.tick(60)
-text_test()
+class Menu:
+  def __init__(self,screen, buttons = []):
+    self.buttons = buttons;
+
+
+
+
+
+
+
+
+
+
+
