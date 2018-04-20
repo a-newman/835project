@@ -39,7 +39,7 @@ class Skeletal:
     self.ankle_left,self.ankle_right,self.foot_left,
     self.foot_right,self.knee_left,self.knee_right
     ]
-    return np.sum(attr)
+    return np.sum(attr)>0.0
 
 
 class ScanFrame:
