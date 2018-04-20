@@ -21,7 +21,15 @@ def process_gesture_test(ui_object):
 	tmp_testing_gesture = seq
 	pred_gesture = CLASSIFIER.classify(seq)
 	ui_object.word = pred_gesture 
+	ui_object.backend_wait = False
 	return 
+
+def process_gesture_train(ui_object): 
+	data = ui_object.backend_data
+	gesture_name = ui_object.test_word
+	seq = _sf_to_sequence(data)
+	dset_ops.add_gesture_example(DATASET_NAME, gesture_name, seq)
+	ui_object.backend_wait = False
 
 def process_gesture_practice(gesture_name): 
 	seq = pythonreader.get_data()
@@ -86,6 +94,7 @@ if __name__ == "__main__":
 	backend = {
 		'words': wordlist,
 		'get_classification': process_gesture_test,
+		'save_sequence': process_gesture_train,
 		'record_delay': 2
 	}
 
