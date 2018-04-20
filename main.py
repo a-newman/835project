@@ -3,8 +3,9 @@ import pickle
 import pythonreader
 import numpy as np
 from time import sleep, time
-from data import Gesture, dset_ops
-from ui.gameUI import WordGameUI
+from data import dset_ops
+from data.Gesture import GestureSet
+from ui import integration
 from recognize import nn_classifier
 
 CLASSIFIERS_BASE_PATH = "recognize/classifiers/"
@@ -100,6 +101,10 @@ if __name__ == "__main__":
 		'record_delay': 2
 	}
 
-	# UI 
-	game = WordGameUI(backend_map=backend)
-	game.display_logic()
+	# UI
+
+	
+	# game = PykinectInt()
+	#  WordGameUI(backend_map=backend)
+	# game.display_logic()
+	integration.runUI(backend)

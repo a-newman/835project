@@ -296,7 +296,7 @@ class PykinectInt:
         self.backend_data = deepcopy(self.skeletal_map)
         self.skeletal_map = []
 
-        thread = myThread(self.backend['get_classification'], self);
+        thread = myThread(self.backend['save_sequence'], self);
 
         thread.start()
         self.state = self.WAIT;
@@ -432,12 +432,17 @@ backend = {
     'get_classification': backend_funct,
     'record_delay': 2
   }
-
-
-
-if __name__ == '__main__':
+def runUI(backend):
   WINSIZE = 800,640;
   screen_lock = thread.allocate()
   screen = pygame.display.set_mode(WINSIZE,0,16)
   mems = PykinectInt(screen, backend = backend);
-  mems.loop();  
+  mems.loop();
+
+
+# if __name__ == '__main__':
+#   WINSIZE = 800,640;
+#   screen_lock = thread.allocate()
+#   screen = pygame.display.set_mode(WINSIZE,0,16)
+#   mems = PykinectInt(screen, backend = backend);
+#   mems.loop();  
