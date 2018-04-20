@@ -205,9 +205,13 @@ class PykinectInt:
        
     for position in itertools.islice(positions, 1, None):
       next = pSkelton.SkeletonPositions[position.value]
-      
-      curstart = self.skeleton_to_depth_image(start, self.dispInfo.current_w, self.dispInfo.current_h) 
-      curend = self.skeleton_to_depth_image(next, self.dispInfo.current_w, self.dispInfo.current_h)
+      if self.video_display:
+        curstart = self.skeleton_to_depth_image(start, self.VIDEO_WINSIZE[0], self.VIDEO_WINSIZE[]1) 
+        curend = self.skeleton_to_depth_image(next, self.VIDEO_WINSIZE[0], self.VIDEO_WINSIZE[1])
+      else:
+        curstart = self.skeleton_to_depth_image(start, self.DEPTH_WINSIZE[0], self.DEPTH_WINSIZE[]1) 
+        curend = self.skeleton_to_depth_image(next, self.DEPTH_WINSIZE[0], self.DEPTH_WINSIZE[1])
+
 
       pygame.draw.line(self.screen, SKELETON_COLORS[index], curstart, curend, width)
       
