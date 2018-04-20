@@ -42,7 +42,7 @@ class Skeletal:
     total = np.sum(attr)
     if total>0.0:
       print "total";total
-      print "data", data
+      print "data", attr
     return total>0.0
 
 
