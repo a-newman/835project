@@ -176,7 +176,7 @@ class TextRender:
     self.screen = screen;
     self.x_0 = self.screen.get_width()/2;
     self.y_0 = self.screen.get_height()/2;
-    self.font_size = 50;
+    self.font_size = self.screen.get_width/2;
     self.mergin =  12
     self.ncolor = font_color;
     self.hover_color = hover_color;
