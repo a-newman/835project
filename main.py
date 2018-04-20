@@ -4,7 +4,7 @@ import pythonreader
 import numpy as np
 from time import sleep, time
 from data import dset_ops
-from data.Gesture import GestureSet
+from data.Gesture import GestureSet, Sequence, Frame
 from ui import integration
 from recognize import nn_classifier
 
@@ -69,8 +69,8 @@ def _sf_to_sequence(scan_frame_list):
 		frame.extend(best_skel.foot_right)
 		frame.extend(best_skel.knee_left)
 		frame.extend(best_skel.knee_right)
-		frames.append(Gesture.Frame(frame))
-	return Gesture.Sequence(frames, timestamp)
+		frames.append(Frame(frame))
+	return Sequence(frames, timestamp)
 
 def _get_closest_skel(skeletons): 
 	metric = lambda skel: sum([elt**2 for elt in skel.hip_center])**.5 
