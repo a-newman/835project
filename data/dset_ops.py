@@ -2,7 +2,7 @@ import json
 import os
 import pickle
 import re
-from data.Gesture import DataSet
+from data.Gesture import DataSet, GestureSet, Sequence, Frame
 
 BASE_PATH = 'data/sets/'
 INDEX_PATH = BASE_PATH + 'index.json'
