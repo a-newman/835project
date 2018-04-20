@@ -208,13 +208,15 @@ class PykinectInt:
       if self.video_display:
         curstart = self.skeleton_to_depth_image(start, self.VIDEO_WINSIZE[0], self.VIDEO_WINSIZE[1]) 
         curend = self.skeleton_to_depth_image(next, self.VIDEO_WINSIZE[0], self.VIDEO_WINSIZE[1])
+        if curstart[0]<self.VIDEO_WINSIZE[0] and curstart[1]<self.VIDEO_WINSIZE[1]:
+          if curend[0]<self.VIDEO_WINSIZE[0] and curend[1]<self.VIDEO_WINSIZE[1]:
+            pygame.draw.line(self.screen, SKELETON_COLORS[index], curstart, curend, width);
       else:
         curstart = self.skeleton_to_depth_image(start, self.DEPTH_WINSIZE[0], self.DEPTH_WINSIZE[1]) 
         curend = self.skeleton_to_depth_image(next, self.DEPTH_WINSIZE[0], self.DEPTH_WINSIZE[1])
-
-
-      pygame.draw.line(self.screen, SKELETON_COLORS[index], curstart, curend, width)
-      
+        if curstart[0]<self.DEPTH_WINSIZE[0] and curstart[1]<self.DEPTH_WINSIZE[1]:
+          if curend[0]<self.DEPTH_WINSIZE[0] and curend[1]<self.DEPTH_WINSIZE[1]:
+            pygame.draw.line(self.screen, SKELETON_COLORS[index], curstart, curend, width);
       start = next
   def draw_skeletons(self,skeletons):
     for index, data in enumerate(skeletons):
@@ -427,11 +429,7 @@ def backend_funct(obj):
   print len(obj.backend_data)
   obj.backend_wait = False;
   obj.word = "YAY!"
-backend = {
-    'words': ['kick', 'wave','yawn','swim'],
-    'get_classification': backend_funct,
-    'record_delay': 2
-  }
+
 def runUI(backend):
   WINSIZE = 800,640;
   screen_lock = thread.allocate()
