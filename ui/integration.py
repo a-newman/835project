@@ -383,6 +383,7 @@ class PykinectInt:
           if self.counter<=0:
             self.backend_data = deepcopy(self.skeletal_map)
             print "number of data points: ", len(self.backend_data)
+            print backend_data[0].skeletons[0].head
             self.skeletal_map = []
 
             thread = myThread(self.backend['save_sequence'], self);
