@@ -315,7 +315,6 @@ class PykinectInt:
       self.collect(skeletons);
     
   def wait(self):
-    time.sleep(1);
     if not self.backend_wait:
       if self.mode == self.TRAINING:
         self.state = self.RECORDING;
@@ -366,30 +365,25 @@ class PykinectInt:
         done = True
         break
       elif e.type == RECORDEVENT:
-        if record:
-          rcount-=1;
-          if rcount==0:
-            rcount=3;
-            prep = True
+        if self.state == RECORDING:
+          if self.counter<=0:
+            self.backend_data = deepcopy(self.skeletal_map)
+            self.skeletal_map = []
 
-        elif prep:
-          pcount-=1
-          
-          if pcount==0:
-            record = True;
-            prep = False;
-            pcount = 3;
+            thread = myThread(self.backend['save_sequence'], self);
+
+            thread.start()
+            self.state = self.WAIT;
+            self.backend_wait=True;
+            self.counter=self.COUNTER;
+
+          else:
+            self.counter-=1;
 
       elif e.type == KINECTEVENT:
           skeletons = e.skeletons
           if self.state==self.RECORDING:
             self.collect(skeletons);
-          else:
-            skeletal_map = [];
-          if ready:
-            backend_funct(self,skeletal_map);
-            record = False;
-            ready = False;
           if self.draw_skeleton:
             self.draw_skeletons(skeletons)
             pygame.display.update()
@@ -412,8 +406,6 @@ class PykinectInt:
           kinect.camera.elevation_angle = kinect.camera.elevation_angle - 2
         elif e.key == K_x:
           kinect.camera.elevation_angle = 2
-      if self.state==self.IDLE:
-        self.idle()
       if self.state==self.RECORDING:
         self.collecting();
       if self.state==self.WAIT:
