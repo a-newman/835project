@@ -1,6 +1,7 @@
 class Skeletal:
   def __init__(self,data = 0):
     self.head = []
+    self.spine = [] 
     
     self.should_center = [];
     self.shoulder_left = [];

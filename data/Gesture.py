@@ -56,23 +56,31 @@ class Frame:
         return self.frame[bodypart : bodypart + 3]
 
 class BodyParts(Enum): 
-    HIP_CENTER = 0
+    HEAD = 0
     SPINE = 1
+
     SHOULDER_CENTER = 2
-    HEAD = 3
-    SHOULDER_LEFT = 4
+    SHOULDER_LEFT = 3
+    SHOULDER_RIGHT = 4
+
     ELBOW_LEFT = 5
-    WRIST_LEFT = 6
-    HAND_LEFT = 7
-    SHOULDER_RIGHT = 8
-    ELBOW_RIGHT = 9
-    WRIST_RIGHT = 10
-    HAND_RIGHT = 11
+    ELBOW_RIGHT = 6
+
+    WRIST_LEFT = 7
+    WRIST_RIGHT = 8
+
+    HAND_LEFT = 9
+    HAND_RIGHT = 10
+
+    HIP_CENTER = 11
     HIP_LEFT = 12
-    KNEE_LEFT = 13
+    HIP_RIGHT = 13
+
     ANKLE_LEFT = 14
-    FOOT_LEFT = 15
-    HIP_RIGHT = 16
-    KNEE_RIGHT = 17
-    ANKLE_RIGHT = 18
-    FOOT_RIGHT = 19
+    ANKLE_RIGHT = 15
+
+    FOOT_LEFT = 16
+    FOOT_RIGHT = 17
+
+    KNEE_LEFT = 18
+    KNEE_RIGHT = 19
