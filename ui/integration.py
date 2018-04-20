@@ -206,10 +206,10 @@ class PykinectInt:
     for position in itertools.islice(positions, 1, None):
       next = pSkelton.SkeletonPositions[position.value]
       if self.video_display:
-        curstart = self.skeleton_to_depth_image(start, self.VIDEO_WINSIZE[0], self.VIDEO_WINSIZE[]1) 
+        curstart = self.skeleton_to_depth_image(start, self.VIDEO_WINSIZE[0], self.VIDEO_WINSIZE[1]) 
         curend = self.skeleton_to_depth_image(next, self.VIDEO_WINSIZE[0], self.VIDEO_WINSIZE[1])
       else:
-        curstart = self.skeleton_to_depth_image(start, self.DEPTH_WINSIZE[0], self.DEPTH_WINSIZE[]1) 
+        curstart = self.skeleton_to_depth_image(start, self.DEPTH_WINSIZE[0], self.DEPTH_WINSIZE[1]) 
         curend = self.skeleton_to_depth_image(next, self.DEPTH_WINSIZE[0], self.DEPTH_WINSIZE[1])
 
 
@@ -219,7 +219,10 @@ class PykinectInt:
   def draw_skeletons(self,skeletons):
     for index, data in enumerate(skeletons):
       # draw the Head
-      HeadPos = self.skeleton_to_depth_image(data.SkeletonPositions[JointId.Head], self.dispInfo.current_w, self.dispInfo.current_h) 
+      if self.video_display:
+        HeadPos = self.skeleton_to_depth_image(data.SkeletonPositions[JointId.Head], self.VIDEO_WINSIZE[0], self.VIDEO_WINSIZE[1])
+      else:
+        HeadPos = self.skeleton_to_depth_image(data.SkeletonPositions[JointId.Head], self.DEPTH_WINSIZE[0], self.DEPTH_WINSIZE[1])
       self.draw_skeleton_data(data, index, SPINE, 10)
       pygame.draw.circle(self.screen, SKELETON_COLORS[index], (int(HeadPos[0]), int(HeadPos[1])), 20, 0)
   
