@@ -193,8 +193,6 @@ class PykinectInt:
     skltl.knee_left =self.pos_to_array(skeleton.SkeletonPositions[JointId.KneeLeft]);
     skltl.knee_right =self.pos_to_array(skeleton.SkeletonPositions[JointId.KneeRight]);
     skltl.spine =self.pos_to_array(skeleton.SkeletonPositions[JointId.spine]);
-    if not skltl.is_empty():
-      print "has data";
     return skltl;
   def collect(self,skltns):
     sf = [];
@@ -202,7 +200,8 @@ class PykinectInt:
       sk = self.map_skeleton(sklton)
       if not sk.is_empty():
         sf.append(sk);
-    self.skeletal_map.append(ScanFrame(sf));
+    if not sf==[]:
+      self.skeletal_map.append(ScanFrame(sf));
 
   def draw_skeleton_data(self,pSkelton, index, positions, width = 4):
     start = pSkelton.SkeletonPositions[positions[0]]
@@ -383,7 +382,7 @@ class PykinectInt:
         if self.state == self.RECORDING:
           if self.counter<=0:
             self.backend_data = deepcopy(self.skeletal_map)
-            print "number of data points: ", self.backend_data
+            print "number of data points: ", len(self.backend_data)
             self.skeletal_map = []
 
             thread = myThread(self.backend['save_sequence'], self);
