@@ -1,8 +1,9 @@
 import json 
 import pickle
 import pythonreader
-from time import sleep
-from data import Gesture, dset_ops
+import numpy as np
+from time import sleep, time
+from data import Gesture, Sequence,dset_ops
 from ui.gameUI import WordGameUI
 from recognize import nn_classifier
 
@@ -16,11 +17,19 @@ tmp_testing_gesture = None # buffer a gesture in testing mode here; wait for fee
 
 def process_gesture_test(ui_object): 
 	#sleep(2)
-	seq = pythonreader.get_data()
+	seq = _sf_to_sequence(ui_object.backend_data)
 	tmp_testing_gesture = seq
 	pred_gesture = CLASSIFIER.classify(seq)
 	ui_object.word = pred_gesture 
+	ui_object.backend_wait = False
 	return 
+
+def process_gesture_train(ui_object): 
+	data = ui_object.backend_data
+	gesture_name = ui_object.test_word
+	seq = _sf_to_sequence(data)
+	dset_ops.add_gesture_example(DATASET_NAME, gesture_name, seq)
+	ui_object.backend_wait = False
 
 def process_gesture_practice(gesture_name): 
 	seq = pythonreader.get_data()
@@ -30,6 +39,41 @@ def process_gesture_practice(gesture_name):
 		CLASSIFIER.update(gesture_name, seq)
 		CLASSIFIER.save()
 	return seq
+
+def _sf_to_sequence(scan_frame_list): 
+	timestamp = time() 
+	frames = [] 
+	for sf in scan_frame_list: 
+		best_skel = _get_closest_skel(sf.skeletons)
+		frame = [] 
+		frame.extend(sf.head)
+		frame.extend(sf.spine)
+		frame.extend(sf.should_center)
+		frame.extend(sf.shoulder_left)
+		frame.extend(sf.shoulder_right)
+		frame.extend(sf.elbow_left)
+		frame.extend(sf.elbow_right)
+		frame.extend(sf.wrist_left)
+		frame.extend(sf.wrist_right)
+		frame.extend(sf.hand_left)
+		frame.extend(sf.hand_right)
+		frame.extend(sf.hip_center)
+		frame.extend(sf.hip_left)
+		frame.extend(sf.hip_right)
+		frame.extend(sf.ankle_left)
+		frame.extend(sf.ankle_right)
+		frame.extend(sf.foot_left)
+		frame.extend(sf.foot_right)
+		frame.extend(sf.knee_left)
+		frame.extend(sf.knee_right)
+		frames.append(Gesture.Frame(frame))
+	return Gesture.Sequence(frames, timestamp)
+
+def _get_closest_skel(skeletons): 
+	metric = lambda skel: sum([elt**2 for elt in skel.hip_center])**.5 
+	metrics = [metric(skel) for skel in skeletons]
+	idx = np.argmin(metrics)
+	return skeletons[idx]
 
 if __name__ == "__main__": 
 	# load the config file 
@@ -50,6 +94,7 @@ if __name__ == "__main__":
 	backend = {
 		'words': wordlist,
 		'get_classification': process_gesture_test,
+		'save_sequence': process_gesture_train,
 		'record_delay': 2
 	}
 
