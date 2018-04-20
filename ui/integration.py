@@ -381,14 +381,18 @@ class PykinectInt:
       elif e.type == RECORDEVENT:
         if self.state == self.RECORDING:
           if self.counter<=0:
-            self.backend_data = deepcopy(self.skeletal_map)
-            print "number of data points: ", len(self.backend_data)
-            print self.backend_data[0].skeletons[0].head
-            self.skeletal_map = []
+            if not self.skeletal_map==[]:
+              self.backend_data = deepcopy(self.skeletal_map)
+              print "number of data points: ", len(self.backend_data)
+              for i in range(len(self.backend_data)):
+                for skln in self.backend_data.self.skeletons:
+                  print "spine ",skln.spine, "head. ",skln.head
+              
+              self.skeletal_map = []
 
-            thread = myThread(self.backend['save_sequence'], self);
+              thread = myThread(self.backend['save_sequence'], self);
 
-            thread.start()
+              thread.start()
             self.state = self.WAIT;
             self.backend_wait=True;
             self.counter=self.COUNTER;
