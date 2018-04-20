@@ -1,6 +1,5 @@
 import json
 import os
-import pickle
 import re
 from data.Gesture import DataSet, GestureSet, Sequence, Frame
 
@@ -19,7 +18,7 @@ def make_dset(name, safe=True):
     id_ = len(index)
     slug = re.sub('[^\w\s-]', '', name).strip().lower()
     slug = re.sub('[-\s]+', '-', slug)
-    filename = slug + '_' + str(id_) + '.pkl'
+    filename = slug + '_' + str(id_) + '.json'
 
     index[name] = filename
 
@@ -28,7 +27,7 @@ def make_dset(name, safe=True):
         raise RuntimeError("you're about to overrwrite")
     with open(file_path, 'wb') as outfile: 
         dset = DataSet(name=name, filepath=file_path)
-        pickle.dump(dset, outfile)
+        json.dump(_json_serialize_dset(dset), outfile)
 
     _save_index(index)
 
@@ -63,13 +62,14 @@ def _load_dset(name):
 
     file_path = index[name]
     with open(BASE_PATH + file_path, 'rb') as infile: 
-        dset = pickle.load(infile)
-        return dset
+        dset = json.load(infile)
+        return _json_recover_dset(dset)
 
 def _save_dset(dset): 
     filepath = dset.filepath 
     with open(filepath, 'wb') as outfile: 
-        pickle.dump(dset, outfile)
+        dset_json = _json_serialize_dset(dset)
+        json.dump(dset_json, outfile)
 
 
 def make_gesture(dset_name, gesture_name):
@@ -92,3 +92,43 @@ def _load_index():
 def _save_index(index): 
     with open(INDEX_PATH, 'w') as outfile: 
         json.dump(index, outfile)
+
+
+def _json_recover_dset(j): 
+    dset = DataSet(name=j['name'], filepath=j['filepath'])
+    for gname, g in j['gestures'].items(): 
+        dset.gestures[gname] = _json_recover_gesture(g)
+    return dset
+
+def _json_recover_gesture(j): 
+    sequences = [_json_recover_seq(s) for s in j['sequences']]
+    return GestureSet(label = j['label'], sequences=sequences)
+
+def _json_recover_seq(j): 
+    return Sequence([_json_recover_frame(f) for f in j['frames']], j['timestamp'])
+
+def _json_recover_frame(j): 
+    return Frame(j)
+
+def _json_serialize_dset(dset): 
+    dd = {'name': dset.name, 'filepath': dset.filepath, 'gestures': {}}
+    for gname, g in dset.gestures.items(): 
+        dd['gestures'][gname] = _json_serialize_gesture(g)
+    return dd  
+
+def _json_serialize_gesture(g): 
+    gd = {
+        'sequences': [_json_serialize_seq(s) for s in g.sequences],
+        'label': g.label,
+    }
+    return gd
+
+def _json_serialize_seq(s): 
+    sd = {
+        'frames': [_json_serialize_frame(f) for f in s.frames],
+        'timestamp': s.timestamp
+    }
+    return sd
+
+def _json_serialize_frame(f): 
+    return f.frame
