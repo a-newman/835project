@@ -174,8 +174,8 @@ class TextRender:
   def __init__(self,screen,word, font_color=ColorMap.RED, hover_color=ColorMap.GREEN):
     self.word = word;
     self.screen = screen;
-    self.x_0 = self.screen.get_width()/2;
-    self.y_0 = self.screen.get_height()/2;
+    self.x_0 = self.screen.get_width();
+    self.y_0 = self.screen.get_height();
     self.font_size = 50;
     self.mergin =  12
     self.ncolor = font_color;
