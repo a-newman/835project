@@ -372,6 +372,7 @@ class PykinectInt:
     print('     j - Decrease elevation angle')
 
     pygame.time.set_timer(RECORDEVENT, 1000);
+    done = True
     while not done:
       e = pygame.event.wait()
       self.dispInfo = pygame.display.Info()
