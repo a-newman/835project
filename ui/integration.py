@@ -365,7 +365,7 @@ class PykinectInt:
         done = True
         break
       elif e.type == RECORDEVENT:
-        if self.state == RECORDING:
+        if self.state == self.RECORDING:
           if self.counter<=0:
             self.backend_data = deepcopy(self.skeletal_map)
             self.skeletal_map = []
