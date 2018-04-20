@@ -19,9 +19,12 @@ tmp_testing_gesture = None # buffer a gesture in testing mode here; wait for fee
 def process_gesture_test(ui_object): 
 	#sleep(2)
 	seq = _sf_to_sequence(ui_object.backend_data)
-	tmp_testing_gesture = seq
-	pred_gesture = CLASSIFIER.classify(seq)
-	ui_object.word = pred_gesture 
+	if (seq): 
+		tmp_testing_gesture = seq
+		pred_gesture = CLASSIFIER.classify(seq)
+		ui_object.word = pred_gesture 
+	else: 
+		ui_object.word = None
 	ui_object.backend_wait = False
 	return 
 
@@ -29,7 +32,8 @@ def process_gesture_train(ui_object):
 	data = ui_object.backend_data
 	gesture_name = ui_object.test_word
 	seq = _sf_to_sequence(data)
-	dset_ops.add_gesture_example(DATASET_NAME, gesture_name, seq)
+	if (seq): 
+		dset_ops.add_gesture_example(DATASET_NAME, gesture_name, seq)
 	ui_object.backend_wait = False
 
 def process_gesture_practice(gesture_name): 
@@ -69,8 +73,13 @@ def _sf_to_sequence(scan_frame_list):
 		frame.extend(best_skel.foot_right)
 		frame.extend(best_skel.knee_left)
 		frame.extend(best_skel.knee_right)
-		frames.append(Frame(frame))
-	return Sequence(frames, timestamp)
+		if not sum(frame) == 0: 
+			frames.append(Frame(frame))
+	if len(frames) == 0: 
+		print("No valid data was collected")
+		return None
+	else: 
+		return Sequence(frames, timestamp)
 
 def _get_closest_skel(skeletons): 
 	metric = lambda skel: sum([elt**2 for elt in skel.hip_center])**.5 
