@@ -272,7 +272,7 @@ class PykinectInt:
       del address
       self.screen.blit(vid_surface);
       if self.skeletons is not None and self.draw_skeleton:
-          self.draw_skeletons(self.skeletons)
+        self.draw_skeletons(self.skeletons)
         if self.state==self.RECORDING:
           self.collect(self.skeletons);
       self.disp()
