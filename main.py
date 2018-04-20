@@ -3,7 +3,7 @@ import pickle
 import pythonreader
 import numpy as np
 from time import sleep, time
-from data import Gesture, Sequence,dset_ops
+from data import Gesture, dset_ops
 from ui.gameUI import WordGameUI
 from recognize import nn_classifier
 
@@ -44,28 +44,30 @@ def _sf_to_sequence(scan_frame_list):
 	timestamp = time() 
 	frames = [] 
 	for sf in scan_frame_list: 
+		if len(sf.skeletons) == 0: 
+			continue
 		best_skel = _get_closest_skel(sf.skeletons)
 		frame = [] 
-		frame.extend(sf.head)
-		frame.extend(sf.spine)
-		frame.extend(sf.should_center)
-		frame.extend(sf.shoulder_left)
-		frame.extend(sf.shoulder_right)
-		frame.extend(sf.elbow_left)
-		frame.extend(sf.elbow_right)
-		frame.extend(sf.wrist_left)
-		frame.extend(sf.wrist_right)
-		frame.extend(sf.hand_left)
-		frame.extend(sf.hand_right)
-		frame.extend(sf.hip_center)
-		frame.extend(sf.hip_left)
-		frame.extend(sf.hip_right)
-		frame.extend(sf.ankle_left)
-		frame.extend(sf.ankle_right)
-		frame.extend(sf.foot_left)
-		frame.extend(sf.foot_right)
-		frame.extend(sf.knee_left)
-		frame.extend(sf.knee_right)
+		frame.extend(best_skel.head)
+		frame.extend(best_skel.spine)
+		frame.extend(best_skel.should_center)
+		frame.extend(best_skel.shoulder_left)
+		frame.extend(best_skel.shoulder_right)
+		frame.extend(best_skel.elbow_left)
+		frame.extend(best_skel.elbow_right)
+		frame.extend(best_skel.wrist_left)
+		frame.extend(best_skel.wrist_right)
+		frame.extend(best_skel.hand_left)
+		frame.extend(best_skel.hand_right)
+		frame.extend(best_skel.hip_center)
+		frame.extend(best_skel.hip_left)
+		frame.extend(best_skel.hip_right)
+		frame.extend(best_skel.ankle_left)
+		frame.extend(best_skel.ankle_right)
+		frame.extend(best_skel.foot_left)
+		frame.extend(best_skel.foot_right)
+		frame.extend(best_skel.knee_left)
+		frame.extend(best_skel.knee_right)
 		frames.append(Gesture.Frame(frame))
 	return Gesture.Sequence(frames, timestamp)
 

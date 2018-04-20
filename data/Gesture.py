@@ -1,5 +1,3 @@
-from enum import Enum 
-
 class DataSet: 
     """ 
     Multiple gesture sets with labels.
@@ -55,32 +53,33 @@ class Frame:
     def data_for(bodypart): 
         return self.frame[bodypart : bodypart + 3]
 
-class BodyParts(Enum): 
-    HEAD = 0
-    SPINE = 1
+class BodyParts(): 
+    def __init__(self): 
+        self.HEAD = 0
+        self.SPINE = 1
 
-    SHOULDER_CENTER = 2
-    SHOULDER_LEFT = 3
-    SHOULDER_RIGHT = 4
+        self.SHOULDER_CENTER = 2
+        self.SHOULDER_LEFT = 3
+        self.SHOULDER_RIGHT = 4
 
-    ELBOW_LEFT = 5
-    ELBOW_RIGHT = 6
+        self.ELBOW_LEFT = 5
+        self.ELBOW_RIGHT = 6
 
-    WRIST_LEFT = 7
-    WRIST_RIGHT = 8
+        self.WRIST_LEFT = 7
+        self.WRIST_RIGHT = 8
 
-    HAND_LEFT = 9
-    HAND_RIGHT = 10
+        self.HAND_LEFT = 9
+        self.HAND_RIGHT = 10
 
-    HIP_CENTER = 11
-    HIP_LEFT = 12
-    HIP_RIGHT = 13
+        self.HIP_CENTER = 11
+        self.HIP_LEFT = 12
+        self.HIP_RIGHT = 13
 
-    ANKLE_LEFT = 14
-    ANKLE_RIGHT = 15
+        self.ANKLE_LEFT = 14
+        self.ANKLE_RIGHT = 15
 
-    FOOT_LEFT = 16
-    FOOT_RIGHT = 17
+        self.FOOT_LEFT = 16
+        self.FOOT_RIGHT = 17
 
-    KNEE_LEFT = 18
-    KNEE_RIGHT = 19
+        self.KNEE_LEFT = 18
+        self.KNEE_RIGHT = 19
