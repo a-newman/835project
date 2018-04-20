@@ -274,7 +274,7 @@ class PykinectInt:
   def dispCount(self):
     surf = pygame.Surface((200,200));
     txt_render = TextRender(surf,str(self.counter), font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
-    self.screen.blit(surf,(588,0));
+    self.screen.blit(surf,(588,300));
   def dispProcessing(self):
     pass 
   def dispSelectMenu(self):
