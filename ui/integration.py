@@ -381,7 +381,7 @@ class PykinectInt:
       elif e.type == KINECTEVENT:
           skeletons = e.skeletons
           if self.state==self.RECORDING:
-            mems.collect(skeletons);
+            self.collect(skeletons);
           else:
             skeletal_map = [];
           if ready:
@@ -425,10 +425,7 @@ class myThread (threading.Thread):
     self.obj = obj;
   def run(self):
     self.funct(self.obj)
-def backend_funct(obj):
-  print len(obj.backend_data)
-  obj.backend_wait = False;
-  obj.word = "YAY!"
+
 
 def runUI(backend):
   WINSIZE = 800,640;
