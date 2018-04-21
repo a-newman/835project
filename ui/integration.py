@@ -289,7 +289,7 @@ class PykinectInt:
 
 
   def dispWord(self):
-    surf = pygame.Surface((200,200));
+    surf = pygame.Surface((300,300));
     txt_render = TextRender(surf,self.test_word, font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
     self.screen.blit(surf,(0,self.DEPTH_WINSIZE[1]));
 
@@ -317,6 +317,7 @@ class PykinectInt:
       self.dispWord();
       self.dispCount();
     if self.state == self.WAIT:
+      print "waiting!!!"
       self.dispProcessing();
     if self.state == self.IDLE:
       self.dispSelectMenu()
