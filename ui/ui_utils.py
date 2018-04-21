@@ -7,6 +7,7 @@ import pykinect
 from pykinect import nui
 from pykinect.nui import JointId
 from pygame.color import THECOLORS
+import numpy as np
 class ColorMap:
   BLACK = (0,0,0)
   BLUE =(0,0,255)
