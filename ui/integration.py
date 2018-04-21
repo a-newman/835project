@@ -124,7 +124,7 @@ class PykinectInt:
   USER = 0;
   TRAINING = 1;
   ####
-  COUNTER = 4
+  COUNTER = 2
   PROCESSING = 2;
 
   def __init__(self,screen,backend = {}):
@@ -289,7 +289,7 @@ class PykinectInt:
 
 
   def dispWord(self):
-    surf = pygame.Surface((300,300));
+    surf = pygame.Surface((400,400));
     txt_render = TextRender(surf,self.test_word, font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
     self.screen.blit(surf,(0,self.DEPTH_WINSIZE[1]));
 
@@ -307,7 +307,7 @@ class PykinectInt:
 
 
   def dispProcessing(self):
-    surf = pygame.Surface((300,300));
+    surf = pygame.Surface((400,400));
     txt_render = TextRender(surf,"wait", font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
     self.screen.blit(surf,(0,self.DEPTH_WINSIZE[1]));
   def dispSelectMenu(self):
@@ -317,7 +317,7 @@ class PykinectInt:
       self.dispWord();
       self.dispCount();
     if self.state == self.WAIT:
-      print "waiting!!!"
+      #print "waiting!!!"
       self.dispProcessing();
     if self.state == self.IDLE:
       self.dispSelectMenu()
