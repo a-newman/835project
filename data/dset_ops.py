@@ -89,6 +89,7 @@ def make_gesture(dset_name, gesture_name):
     return dset
 
 def add_gesture_example(dset_name, gesture_name, sequence): 
+    print("DSET NAME", dset_name)
     dset = _load_dset(dset_name)
     dset.store_gesture_example(gesture_name, sequence)
     _save_dset(dset)
