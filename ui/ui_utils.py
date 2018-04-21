@@ -109,7 +109,7 @@ def button_test():
  
   # Close the window and quit.
   pygame.quit()
-button_test()
+#button_test()
 class CountDown(Button):
   def __init__(self,screen, second=2):
     Button.__init__(self, screen)
