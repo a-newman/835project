@@ -384,9 +384,9 @@ class PykinectInt:
             if not self.skeletal_map==[]:
               self.backend_data = deepcopy(self.skeletal_map)
               print "number of data points: ", len(self.backend_data)
-              for i in range(len(self.backend_data)):
-                for skln in self.backend_data[i].skeletons:
-                  print "spine ",skln.spine, "head. ",skln.head
+              # for i in range(len(self.backend_data)):
+              #   for skln in self.backend_data[i].skeletons:
+              #     print "spine ",skln.spine, "head. ",skln.head
               
               self.skeletal_map = []
 
