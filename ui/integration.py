@@ -124,7 +124,7 @@ class PykinectInt:
   USER = 0;
   TRAINING = 1;
   ####
-  COUNTER = 4
+  COUNTER = 2
   PROCESSING = 2;
 
   def __init__(self,screen,backend = {}):
