@@ -77,6 +77,19 @@ class Menu:
   def __init__(self,screen, buttons = []):
     self.buttons = buttons;
 
+class CountDown:
+  def __init__(self):
+    print
+
+
+
+
+
+
+
+
+ 
+
 
 
 

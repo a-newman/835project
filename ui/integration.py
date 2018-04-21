@@ -20,7 +20,7 @@ import itertools
 from copy import deepcopy
 import time
 import ctypes
-from ui_utils import TextRender,CircularArray
+from ui_utils import TextRender,CircularArray, resize
 import threading
 
 import pykinect
@@ -144,6 +144,12 @@ class PykinectInt:
     self.word = "None"
     self.test_word = self.wordlist.roll()
     self.backend_wait = True;
+    ####
+    if self.video_display:
+      size = self.dispInfo.current_w-self.VIDEO_WINSIZE[0];
+    else:
+      size = self.dispInfo.current_w-self.DEPTH_WINSIZE[0];
+    self.clock_image = resize((size,size), out_img="images/_clock.gif");
     
     #####Disp object
     self.counter = self.COUNTER;
@@ -281,14 +287,16 @@ class PykinectInt:
   def dispWord(self):
     surf = pygame.Surface((200,200));
     txt_render = TextRender(surf,self.test_word, font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
-    self.screen.blit(surf,(588,0));
+    self.screen.blit(surf,(588,588));
   
 
 
   def dispCount(self):
-    surf = pygame.Surface((200,200));
+    size = self.clock_image.get_width()
+    surf = pygame.Surface((size,size));
+    surf.blit(self.clock_image,(0,0))
     txt_render = TextRender(surf,str(self.counter), font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
-    self.screen.blit(surf,(588,300));
+    self.screen.blit(surf,(588,0));
 
 
 

@@ -109,7 +109,7 @@ def button_test():
  
   # Close the window and quit.
   pygame.quit()
-#button_test()
+button_test()
 class CountDown(Button):
   def __init__(self,screen, second=2):
     Button.__init__(self, screen)
@@ -254,204 +254,19 @@ def scolling_backgrnd(screen,image='ui/images/space.jpg'):
   bckObj1 = MovingGroundEffects(screen,image=_image,x=_image.get_width())
   return bckObj,bckObj1
 
-pygame.init();
-# recipe to get address of surface: http://archives.seul.org/pygame/users/Apr-2008/msg00218.html
-if hasattr(ctypes.pythonapi, 'Py_InitModule4'):
-   Py_ssize_t = ctypes.c_int
-elif hasattr(ctypes.pythonapi, 'Py_InitModule4_64'):
-   Py_ssize_t = ctypes.c_int64
-else:
-   raise TypeError("Cannot determine type of Py_ssize_t")
+from PIL import Image
+from resizeimage import resizeimage
 
-_PyObject_AsWriteBuffer = ctypes.pythonapi.PyObject_AsWriteBuffer
-_PyObject_AsWriteBuffer.restype = ctypes.c_int
-_PyObject_AsWriteBuffer.argtypes = [ctypes.py_object,
-                                  ctypes.POINTER(ctypes.c_void_p),
-                                  ctypes.POINTER(Py_ssize_t)]
-
-def surface_to_array(surface):
-   buffer_interface = surface.get_buffer()
-   address = ctypes.c_void_p()
-   size = Py_ssize_t()
-   _PyObject_AsWriteBuffer(buffer_interface,
-                          ctypes.byref(address), ctypes.byref(size))
-   bytes = (ctypes.c_byte * size.value).from_address(address.value)
-   bytes.object = buffer_interface
-   return bytes
-class PykinectMembers:
-  SKELETON_COLORS = [THECOLORS["red"], 
-                   THECOLORS["blue"], 
-                   THECOLORS["green"], 
-                   THECOLORS["orange"], 
-                   THECOLORS["purple"], 
-                   THECOLORS["yellow"], 
-                   THECOLORS["violet"]]
-
-  LEFT_ARM = (JointId.ShoulderCenter, 
-            JointId.ShoulderLeft, 
-            JointId.ElbowLeft, 
-            JointId.WristLeft, 
-            JointId.HandLeft)
-  RIGHT_ARM = (JointId.ShoulderCenter, 
-             JointId.ShoulderRight, 
-             JointId.ElbowRight, 
-             JointId.WristRight, 
-             JointId.HandRight)
-  LEFT_LEG = (JointId.HipCenter, 
-            JointId.HipLeft, 
-            JointId.KneeLeft, 
-            JointId.AnkleLeft, 
-            JointId.FootLeft)
-  RIGHT_LEG = (JointId.HipCenter, 
-             JointId.HipRight, 
-             JointId.KneeRight, 
-             JointId.AnkleRight, 
-             JointId.FootRight)
-  SPINE = (JointId.HipCenter, 
-         JointId.Spine, 
-         JointId.ShoulderCenter, 
-         JointId.Head)
-  KINECTEVENT = pygame.USEREVENT
-  RECORDEVENT = pygame.USEREVENT+1
-  DEPTH_WINSIZE = 320,240
-  VIDEO_WINSIZE = 640,480
-  def __init__(self,screen):
-    self.screen_lock = thread.allocate();
-    self.screen = screen
-    self.skeleton_to_depth_image = nui.SkeletonEngine.skeleton_to_depth_image
-    self.kinect = nui.Runtime();
-    self.kinect.skeleton_engine.enabled = True;
-    self.full_screen = False;
-    self.draw_skeleton = True;
-    self.video_display = True;
-    self.skeletal_map = [];
-    self.skeletons = None;
-    self.draw_skeleton = True
-
-
-  def pos_to_array(self,joint):
-    return [joint.x,joint.y,joint.z]
-
-  def map_skeleton(self,skeleton):
-    skltl = Skeletal();
-    skltl.head = self.pos_to_array(skeleton.SkeletonPositions[JointId.Head]);
-      
-    skltl.should_center = self.pos_to_array(skeleton.SkeletonPositions[JointId.ShoulderCenter]);
-    skltl.shoulder_left = self.pos_to_array(skeleton.SkeletonPositions[JointId.ShoulderLeft]);
-    skltl.shoulder_right = self.pos_to_array(skeleton.SkeletonPositions[JointId.ShoulderRight]);
-
-    skltl.elbow_left = self.pos_to_array(skeleton.SkeletonPositions[JointId.ElbowLeft]);
-    skltl.elbow_right = self.pos_to_array(skeleton.SkeletonPositions[JointId.ElbowRight]);
-
-    skltl.wrist_left = self.pos_to_array(skeleton.SkeletonPositions[JointId.WristLeft]);
-    skltl.wrist_right = self.pos_to_array(skeleton.SkeletonPositions[JointId.WristRight]);
-
-    skltl.hand_left =self.pos_to_array(skeleton.SkeletonPositions[JointId.HandLeft]);
-    skltl.hand_right =self.pos_to_array(skeleton.SkeletonPositions[JointId.HandRight]);
-
-    skltl.hip_center =self.pos_to_array(skeleton.SkeletonPositions[JointId.HipCenter]);
-    skltl.hip_left =self.pos_to_array(skeleton.SkeletonPositions[JointId.HipLeft]);
-    skltl.hip_right =self.pos_to_array(skeleton.SkeletonPositions[JointId.HandRight]);
-
-    skltl.ankle_left =self.pos_to_array(skeleton.SkeletonPositions[JointId.AnkleLeft]);
-    skltl.ankle_right =self.pos_to_array(skeleton.SkeletonPositions[JointId.AnkleRight]);
-
-    skltl.foot_left =self.pos_to_array(skeleton.SkeletonPositions[JointId.FootLeft]);
-    skltl.foot_right =self.pos_to_array(skeleton.SkeletonPositions[JointId.FootRight]);
-
-    skltl.knee_left =self.pos_to_array(skeleton.SkeletonPositions[JointId.KneeLeft]);
-    skltl.knee_right =self.pos_to_array(skeleton.SkeletonPositions[JointId.KneeRight]);
-    return skltl;
-
-  def collect(self,skltns):
-    sf = [];
-    for index, sklton in enumerate(skltns):
-      sk = self.map_skeleton(skltn)
-      sf.append(sk);
-    skeletal_map.append(ScanFrame(sf));
-
-  def draw_skeleton_data(self,pSkelton, index, positions, width = 4):
-    start = pSkelton.SkeletonPositions[positions[0]]
-       
-    for position in itertools.islice(positions, 1, None):
-      next = pSkelton.SkeletonPositions[position.value]
-      if self.video_display:
-        curstart = self.skeleton_to_depth_image(start, dispInfo.current_w, dispInfo.current_h) 
-        curend = self.skeleton_to_depth_image(next, dispInfo.current_w, dispInfo.current_h)
-
-      pygame.draw.line(self.screen, SKELETON_COLORS[index], curstart, curend, width)
-      
-      start = next
-  def surface_to_array(self,surface):
-    buffer_interface = surface.get_buffer()
-    address = ctypes.c_void_p()
-    size = Py_ssize_t()
-    _PyObject_AsWriteBuffer(buffer_interface,
-                        ctypes.byref(address), ctypes.byref(size))
-    bytes = (ctypes.c_byte * size.value).from_address(address.value)
-    bytes.object = buffer_interface
-    return bytes
-  def draw_skeletons(self,skeletons):
-    for index, data in enumerate(skeletons):
-      # draw the Head
-      HeadPos = self.skeleton_to_depth_image(data.SkeletonPositions[JointId.Head], dispInfo.current_w, dispInfo.current_h) 
-      self.draw_skeleton_data(data, index, SPINE, 10)
-      pygame.draw.circle(self.screen, self.SKELETON_COLORS[index], (int(HeadPos[0]), int(HeadPos[1])), 20, 0)
+def resize(size,img = 'images/clock.gif',ou_img = 'images/clock.gif'):
+  with open(img, 'r+b') as f:
+    with Image.open(f) as image:
+        cover = resizeimage.resize_cover(image, size)
+        cover.save(ou_img, image.format)
+  image = pygame.image.load(ou_img);
+  return image;
   
-      # drawing the limbs
-      self.draw_skeleton_data(data, index, self.LEFT_ARM)
-      self.draw_skeleton_data(data, index, self.RIGHT_ARM)
-      self.draw_skeleton_data(data, index, self.LEFT_LEG)
-      self.draw_skeleton_data(data, index, self.RIGHT_LEG)
-  def depth_frame_ready(self,frame):
-    if self.video_display:
-      return
-    print "Adding depth........"
 
-    with self.screen_lock:
-      address = surface_to_array(self.screen)
-      frame.image.copy_bits(address)
-      print "deleting..."
-      del address
-      print "deleted!"
-  def video_frame_ready(self,frame):
-    if not self.video_display:
-      return
-    print "Adding......."
 
-    with self.screen_lock:
-      address = surface_to_array(self.screen)
-      print "copying the address"
-      frame.image.copy_bits(address)
-      print "deleting..."
-      del address
-      print "deleted!"
-      if skeletons is not None and draw_skeleton:
-          self.draw_skeletons(skeletons)
-      pygame.display.update()
-  def post_frame(self,frame):
-    try:
-      pygame.event.post(pygame.event.Event(self.KINECTEVENT, skeletons = frame.SkeletonData))
-    except:
-      # event queue full
-      pass
-  def run(self):
-    self.kinect.skeleton_frame_ready += self.post_frame
-    self.kinect.depth_frame_ready += self.depth_frame_ready    
-    self.kinect.video_frame_ready += self.video_frame_ready
-    self.kinect.video_stream.open(nui.ImageStreamType.Video, 2, nui.ImageResolution.Resolution640x480, nui.ImageType.Color);
-    self.kinect.depth_stream.open(nui.ImageStreamType.Depth, 2, nui.ImageResolution.Resolution320x240, nui.ImageType.Depth);
-def testPykinect():
-  DEPTH_WINSIZE = (500,500)
-  VIDEO_WINSIZE = 640,480
-  #pygame.init();
-  screen = pygame.display.set_mode(VIDEO_WINSIZE,0,16)    
-  pygame.display.set_caption('Python Kinect Demo')
-  skeletons = None;
-  screen.fill(THECOLORS["black"]);
-  mems = PykinectMembers(screen)
-  mems.run();
-#testPykinect()
 
 
 
