@@ -124,7 +124,7 @@ class PykinectInt:
   USER = 0;
   TRAINING = 1;
   ####
-  COUNTER = 4
+  COUNTER = 2
   PROCESSING = 2;
 
   def __init__(self,screen,backend = {}):
@@ -313,56 +313,24 @@ class PykinectInt:
   def dispSelectMenu(self):
     pass 
   def disp(self):
-    if self.state == self.RECORDING:
-      self.dispWord();
-      self.dispCount();
-    if self.state == self.WAIT:
-      print "waiting!!!"
-      self.dispProcessing();
-    if self.state == self.IDLE:
-      self.dispSelectMenu()
+    if self.mode == self.TRAINING:
+      if self.state == self.RECORDING:
+        self.dispWord();
+        self.dispCount();
+      if self.state == self.WAIT:
+        self.dispProcessing();
+      if self.state == self.IDLE:
+        self.dispSelectMenu()
+    else:
+      if self.state == self.RECORDING:
+        self.dispWord();
+        #self.self
 
   def idle(self):
     self.state = self.RECORDING;
 
-
-
-
-
-  def collecting(self):
-    recording = True;
-    e = pygame.event.wait();
-    if e.type==RECORDEVENT:
-      if self.counter<=0:
-        self.backend_data = deepcopy(self.skeletal_map)
-        self.skeletal_map = []
-
-        thread = myThread(self.backend['save_sequence'], self);
-
-        thread.start()
-        self.state = self.WAIT;
-        self.backend_wait=True;
-        self.counter=self.COUNTER;
-
-      else:
-        self.counter-=1;
-    elif e.type == KINECTEVENT:
-      print "collecting"
-      skeletons = e.skeletons
-      self.collect(skeletons);
-    
-  def wait(self):
-    #print "waiting "
-    if not self.backend_wait:
-      if self.mode == self.TRAINING:
-        self.state = self.RECORDING;
-        self.test_word=self.wordlist.roll();
-      if self.mode == self.USER:
-        self.state = self.FEEDBACK
-
-
   def loop(self):
-    pygame.display.set_caption('Python Kinect Demo')
+    pygame.display.set_caption('Loader than words')
     self.screen.fill(THECOLORS["black"])
 
 
