@@ -350,6 +350,7 @@ class PykinectInt:
       self.collect(skeletons);
     
   def wait(self):
+    print "waiting"
     if not self.backend_wait:
       if self.mode == self.TRAINING:
         self.state = self.RECORDING;
