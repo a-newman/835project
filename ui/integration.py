@@ -324,7 +324,7 @@ class PykinectInt:
     else:
       if self.state == self.RECORDING:
         self.dispWord();
-        #self.self
+      if self.stat
 
   def idle(self):
     self.state = self.RECORDING;
@@ -428,7 +428,7 @@ class PykinectInt:
         elif e.key == K_x:
           kinect.camera.elevation_angle = 2
       if self.state==self.IDLE:
-        self.collecting();
+        self.state==RECORDING
       
 
 
