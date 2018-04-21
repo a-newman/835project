@@ -125,6 +125,7 @@ class PykinectInt:
   TRAINING = 1;
   ####
   COUNTER = 4
+  PROCESSING = 2;
 
   def __init__(self,screen,backend = {}):
     self.screen = screen;
@@ -412,10 +413,21 @@ class PykinectInt:
               thread.start()
             self.state = self.WAIT;
             self.backend_wait=True;
-            self.counter=self.COUNTER;
+            self.counter=self.PROCESSING;
 
           else:
             self.counter-=1;
+        elif self.state==self.WAIT:
+          if self.counter<=0:
+            if self.mode == self.TRAINING:
+              self.state = self.RECORDING;
+              self.test_word=self.wordlist.roll();
+              self.counter = self.COUNTER;
+            if self.mode == self.USER:
+              self.state = self.FEEDBACK
+          else:
+            self.counter-=1;
+
 
       elif e.type == KINECTEVENT:
           skeletons = e.skeletons
