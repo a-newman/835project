@@ -6,8 +6,8 @@ from recognize.dummy_classifier import DummyClassifier
 from recognize.net_classifier import NetClassifier
 import random
 
-dset_to_test = "Practice"
-num_gestures = 1
+dset_to_test = "Practice2"
+num_gestures = 3
 
 # for each gesture, we wanna select num_gestures examples of each gesture as a "train" set 
 # the rest is a test set 
@@ -34,7 +34,7 @@ for label, g in ds.gestures.items():
         dset_ops.add_gesture_example("test", label, testelt)
 
 classifiers = [] 
-classifiers.append(DummyClassifier(dset_to_test))
+classifiers.append(DTClassifier(dset_to_test))
 
 log = ""
 accuracies = {} 
