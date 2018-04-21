@@ -257,7 +257,7 @@ def scolling_backgrnd(screen,image='ui/images/space.jpg'):
 from PIL import Image
 from resizeimage import resizeimage
 
-def resize(size,img = 'images/clock.gif',ou_img = 'images/clock.gif'):
+def resize(size,img = 'ui/images/clock.gif',ou_img = 'ui/images/clock.gif'):
   with open(img, 'r+b') as f:
     with Image.open(f) as image:
         cover = resizeimage.resize_cover(image, size)

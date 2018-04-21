@@ -149,7 +149,7 @@ class PykinectInt:
       size = self.dispInfo.current_w-self.VIDEO_WINSIZE[0];
     else:
       size = self.dispInfo.current_w-self.DEPTH_WINSIZE[0];
-    self.clock_image = resize((size,size), ou_img="images/_clock.gif");
+    self.clock_image = resize((size,size), ou_img="ui/images/_clock.gif");
     
     #####Disp objects
     
