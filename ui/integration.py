@@ -20,7 +20,7 @@ import itertools
 from copy import deepcopy
 import time
 import ctypes
-from ui_utils import TextRender,CircularArray, resize
+from ui_utils import TextRender,CircularArray,Clock ,resize
 import threading
 
 import pykinect
@@ -151,7 +151,10 @@ class PykinectInt:
       size = self.dispInfo.current_w-self.DEPTH_WINSIZE[0];
     self.clock_image = resize((size,size), ou_img="images/_clock.gif");
     
-    #####Disp object
+    #####Disp objects
+    if self.video_display:
+    self.clock = Clock(size);
+    ##########
     self.counter = self.COUNTER;
     self.action = Text(self.screen,w=100, h=50,pos=(485,0),text=self.test_word,color=THECOLORS['white']);
     self.count = Text(self.screen,w=100, h=100,pos=(485,55),text=str(self.counter),color=THECOLORS['white']);
@@ -292,11 +295,15 @@ class PykinectInt:
 
 
   def dispCount(self):
-    size = self.clock_image.get_width()
-    surf = pygame.Surface((size,size));
-    surf.blit(self.clock_image,(0,0))
-    txt_render = TextRender(surf,str(self.counter), font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
-    self.screen.blit(surf,(588,0));
+    #size = self.clock_image.get_width()
+    #surf = pygame.Surface((size,size));
+    #surf.blit(self.clock_image,(0,0))
+    #txt_render = TextRender(surf,str(self.counter), font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
+    surf = self.clock.draw(self.counter);
+    if self.video_display:
+      self.screen.blit(surf,(self.VIDEO_WINSIZE[0],0));
+    else:
+      self.screen.blit(surf,(self.DEPTH_WINSIZE[0],0))
 
 
 
