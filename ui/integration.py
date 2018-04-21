@@ -153,7 +153,7 @@ class PykinectInt:
     
     #####Disp objects
     
-    self.clock = Clock(size);
+    self.clock = Clock(min(size,self.DEPTH_WINSIZE[1]));
     ##########
     self.counter = self.COUNTER;
     self.action = Text(self.screen,w=100, h=50,pos=(485,0),text=self.test_word,color=THECOLORS['white']);
