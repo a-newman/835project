@@ -267,7 +267,7 @@ def resize(size,img = 'ui/images/clock.gif',ou_img = 'ui/images/clock.gif'):
 
 
 class Clock:
-  def __init__(self, size, in_img="ui/images/clock.gif",out_img="ui/images/clock.gif"):
+  def __init__(self, size, in_img="ui/images/clock.gif",out_img="ui/images/_clock.gif"):
     self.surf  = pygame.Surface((size,size));
     self.in_img = in_img;
     self.out_img = out_img;
