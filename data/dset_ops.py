@@ -25,7 +25,7 @@ def make_dset(name, safe=True):
     file_path = BASE_PATH + filename
     if safe and (os.path.exists(file_path)): 
         raise RuntimeError("you're about to overrwrite")
-    with open(file_path, 'wb') as outfile: 
+    with open(file_path, 'w') as outfile: 
         dset = DataSet(name=name, filepath=file_path)
         json.dump(_json_serialize_dset(dset), outfile)
 
@@ -71,13 +71,13 @@ def _load_dset(name):
         raise RuntimeError(name + " is not a known dataset")
 
     file_path = index[name]
-    with open(BASE_PATH + file_path, 'rb') as infile: 
+    with open(BASE_PATH + file_path, 'r') as infile: 
         dset = json.load(infile)
         return _json_recover_dset(dset)
 
 def _save_dset(dset): 
     filepath = dset.filepath 
-    with open(filepath, 'wb') as outfile: 
+    with open(filepath, 'w') as outfile: 
         dset_json = _json_serialize_dset(dset)
         json.dump(dset_json, outfile)
 

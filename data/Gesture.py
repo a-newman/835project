@@ -42,6 +42,15 @@ class Sequence:
         self.frames = frames
         self.timestamp = timestamp
 
+    def normalize(self): 
+        # rn, will normalize by translating the whole skeleton so that the avg position of the center hip is 
+        # in the same place 
+        hipdata = np.array([f.data_for(BODYPARTS.HIP_CENTER) for f in self.frames])
+        print("hipdata", hipdata.shape)
+        avgs = np.mean(hipdata)
+        print("avgs", hipdata.shape)
+        whole_frame_mean = "blah"
+
 
 class Frame:
     """
@@ -50,7 +59,7 @@ class Frame:
     def __init__(self, frame):
         self.frame = frame
 
-    def data_for(bodypart): 
+    def data_for(self, bodypart): 
         return self.frame[bodypart : bodypart + 3]
 
 class BodyParts(): 
@@ -83,3 +92,5 @@ class BodyParts():
 
         self.KNEE_LEFT = 18
         self.KNEE_RIGHT = 19
+
+BODYPARTS = BodyParts()

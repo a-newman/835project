@@ -1,6 +1,6 @@
 {
 	"classifier": "nn",
-	"dataset": "Practice2",
+	"dataset": "eval",
 	"save_data": true,
 	"mutate_classifier": false
 }
