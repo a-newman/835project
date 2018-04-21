@@ -308,7 +308,7 @@ class PykinectInt:
 
   def dispProcessing(self):
     surf = pygame.Surface((300,300));
-    txt_render = TextRender(surf,"processing...", font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
+    txt_render = TextRender(surf,"wait", font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
     self.screen.blit(surf,(0,self.DEPTH_WINSIZE[1]));
   def dispSelectMenu(self):
     pass 
@@ -460,8 +460,7 @@ class PykinectInt:
           kinect.camera.elevation_angle = 2
       if self.state==self.IDLE:
         self.collecting();
-      if self.state==self.WAIT:
-        self.wait();
+      
 
 
 class myThread (threading.Thread):
