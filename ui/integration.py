@@ -198,7 +198,7 @@ class PykinectInt:
     sf = [];
     for index, sklton in enumerate(skltns):
       sk = self.map_skeleton(sklton)
-      if not sk.is_empty():
+      if sk.is_empty():
         sf.append(sk);
     if not sf==[]:
       self.skeletal_map.append(ScanFrame(sf));

@@ -40,9 +40,9 @@ class Skeletal:
     self.foot_right,self.knee_left,self.knee_right
     ]
     total = np.sum(attr)
-    if total>0.0:
-      print "total";total
-      print "data", attr
+    # if total>0.0:
+    #   print "total";total
+    #   print "data", attr
     return total>0.0
 
 
