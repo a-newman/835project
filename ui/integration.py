@@ -149,7 +149,7 @@ class PykinectInt:
       size = self.dispInfo.current_w-self.VIDEO_WINSIZE[0];
     else:
       size = self.dispInfo.current_w-self.DEPTH_WINSIZE[0];
-    self.clock_image = resize((size,size), ou_img="ui/images/_clock.gif");
+    #self.clock_image = resize((size,size), ou_img="ui/images/_clock.gif");
     
     #####Disp objects
     
@@ -290,16 +290,16 @@ class PykinectInt:
   def dispWord(self):
     surf = pygame.Surface((200,200));
     txt_render = TextRender(surf,self.test_word, font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
-    self.screen.blit(surf,(588,588));
+    self.screen.blit(surf,(0,self.DEPTH_WINSIZE[1]));
   
 
 
   def dispCount(self):
-    size = self.clock_image.get_width()
-    surf = pygame.Surface((size,size));
-    surf.blit(self.clock_image,(0,0))
-    txt_render = TextRender(surf,str(self.counter), font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
-    #surf = self.clock.draw(self.counter);
+    #size = self.clock_image.get_width()
+    #surf = pygame.Surface((size,size));
+    #surf.blit(self.clock_image,(0,0))
+    #txt_render = TextRender(surf,str(self.counter), font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
+    surf = self.clock.draw(self.counter);
     if self.video_display:
       self.screen.blit(surf,(self.VIDEO_WINSIZE[0],0));
     else:
@@ -350,7 +350,7 @@ class PykinectInt:
       self.collect(skeletons);
     
   def wait(self):
-    print "waiting"
+    #print "waiting "
     if not self.backend_wait:
       if self.mode == self.TRAINING:
         self.state = self.RECORDING;
