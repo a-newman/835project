@@ -125,6 +125,7 @@ class PykinectInt:
   TRAINING = 1;
   ####
   COUNTER = 4
+  PROCESSING = 2;
 
   def __init__(self,screen,backend = {}):
     self.screen = screen;
@@ -288,7 +289,7 @@ class PykinectInt:
 
 
   def dispWord(self):
-    surf = pygame.Surface((200,200));
+    surf = pygame.Surface((300,300));
     txt_render = TextRender(surf,self.test_word, font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
     self.screen.blit(surf,(0,self.DEPTH_WINSIZE[1]));
 
@@ -307,7 +308,7 @@ class PykinectInt:
 
   def dispProcessing(self):
     surf = pygame.Surface((300,300));
-    txt_render = TextRender(surf,"processing...", font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
+    txt_render = TextRender(surf,"wait", font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
     self.screen.blit(surf,(0,self.DEPTH_WINSIZE[1]));
   def dispSelectMenu(self):
     pass 
@@ -316,6 +317,7 @@ class PykinectInt:
       self.dispWord();
       self.dispCount();
     if self.state == self.WAIT:
+      print "waiting!!!"
       self.dispProcessing();
     if self.state == self.IDLE:
       self.dispSelectMenu()
@@ -412,10 +414,21 @@ class PykinectInt:
               thread.start()
             self.state = self.WAIT;
             self.backend_wait=True;
-            self.counter=self.COUNTER;
+            self.counter=self.PROCESSING;
 
           else:
             self.counter-=1;
+        elif self.state==self.WAIT:
+          if self.counter<=0:
+            if self.mode == self.TRAINING:
+              self.state = self.RECORDING;
+              self.test_word=self.wordlist.roll();
+              self.counter = self.COUNTER;
+            if self.mode == self.USER:
+              self.state = self.FEEDBACK
+          else:
+            self.counter-=1;
+
 
       elif e.type == KINECTEVENT:
           skeletons = e.skeletons
@@ -448,8 +461,7 @@ class PykinectInt:
           kinect.camera.elevation_angle = 2
       if self.state==self.IDLE:
         self.collecting();
-      if self.state==self.WAIT:
-        self.wait();
+      
 
 
 class myThread (threading.Thread):
