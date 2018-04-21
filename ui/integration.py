@@ -152,7 +152,7 @@ class PykinectInt:
     self.clock_image = resize((size,size), ou_img="images/_clock.gif");
     
     #####Disp objects
-    if self.video_display:
+    
     self.clock = Clock(size);
     ##########
     self.counter = self.COUNTER;
