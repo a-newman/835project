@@ -291,8 +291,6 @@ class PykinectInt:
     surf = pygame.Surface((200,200));
     txt_render = TextRender(surf,self.test_word, font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
     self.screen.blit(surf,(0,self.DEPTH_WINSIZE[1]));
-  
-
 
   def dispCount(self):
     #size = self.clock_image.get_width()
@@ -308,7 +306,9 @@ class PykinectInt:
 
 
   def dispProcessing(self):
-    pass 
+    surf = pygame.Surface((300,300));
+    txt_render = TextRender(surf,"processing...", font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
+    self.screen.blit(surf,(0,self.DEPTH_WINSIZE[1]));
   def dispSelectMenu(self):
     pass 
   def disp(self):
