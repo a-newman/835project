@@ -372,6 +372,7 @@ class PykinectInt:
 
     pygame.time.set_timer(RECORDEVENT, 1000);
     done = False
+    skeleton_counter = 0
     while not done:
       e = pygame.event.wait()
       self.dispInfo = pygame.display.Info()
@@ -383,7 +384,11 @@ class PykinectInt:
           if self.counter<=0:
             if not self.skeletal_map==[]:
               self.backend_data = deepcopy(self.skeletal_map)
-              print "number of data points: ", len(self.backend_data)
+              print "#################"
+              print "collected number", len(self.backend_data)
+              print "recieved number", skeleton_counter;
+              print "################"
+              skeleton_counter=0
               # for i in range(len(self.backend_data)):
               #   for skln in self.backend_data[i].skeletons:
               #     print "spine ",skln.spine, "head. ",skln.head
@@ -404,8 +409,10 @@ class PykinectInt:
           skeletons = e.skeletons
           ###COLLECTING DATA
           if self.state==self.RECORDING:
+            skeleton_counter+=1;
             self.collect(skeletons);
           if self.draw_skeleton:
+            
             self.draw_skeletons(skeletons)
             pygame.display.update()
       elif e.type == KEYDOWN:
