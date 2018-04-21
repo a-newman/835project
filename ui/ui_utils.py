@@ -267,7 +267,7 @@ def resize(size,img = 'ui/images/clock.gif',ou_img = 'ui/images/clock.gif'):
 
 
 class Clock:
-  def __init__(self, size, in_img="images/clock.gif",out_img="images/clock.gif"):
+  def __init__(self, size, in_img="ui/images/clock.gif",out_img="ui/images/clock.gif"):
     self.surf  = pygame.Surface((size,size));
     self.in_img = in_img;
     self.out_img = out_img;
@@ -279,7 +279,7 @@ class Clock:
     self.background_color=(0,0,0)
     self.clock_color = (0,255,0);
 
-    self.font = pygame.font.Font("fonts/font.ttf", int(self.size*.8));
+    self.font = pygame.font.Font("ui/fonts/font.ttf", int(self.size*.8));
     
   def draw(self,count=0):
     font_surf = self.font.render(str(count), True, self.clock_color)
