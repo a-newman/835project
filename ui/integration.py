@@ -149,7 +149,7 @@ class PykinectInt:
       size = self.dispInfo.current_w-self.VIDEO_WINSIZE[0];
     else:
       size = self.dispInfo.current_w-self.DEPTH_WINSIZE[0];
-    #self.clock_image = resize((size,size), ou_img="ui/images/_clock.gif");
+    self.clock_image = resize((size,size), ou_img="ui/images/_clock.gif");
     
     #####Disp objects
     
@@ -295,11 +295,11 @@ class PykinectInt:
 
 
   def dispCount(self):
-    #size = self.clock_image.get_width()
-    #surf = pygame.Surface((size,size));
-    #surf.blit(self.clock_image,(0,0))
-    #txt_render = TextRender(surf,str(self.counter), font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
-    surf = self.clock.draw(self.counter);
+    size = self.clock_image.get_width()
+    surf = pygame.Surface((size,size));
+    surf.blit(self.clock_image,(0,0))
+    txt_render = TextRender(surf,str(self.counter), font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
+    #surf = self.clock.draw(self.counter);
     if self.video_display:
       self.screen.blit(surf,(self.VIDEO_WINSIZE[0],0));
     else:
