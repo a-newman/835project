@@ -21,6 +21,7 @@ from copy import deepcopy
 import time
 import ctypes
 from ui_utils import TextRender,CircularArray,Clock ,resize
+from button import Button
 import threading
 
 import pykinect
@@ -115,17 +116,20 @@ _PyObject_AsWriteBuffer.argtypes = [ctypes.py_object,
 class PykinectInt:
   DEPTH_WINSIZE = 320,240
   VIDEO_WINSIZE = 640,480
-  ###states
-  IDLE = 0;
-  RECORDING = 1; 
-  FEEDBACK = 2;
-  WAIT = 3;
+  ###STATES
+  SETUP = 0
+  RECORDING = 1
+  FEEDBACK = 2
+  READY = 3
   ###modes
   USER = 0;
   TRAINING = 1;
-  ####
-  COUNTER = 2
-  PROCESSING = 2;
+  #### Limits
+  READY_COUNTER=2;
+  RECONDING_COUNTER=2;
+  FEEDBACK_COUNTER = 3;
+  WAIT_COUNTER=2;
+  
 
   def __init__(self,screen,backend = {}):
     self.screen = screen;
@@ -156,9 +160,43 @@ class PykinectInt:
     
     self.clock = Clock(min(size,self.DEPTH_WINSIZE[1]));
     ##########
-    self.counter = self.COUNTER;
+    self.counter = self.READY_COUNTER;
     self.action = Text(self.screen,w=100, h=50,pos=(485,0),text=self.test_word,color=THECOLORS['white']);
     self.count = Text(self.screen,w=100, h=100,pos=(485,55),text=str(self.counter),color=THECOLORS['white']);
+
+    ####general state display paramters
+    self.mergin_side = 20;
+    self.mergin_top = 20;
+    ###top bar
+    self.top_bar_size = (self.dispInfo.current_w-2*self.mergin_side,70);
+    self.topbar = bars.topBar(self.top_bar_size,pos=(self.mergin_side,self.mergin_side));
+    ###side bar
+    self.side_bar_w = 100;
+    self.side_bar_h = self.dispInfo.current_h-self.mergin_top*2-self.top_bar_size[1];
+    self.side_bar_pos = (self.mergin_side,self.top_bar_size[1]+self.mergin_top);
+    ###word bar
+    w = self.dispInfo.current_w-self.side_bar_w-2*self.mergin_side
+    self.word_bar_size = (w,70);
+    self.word_bar_pos = (self.mergin_side+self.side_bar_w,self.mergin_side+self.top_bar_size[1])
+    self.word_bar = wordBar(self.word_bar_size,self.test_word,pos=self.word_bar_pos)
+    ###camera feedback pos
+    self.camera_feed_pos = (self.mergin_side+self.side_bar_w,self.word_bar_pos[1]+self.word_bar_size[1]);
+    ####SETUP display parameters
+    self.train_button_pos = (100,100);
+    self.train_button = Button(pos=self.train_button_pos,text="TRAINING");
+    #++++++++++
+    self.user_button_pos = (100,100);
+    self.train_button = Button(pos=self.user_button_pos,text="USER");
+
+    ####READY display parameters
+    self.quit_button = Button(text="QUIT");
+    #++++++++++
+    self.setup_button = Button(text="SETUP");
+    #++++++
+    self.puase_button = Button(text="PUASE");
+    self.sidar_bar = Sidebar(self.side_bar_pos,w=self.side_bar_w,h=self.side_bar_h,buttons=[self.quit_button,self.puase_button,self.setup_button])
+    ####RECODRING display parameters 
+    ####FEEDBACK parameters
 
   def surface_to_array(self,surface):
     buffer_interface = surface.get_buffer()
@@ -288,81 +326,34 @@ class PykinectInt:
       pygame.display.update()
 
 
-  def dispWord(self):
-    surf = pygame.Surface((400,400));
-    txt_render = TextRender(surf,self.test_word, font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
-    self.screen.blit(surf,(0,self.DEPTH_WINSIZE[1]));
-
-  def dispCount(self):
-    #size = self.clock_image.get_width()
-    #surf = pygame.Surface((size,size));
-    #surf.blit(self.clock_image,(0,0))
-    #txt_render = TextRender(surf,str(self.counter), font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
-    surf = self.clock.draw(self.counter);
-    if self.video_display:
-      self.screen.blit(surf,(self.VIDEO_WINSIZE[0],0));
-    else:
-      self.screen.blit(surf,(self.DEPTH_WINSIZE[0],0))
-
-
-
-  def dispProcessing(self):
-    surf = pygame.Surface((400,400));
-    txt_render = TextRender(surf,"wait", font_color=THECOLORS['red'], hover_color=THECOLORS['green']).show();
-    self.screen.blit(surf,(0,self.DEPTH_WINSIZE[1]));
-  def dispSelectMenu(self):
+  def setup_display_handler(self):
+    ##display two buttons 
+    pass 
+  def ready_display_handler(self):
+    pass 
+  def recording_display_handler(self):
+    pass 
+  def wait_display_handler(self):
+    pass 
+  def feedback_display_handler(self):
     pass 
   def disp(self):
-    if self.state == self.RECORDING:
-      self.dispWord();
-      self.dispCount();
-    if self.state == self.WAIT:
-      #print "waiting!!!"
-      self.dispProcessing();
-    if self.state == self.IDLE:
-      self.dispSelectMenu()
-
-  def idle(self):
-    self.state = self.RECORDING;
-
-
-
-
-
-  def collecting(self):
-    recording = True;
-    e = pygame.event.wait();
-    if e.type==RECORDEVENT:
-      if self.counter<=0:
-        self.backend_data = deepcopy(self.skeletal_map)
-        self.skeletal_map = []
-
-        thread = myThread(self.backend['save_sequence'], self);
-
-        thread.start()
-        self.state = self.WAIT;
-        self.backend_wait=True;
-        self.counter=self.COUNTER;
-
-      else:
-        self.counter-=1;
-    elif e.type == KINECTEVENT:
-      print "collecting"
-      skeletons = e.skeletons
-      self.collect(skeletons);
-    
-  def wait(self):
-    #print "waiting "
-    if not self.backend_wait:
-      if self.mode == self.TRAINING:
-        self.state = self.RECORDING;
-        self.test_word=self.wordlist.roll();
-      if self.mode == self.USER:
-        self.state = self.FEEDBACK
+    if self.state==self.SETUP:
+      self.setup_display_handler()
+    elif self.state==self.READY:
+      self.ready_display_handler()
+    elif self.state==self.RECORDING:
+      self.recording_display_handler();
+    elif self.state==self.WAIT:
+      self.wait_display_handler();
+    elif self.state==self.FEEDBACK:
+      self.feedback_display_handler()
+    else:
+      print "illigal state!"
 
 
   def loop(self):
-    pygame.display.set_caption('Python Kinect Demo')
+    pygame.display.set_caption('Loader than words')
     self.screen.fill(THECOLORS["black"])
 
 
@@ -398,6 +389,7 @@ class PykinectInt:
         done = True
         break
       elif e.type == RECORDEVENT:
+        ##recording
         if self.state == self.RECORDING:
           if self.counter<=0:
             if not self.skeletal_map==[]:
@@ -408,26 +400,55 @@ class PykinectInt:
               print ""
               skeleton_counter=0
               self.skeletal_map = []
-
-              thread = myThread(self.backend['save_sequence'], self);
+              if self.mode==self.USER:
+                thread = myThread(self.backend['get_classification'], self);
+              if self.mode == TRAINING:
+                thread = myThread(self.backend['save_sequence'], self);
 
               thread.start()
-            self.state = self.WAIT;
-            self.backend_wait=True;
-            self.counter=self.PROCESSING;
+            if self.mode == self.TRAINING:
+              self.state = self.READY;
+              self.counter=self.READY_COUNTER;
+            if self.mode = self.USER:
+              self.state = self.WAIT;
+              self.state = self.WAIT_COUNTER
 
           else:
             self.counter-=1;
+
+        ##waiting 
         elif self.state==self.WAIT:
+          if not backend_wait:
+            self.state = self.FEEDBACK:
+            self.counter = self.FEEDBACK_COUNTER;
+            self.backend_wait=True;
+          elif self.counter<=0:
+            self.state = self.FEEDBACK
+            self.counter = self.FEEDBACK_COUNTER;
+            self.word = "None";
+            self.backend_wait = True;
+          else:
+            self.counter-=1;
+        ##feedback state
+        elif self.state == self.FEEDBACK:
+          if counter<=0:
+            self.counter = self.READY_COUNTER
+            self.state = self.READY
+          else:
+            self.counter-=1
+        ## state READY->countdown to word 
+        elif self.state==self.READY:
           if self.counter<=0:
             if self.mode == self.TRAINING:
               self.state = self.RECORDING;
               self.test_word=self.wordlist.roll();
-              self.counter = self.COUNTER;
+              self.counter = self.RECORDING_COUNTER;
             if self.mode == self.USER:
-              self.state = self.FEEDBACK
+              self.state = self.RECORDING
+              self.counter = self.RECONDING_COUNTER
           else:
             self.counter-=1;
+
 
 
       elif e.type == KINECTEVENT:
@@ -459,8 +480,31 @@ class PykinectInt:
           kinect.camera.elevation_angle = kinect.camera.elevation_angle - 2
         elif e.key == K_x:
           kinect.camera.elevation_angle = 2
-      if self.state==self.IDLE:
-        self.collecting();
+      if e.type ==MOUSEBUTTONDOWN:
+        if self.state==self.SETUP:
+          ##if hovering mode: set the mode to mode that mode 
+          ##transition to next READY 
+          pass
+        if self.state == self.READY:
+          ##if hovering SETUP: back to hovering
+          ## if hovering PAUSE: pause
+          ## if quit then quit: leave the game 
+          pass 
+        if self.state == self.RECORDING:
+          ##if hovering SETUP: back to hovering
+          ## if hovering PAUSE: pause
+          ## if quit then quit: leave the game 
+          pass 
+        if self.state == self.WAIT:
+          ##if hovering SETUP: back to hovering
+          ## if hovering PAUSE: pause
+          ## if quit then quit: leave the game 
+          pass 
+        if self.state == self.FEEDBACK:
+          ##if hovering SETUP: back to hovering
+          ## if hovering PAUSE: pause
+          ## if quit then quit: leave the game e
+          pass 
       
 
 
@@ -479,11 +523,3 @@ def runUI(backend):
   screen = pygame.display.set_mode(WINSIZE,0,16)
   mems = PykinectInt(screen, backend = backend);
   mems.loop();
-
-
-# if __name__ == '__main__':
-#   WINSIZE = 800,640;
-#   screen_lock = thread.allocate()
-#   screen = pygame.display.set_mode(WINSIZE,0,16)
-#   mems = PykinectInt(screen, backend = backend);
-#   mems.loop();  
