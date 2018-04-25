@@ -119,10 +119,11 @@ class PykinectInt:
   DEPTH_WINSIZE = 320,240
   VIDEO_WINSIZE = 640,480
   ###STATES
-  SETUP = 0
-  RECORDING = 1
-  FEEDBACK = 2
-  READY = 3
+  SETUP = 0;
+  RECORDING = 1;
+  FEEDBACK = 2;
+  READY = 3;
+  WAIT = 4;
   ###modes
   USER = 0;
   TRAINING = 1;
@@ -302,7 +303,7 @@ class PykinectInt:
         if self.state==self.RECORDING:
           self.collect(self.skeletons);
 
-      self.screen.blit(depth_surface,(0,0))
+      self.screen.blit(depth_surface,self.camera_feed_pos)
       self.disp()
       pygame.display.update()
       #print "deleted!"
@@ -319,7 +320,7 @@ class PykinectInt:
       address = self.surface_to_array(vid_surface)
       frame.image.copy_bits(address)
       del address
-      self.screen.blit(vid_surface);
+      self.screen.blit(vid_surface,self.camera_feed_pos);
       if self.skeletons is not None and self.draw_skeleton:
         self.draw_skeletons(self.skeletons)
         if self.state==self.RECORDING:
