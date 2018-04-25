@@ -187,8 +187,8 @@ class PykinectInt:
     self.train_button_pos = (100,100);
     self.train_button = Button(pos=self.train_button_pos,text="TRAINING");
     #++++++++++
-    self.user_button_pos = (100,100);
-    self.train_button = Button(pos=self.user_button_pos,text="USER");
+    self.user_button_pos = (100,210);
+    self.user_button = Button(pos=self.user_button_pos,text="USER");
 
     ####READY display parameters
     self.quit_button = Button(text="QUIT");
@@ -330,7 +330,8 @@ class PykinectInt:
 
   def setup_display_handler(self):
     ##display two buttons 
-    pass 
+    self.screen.blit(self.train_button.show(),self.train_button.pos);
+    self.screen.blit(self.user_button.show(),self.user_button.pos)
   def ready_display_handler(self):
     pass 
   def recording_display_handler(self):
