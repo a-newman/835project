@@ -21,7 +21,9 @@ from copy import deepcopy
 import time
 import ctypes
 from ui_utils import TextRender,CircularArray,Clock ,resize
-from button import Button
+from button import Button;
+import topbar as bars
+from sidebar import Sidebar
 import threading
 
 import pykinect
@@ -142,7 +144,7 @@ class PykinectInt:
     self.DEPTH_WINSIZE = 320,240
     self.VIDEO_WINSIZE = 640,480
     self.skeletal_map = []
-    self.state = self.IDLE;
+    self.state = self.SETUP;
     self.mode = self.TRAINING;
     self.backend = backend;
     self.wordlist = CircularArray(backend['words'])
@@ -178,7 +180,7 @@ class PykinectInt:
     w = self.dispInfo.current_w-self.side_bar_w-2*self.mergin_side
     self.word_bar_size = (w,70);
     self.word_bar_pos = (self.mergin_side+self.side_bar_w,self.mergin_side+self.top_bar_size[1])
-    self.word_bar = wordBar(self.word_bar_size,self.test_word,pos=self.word_bar_pos)
+    self.word_bar = bars.wordBar(self.word_bar_size,self.test_word,pos=self.word_bar_pos)
     ###camera feedback pos
     self.camera_feed_pos = (self.mergin_side+self.side_bar_w,self.word_bar_pos[1]+self.word_bar_size[1]);
     ####SETUP display parameters
@@ -409,7 +411,7 @@ class PykinectInt:
             if self.mode == self.TRAINING:
               self.state = self.READY;
               self.counter=self.READY_COUNTER;
-            if self.mode = self.USER:
+            if self.mode == self.USER:
               self.state = self.WAIT;
               self.state = self.WAIT_COUNTER
 
@@ -419,7 +421,7 @@ class PykinectInt:
         ##waiting 
         elif self.state==self.WAIT:
           if not backend_wait:
-            self.state = self.FEEDBACK:
+            self.state = self.FEEDBACK;
             self.counter = self.FEEDBACK_COUNTER;
             self.backend_wait=True;
           elif self.counter<=0:
