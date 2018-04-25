@@ -1,6 +1,6 @@
 {
 	"classifier": "nn",
-	"dataset": "eval",
+	"dataset": "eval3",
 	"save_data": true,
 	"mutate_classifier": false
 }

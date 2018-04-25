@@ -5,7 +5,7 @@ from data.Gesture import DataSet, GestureSet, Sequence, Frame
 
 BASE_PATH = 'data/sets/'
 INDEX_PATH = BASE_PATH + 'index.json'
-ALLOW_DELETE = set(['train', 'test', 'Practice2'])
+ALLOW_DELETE = set(['train', 'test', 'eval'])
 
 def make_dset(name, safe=True): 
     # creates a new empty data set
@@ -89,6 +89,7 @@ def make_gesture(dset_name, gesture_name):
     return dset
 
 def add_gesture_example(dset_name, gesture_name, sequence): 
+    print("DSET NAME", dset_name)
     dset = _load_dset(dset_name)
     dset.store_gesture_example(gesture_name, sequence)
     _save_dset(dset)
