@@ -16,6 +16,7 @@
 
 from data_utils import *
 import thread
+import random
 import itertools
 from copy import deepcopy
 import time
@@ -129,7 +130,7 @@ class PykinectInt:
   TRAINING = 1;
   #### Limits
   READY_COUNTER=2;
-  RECONDING_COUNTER=2;
+  RECORDING_COUNTER=2;
   FEEDBACK_COUNTER = 3;
   WAIT_COUNTER=2;
   
@@ -159,9 +160,7 @@ class PykinectInt:
       size = self.dispInfo.current_w-self.DEPTH_WINSIZE[0];
     #self.clock_image = resize((size,size), ou_img="ui/images/_clock.gif");
     
-    #####Disp objects
     
-    self.clock = Clock(min(size,self.DEPTH_WINSIZE[1]));
     ##########
     self.counter = self.READY_COUNTER;
     self.action = Text(self.screen,w=100, h=50,pos=(485,0),text=self.test_word,color=THECOLORS['white']);
@@ -172,7 +171,8 @@ class PykinectInt:
     self.mergin_top = 20;
     ###top bar
     self.top_bar_size = (self.dispInfo.current_w-2*self.mergin_side,70);
-    self.topbar = bars.topBar(self.top_bar_size,pos=(self.mergin_side,self.mergin_side));
+    self.topbar_pos = (self.mergin_side,self.mergin_side)
+    self.topbar = bars.topBar(self.top_bar_size,pos=self.topbar_pos);
     ###side bar
     self.side_bar_w = 100;
     self.side_bar_h = self.dispInfo.current_h-self.mergin_top*2-self.top_bar_size[1];
@@ -181,7 +181,7 @@ class PykinectInt:
     w = self.dispInfo.current_w-self.side_bar_w-2*self.mergin_side
     self.word_bar_size = (w,70);
     self.word_bar_pos = (self.mergin_side+self.side_bar_w,self.mergin_side+self.top_bar_size[1])
-    self.word_bar = bars.wordBar(self.word_bar_size,self.test_word,pos=self.word_bar_pos)
+    
     ###camera feedback pos
     self.camera_feed_pos = (self.mergin_side+self.side_bar_w,self.word_bar_pos[1]+self.word_bar_size[1]);
     ####SETUP display parameters
@@ -190,6 +190,7 @@ class PykinectInt:
     #++++++++++
     self.user_button_pos = (100,210);
     self.user_button = Button(pos=self.user_button_pos,text="USER");
+    self.setup_sidebar = Sidebar(self.side_bar_pos,w=self.side_bar_w,h=self.side_bar_h,buttons=[self.train_button,self.user_button])
 
     ####READY display parameters
     self.quit_button = Button(text="QUIT");
@@ -198,6 +199,9 @@ class PykinectInt:
     #++++++
     self.puase_button = Button(text="PUASE");
     self.sidar_bar = Sidebar(self.side_bar_pos,w=self.side_bar_w,h=self.side_bar_h,buttons=[self.quit_button,self.puase_button,self.setup_button])
+    #++++++
+    self.clock_pos = (self.camera_feed_pos[0]+self.DEPTH_WINSIZE[0]+10,self.camera_feed_pos[1])
+    self.clock = Clock(min(size,self.DEPTH_WINSIZE[1]));
     ####RECODRING display parameters 
     ####FEEDBACK parameters
 
@@ -264,12 +268,16 @@ class PykinectInt:
         curend = self.skeleton_to_depth_image(next, self.VIDEO_WINSIZE[0], self.VIDEO_WINSIZE[1])
         if curstart[0]<self.VIDEO_WINSIZE[0] and curstart[1]<self.VIDEO_WINSIZE[1]:
           if curend[0]<self.VIDEO_WINSIZE[0] and curend[1]<self.VIDEO_WINSIZE[1]:
+            curstart = curstart[0]+self.camera_feed_pos[0],curstart[1]+self.camera_feed_pos[1];
+            curend = curend[0]+self.camera_feed_pos[0],curend[1]+self.camera_feed_pos[1]
             pygame.draw.line(self.screen, SKELETON_COLORS[index], curstart, curend, width);
       else:
         curstart = self.skeleton_to_depth_image(start, self.DEPTH_WINSIZE[0], self.DEPTH_WINSIZE[1]) 
         curend = self.skeleton_to_depth_image(next, self.DEPTH_WINSIZE[0], self.DEPTH_WINSIZE[1])
         if curstart[0]<self.DEPTH_WINSIZE[0] and curstart[1]<self.DEPTH_WINSIZE[1]:
           if curend[0]<self.DEPTH_WINSIZE[0] and curend[1]<self.DEPTH_WINSIZE[1]:
+            curstart = curstart[0]+self.camera_feed_pos[0],curstart[1]+self.camera_feed_pos[1];
+            curend = curend[0]+self.camera_feed_pos[0],curend[1]+self.camera_feed_pos[1]
             pygame.draw.line(self.screen, SKELETON_COLORS[index], curstart, curend, width);
       start = next
   def draw_skeletons(self,skeletons):
@@ -280,7 +288,7 @@ class PykinectInt:
       else:
         HeadPos = self.skeleton_to_depth_image(data.SkeletonPositions[JointId.Head], self.DEPTH_WINSIZE[0], self.DEPTH_WINSIZE[1])
       self.draw_skeleton_data(data, index, SPINE, 10)
-      pygame.draw.circle(self.screen, SKELETON_COLORS[index], (int(HeadPos[0]), int(HeadPos[1])), 20, 0)
+      pygame.draw.circle(self.screen, SKELETON_COLORS[index], (int(HeadPos[0])+self.camera_feed_pos[0], self.camera_feed_pos[1]+int(HeadPos[1])), 20, 0)
   
       # drawing the limbs
       self.draw_skeleton_data(data, index, LEFT_ARM)
@@ -331,12 +339,20 @@ class PykinectInt:
 
   def setup_display_handler(self):
     ##display two buttons 
-    self.screen.blit(self.train_button.show(),self.train_button.pos);
-    self.screen.blit(self.user_button.show(),self.user_button.pos)
+    self.screen.blit(self.topbar,self.topbar_pos);
+    self.screen.blit(self.setup_sidebar.draw_buttons(),self.side_bar_pos);
   def ready_display_handler(self):
-    pass 
+    word_bar = bars.wordBar(self.word_bar_size,self.test_word,pos=self.word_bar_pos)
+    self.screen.blit(self.topbar,self.topbar_pos);
+    self.screen.blit(word_bar,self.word_bar_pos);
+    self.screen.blit(self.clock.draw(count=self.counter),self.clock_pos)
+    self.screen.blit(self.sidar_bar.draw_buttons(),self.side_bar_pos);
   def recording_display_handler(self):
-    pass 
+    word_bar = bars.wordBar(self.word_bar_size,self.test_word,pos=self.word_bar_pos)
+    self.screen.blit(self.topbar,self.topbar_pos);
+    self.screen.blit(word_bar,self.word_bar_pos);
+    self.screen.blit(self.sidar_bar.draw_buttons(),self.side_bar_pos);
+    ##########Recording simple
   def wait_display_handler(self):
     pass 
   def feedback_display_handler(self):
@@ -387,6 +403,10 @@ class PykinectInt:
     done = False
     skeleton_counter = 0
     while not done:
+      r = random.randint(0,34);
+      g = random.randint(0,34);
+      b = random.randint(0,34);
+      background_color = (r,g,b);
       e = pygame.event.wait()
       self.dispInfo = pygame.display.Info()
       if e.type == pygame.QUIT:
@@ -396,6 +416,8 @@ class PykinectInt:
         ##recording
         if self.state == self.RECORDING:
           if self.counter<=0:
+            with self.screen_lock:
+              self.screen.fill(background_color)
             if not self.skeletal_map==[]:
               self.backend_data = deepcopy(self.skeletal_map)
               print ""
@@ -406,7 +428,7 @@ class PykinectInt:
               self.skeletal_map = []
               if self.mode==self.USER:
                 thread = myThread(self.backend['get_classification'], self);
-              if self.mode == TRAINING:
+              if self.mode == self.TRAINING:
                 thread = myThread(self.backend['save_sequence'], self);
 
               thread.start()
@@ -416,6 +438,7 @@ class PykinectInt:
             if self.mode == self.USER:
               self.state = self.WAIT;
               self.state = self.WAIT_COUNTER
+            self.test_word=self.wordlist.roll();
 
           else:
             self.counter-=1;
@@ -423,33 +446,42 @@ class PykinectInt:
         ##waiting 
         elif self.state==self.WAIT:
           if not backend_wait:
+            with self.screen_lock:
+              self.screen.fill(background_color)
             self.state = self.FEEDBACK;
             self.counter = self.FEEDBACK_COUNTER;
             self.backend_wait=True;
           elif self.counter<=0:
+            with self.screen_lock:
+              self.screen.fill(background_color)
             self.state = self.FEEDBACK
             self.counter = self.FEEDBACK_COUNTER;
             self.word = "None";
             self.backend_wait = True;
+
           else:
             self.counter-=1;
         ##feedback state
         elif self.state == self.FEEDBACK:
-          if counter<=0:
+          if self.counter<=0:
+            with self.screen_lock:
+              self.screen.fill(background_color)
             self.counter = self.READY_COUNTER
             self.state = self.READY
+
           else:
             self.counter-=1
         ## state READY->countdown to word 
         elif self.state==self.READY:
           if self.counter<=0:
+            with self.screen_lock:
+              self.screen.fill(background_color)
             if self.mode == self.TRAINING:
               self.state = self.RECORDING;
-              self.test_word=self.wordlist.roll();
               self.counter = self.RECORDING_COUNTER;
             if self.mode == self.USER:
               self.state = self.RECORDING
-              self.counter = self.RECONDING_COUNTER
+              self.counter = self.RECORDING_COUNTER
           else:
             self.counter-=1;
 
@@ -487,8 +519,15 @@ class PykinectInt:
       if e.type ==MOUSEBUTTONDOWN:
         if self.state==self.SETUP:
           ##if hovering mode: set the mode to mode that mode 
-          ##transition to next READY 
-          pass
+          ##transition to next READY
+          if self.train_button.is_hovered():
+            self.mode = self.TRAINING;
+            self.state = self.READY
+            self.counter=self.READY_COUNTER;
+          elif self.user_button.is_hovered():
+            self.mode=self.USER
+            self.state = self.READY;
+            self.counter = self.READY_COUNTER;
         if self.state == self.READY:
           ##if hovering SETUP: back to hovering
           ## if hovering PAUSE: pause

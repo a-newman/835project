@@ -4,7 +4,7 @@ from pygame.color import THECOLORS
 
 class Sidebar:
   def __init__(self,pos,w=200,h=800,buttons=[]):
-    self.pos = (100,100)
+    self.pos = pos
     self.buttons = buttons;
     self.side_mergin = 10;
     self.top_mergin = 10;
