@@ -6,61 +6,82 @@ from recognize.dummy_classifier import DummyClassifier
 from recognize.net_classifier import NetClassifier
 import random
 
-dset_to_test = "Practice2"
-num_gestures = 3
+dset_to_test = "mp2"
+num_gestures = 10
+
+trainname = "train2"
+testname = "test2"
 
 # for each gesture, we wanna select num_gestures examples of each gesture as a "train" set 
 # the rest is a test set 
 
-ds = dset_ops._load_dset(dset_to_test)
+def make_dsets(): 
+    ds = dset_ops._load_dset(dset_to_test)
 
-# make temp train and test dsets 
-dset_ops.make_dset("train", safe=False)
-dset_ops.make_dset("test", safe=False)
+    # make temp train and test dsets 
+    dset_ops.make_dset(trainname, safe=False)
+    dset_ops.make_dset(testname, safe=False)
 
-for label, g in ds.gestures.items(): 
-    dset_ops.make_gesture("train", label)
-    dset_ops.make_gesture("test", label)
+    for label, g in ds.gestures.items(): 
+        train_dset = dset_ops.make_gesture(trainname, label)
+        test_dset = dset_ops.make_gesture(testname, label)
 
-    sequences = g.sequences
-    random.shuffle(sequences)
-    trainseq = sequences[:num_gestures]
-    testseq = sequences[num_gestures:]
+        sequences = g.sequences
+        random.shuffle(sequences)
+        trainseq = sequences[:num_gestures]
+        testseq = sequences[num_gestures:]
 
-    for trainelt in trainseq: 
-        dset_ops.add_gesture_example("train", label, trainelt)
+        for trainelt in trainseq: 
+            print("adding example train")
+            train_dset.store_gesture_example(label, trainelt)
+            #dset_ops.add_gesture_example("train", label, trainelt, save=False)
 
-    for testelt in testseq: 
-        dset_ops.add_gesture_example("test", label, testelt)
+        for testelt in testseq: 
+            print("adding example test")
+            test_dset.store_gesture_example(label, testelt)
+            #dset_ops.add_gesture_example("test", label, testelt, save=False)
 
-classifiers = [] 
-classifiers.append(DTClassifier(dset_to_test))
+    dset_ops._save_dset(train_dset)
+    dset_ops._save_dset(test_dset)
 
-log = ""
-accuracies = {} 
-for i, c in enumerate(classifiers): 
-    n = 0 
-    correct = 0
-    log += "Testing classifier %d\n" % i
-    c.prep()
-    c.train()
-    testset = dset_ops._load_dset("test")
-    for label, g in testset.gestures.items(): 
-        log += "Testing gesture %s\n" % label
-        for seq in g.sequences:
-            n += 1
-            prediction = c.classify(seq)
-            log += "Predicted %s\n" % prediction
-            if prediction == label: 
-                correct += 1 
-    acc = float(correct)/n
-    accuracies[i] = acc
-    log +=  "Accuracy for classifier %d: %f\n\n" % (i, acc)
-    print("PRINTING LOG")
-    print(log)
-    print("ACCURACIES")
-    print(accuracies)
 
-# delete temp databases
-dset_ops.delete_dset("test")
-dset_ops.delete_dset("train")
+def test(): 
+    classifiers = [] 
+    classifiers.append(NetClassifier(trainname))
+
+    log = ""
+    accuracies = {} 
+    for i, c in enumerate(classifiers): 
+        n = 0 
+        correct = 0
+        log += "Testing classifier %d\n" % i
+        c.prep()
+        print("training") 
+        c.train()
+        print("evaluating")
+        testset = dset_ops._load_dset(testname)
+        for label, g in testset.gestures.items(): 
+            log += "Testing gesture %s\n" % label
+            for seq in g.sequences:
+                n += 1
+                prediction = c.classify(seq)
+                log += "Predicted %s\n" % prediction
+                if prediction == label: 
+                    correct += 1 
+        acc = float(correct)/n
+        accuracies[i] = acc
+        log +=  "Accuracy for classifier %d: %f\n\n" % (i, acc)
+        print("PRINTING LOG")
+        print(log)
+        print("ACCURACIES")
+        print(accuracies)
+        with open('log.txt', 'w') as outfile: 
+            outfile.write(log)
+
+# # delete temp databases
+# dset_ops.delete_dset("test")
+# dset_ops.delete_dset("train")
+
+if __name__ == "__main__": 
+    make_dsets()
+    test()

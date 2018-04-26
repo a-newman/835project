@@ -1,3 +1,5 @@
+import numpy as np 
+
 class DataSet: 
     """ 
     Multiple gesture sets with labels.
@@ -45,11 +47,18 @@ class Sequence:
     def normalize(self): 
         # rn, will normalize by translating the whole skeleton so that the avg position of the center hip is 
         # in the same place 
+        #print("normalizing")
         hipdata = np.array([f.data_for(BODYPARTS.HIP_CENTER) for f in self.frames])
-        print("hipdata", hipdata.shape)
-        avgs = np.mean(hipdata)
-        print("avgs", hipdata.shape)
-        whole_frame_mean = "blah"
+        avgs = np.mean(hipdata, axis=0)
+        framelen = len(self.frames[0].frame)
+        #print("framelen", framelen)
+        whole_frame_mean = np.hstack([avgs for _ in range(int(framelen/3))])
+        newframes = [Frame(f.frame - whole_frame_mean) for f in self.frames]
+        seq = Sequence(newframes, self.timestamp)
+        return seq
+        # print("newframes", len(newframes))
+        # print(newframes)
+        # return newframes
 
 
 class Frame:

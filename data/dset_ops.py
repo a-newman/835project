@@ -31,6 +31,8 @@ def make_dset(name, safe=True):
 
     _save_index(index)
 
+    return dset
+
 def delete_dset(name): 
     if name not in ALLOW_DELETE: # extra check to make sure you mean it 
         raise RuntimeError("Delete is not enabled for this set.")
@@ -89,7 +91,6 @@ def make_gesture(dset_name, gesture_name):
     return dset
 
 def add_gesture_example(dset_name, gesture_name, sequence): 
-    print("DSET NAME", dset_name)
     dset = _load_dset(dset_name)
     dset.store_gesture_example(gesture_name, sequence)
     _save_dset(dset)

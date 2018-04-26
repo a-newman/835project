@@ -72,6 +72,7 @@ class NNClassifier(Classifier):
 
     def _get_feat_vec(self, seq): 
         # reduce to the right number of frames 
+        seq = seq.normalize()
         frames = resize_seq(seq.frames, self.num_frames)
         vec = np.hstack([np.array(f.frame) for f in frames])
         return vec

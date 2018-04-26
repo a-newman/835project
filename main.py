@@ -82,10 +82,11 @@ def _sf_to_sequence(scan_frame_list):
 		return Sequence(frames, timestamp)
 
 def _get_closest_skel(skeletons): 
-	metric = lambda skel: sum([elt**2 for elt in skel.hip_center])**.5 
-	metrics = [metric(skel) for skel in skeletons]
-	idx = np.argmin(metrics)
-	return skeletons[idx]
+	# metric = lambda skel: sum([elt**2 for elt in skel.hip_center])**.5 
+	# metrics = [metric(skel) for skel in skeletons]
+	# idx = np.argmin(metrics)
+	# return skeletons[idx]
+	return skeletons[0]
 
 if __name__ == "__main__": 
 	# load the config file 
