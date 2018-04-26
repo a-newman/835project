@@ -5,7 +5,7 @@ import random as rn;
 
 def topBar(size,pos=(0,0)):
 
-  bar = Button(dims=size,text = "Louder than Word");
+  bar = Button(dims=size,text = "Louder than words");
   bar.pos = pos
   bar.back_color_n = (129,120,13);
   bar.back_color_h = (129,120,13);
