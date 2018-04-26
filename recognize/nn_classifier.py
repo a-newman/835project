@@ -5,7 +5,7 @@ import heapq
 import numpy as np
 
 class NNClassifier(Classifier): 
-    def __init__(self, dset_name, k=1, num_frames=30): 
+    def __init__(self, dset_name, k=3, num_frames=30): 
         super(NNClassifier, self).__init__()
         self.dset_name = dset_name
         self.k = k
