@@ -19,6 +19,8 @@ tmp_testing_gesture = None # buffer a gesture in testing mode here; wait for fee
 def process_gesture_test(ui_object): 
 	#sleep(2)
 	seq = _sf_to_sequence(ui_object.backend_data)
+	print "length of the seq: ", len(seq.frames);
+	print "length of the data: ", len(ui_object.backend_data)
 	if (seq): 
 		tmp_testing_gesture = seq
 		pred_gesture = CLASSIFIER.classify(seq)
@@ -31,7 +33,9 @@ def process_gesture_test(ui_object):
 def process_gesture_train(ui_object): 
 	data = ui_object.backend_data
 	gesture_name = ui_object.test_word
+	print "word", gesture_name
 	seq = _sf_to_sequence(data)
+
 	if (seq): 
 		dset_ops.add_gesture_example(DATASET_NAME, gesture_name, seq)
 	ui_object.backend_wait = False
