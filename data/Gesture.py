@@ -44,21 +44,40 @@ class Sequence:
         self.frames = frames
         self.timestamp = timestamp
 
+    # def normalize(self): 
+    #     # rn, will normalize by translating the whole skeleton so that the avg position of the center hip is 
+    #     # in the same place 
+    #     #print("normalizing")
+    #     hipdata = np.array([f.data_for(BODYPARTS.HIP_CENTER) for f in self.frames])
+    #     avgs = np.mean(hipdata, axis=0)
+    #     framelen = len(self.frames[0].frame)
+    #     #print("framelen", framelen)
+    #     whole_frame_mean = np.hstack([avgs for _ in range(int(framelen/3))])
+    #     newframes = [Frame(f.frame - whole_frame_mean) for f in self.frames]
+    #     seq = Sequence(newframes, self.timestamp)
+    #     return seq
+    #     # print("newframes", len(newframes))
+    #     # print(newframes)
+    #     # return newframes
+
     def normalize(self): 
-        # rn, will normalize by translating the whole skeleton so that the avg position of the center hip is 
-        # in the same place 
-        #print("normalizing")
-        hipdata = np.array([f.data_for(BODYPARTS.HIP_CENTER) for f in self.frames])
-        avgs = np.mean(hipdata, axis=0)
+        mins = [10000, 100000, 10000]
+        maxes = [-100000, -100000, -1000000]
+        for frame in self.frames: 
+            for i in range(0, len(frame.frame), 3): 
+                elts = frame.frame[i:i+3]
+                mins = np.minimum(mins, elts)
+                maxes = np.maximum(maxes, elts)
+        # we now have corners of a bounding box for the action. subtract the mins from all coords to get 
+        # a corner on 0, 0
         framelen = len(self.frames[0].frame)
-        #print("framelen", framelen)
-        whole_frame_mean = np.hstack([avgs for _ in range(int(framelen/3))])
-        newframes = [Frame(f.frame - whole_frame_mean) for f in self.frames]
-        seq = Sequence(newframes, self.timestamp)
-        return seq
-        # print("newframes", len(newframes))
-        # print(newframes)
-        # return newframes
+        whole_frame_mins = np.hstack([mins for _ in range(int(framelen/3))])
+        newframes = [Frame(f.frame - whole_frame_mins) for f in self.frames]
+        # now scale to put everything in the unit cube 
+        inv_diffs = np.reciprocal(maxes - mins)
+        whole_frame_factors = np.hstack([inv_diffs for _ in range(int(framelen/3))])
+        newframes = [Frame(np.multiply(whole_frame_factors, f.frame)) for f in newframes]
+        return Sequence(newframes, self.timestamp)
 
 
 class Frame:
