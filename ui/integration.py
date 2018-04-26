@@ -395,7 +395,7 @@ class PykinectInt:
 
 
   def loop(self):
-    pygame.display.set_caption('Loader than words')
+    pygame.display.set_caption('Louder than words')
     self.screen.fill(THECOLORS["black"])
 
 
