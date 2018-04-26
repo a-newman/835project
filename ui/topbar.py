@@ -26,7 +26,7 @@ def congrats(size,pos = (0,0)):
   bar.back_color_h = (3,32,11);
   bar.font_color = (2,255,3);
   return bar.show();
-def Sorry(size,word,pos = (0,0)):
+def sorry(size,word,pos = (0,0)):
   bar =  Button(dims=size,text = "Sorry! Seems Like You had: "+word);
   bar.pos = pos;
   bar.back_color_n = (12,12,55);
