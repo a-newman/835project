@@ -198,7 +198,7 @@ class PykinectInt:
     #++++++++++
     self.setup_button = Button(text="SETUP");
     #++++++
-    self.puase_button = Button(text="PUASE");
+    self.puase_button = Button(text="PAUSE");
     self.sidar_bar = Sidebar(self.side_bar_pos,w=self.side_bar_w,h=self.side_bar_h,buttons=[self.quit_button,self.puase_button,self.setup_button])
     #++++++
     self.clock_pos = (self.camera_feed_pos[0]+self.DEPTH_WINSIZE[0]+10,self.camera_feed_pos[1])
