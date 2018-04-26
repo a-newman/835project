@@ -159,6 +159,7 @@ class PykinectInt:
     else:
       size = self.dispInfo.current_w-self.DEPTH_WINSIZE[0];
     #self.clock_image = resize((size,size), ou_img="ui/images/_clock.gif");
+    self.sent_data = False;
     
     
     ##########
@@ -364,15 +365,20 @@ class PykinectInt:
   def feedback_display_handler(self):
     self.screen.blit(self.topbar,self.topbar_pos);
     self.screen.blit(self.sidar_bar.draw_buttons(),self.side_bar_pos);
-    if self.test_word==self.word:
-      ### Display congrats
-      feed = bars.congrats(self.feedback_bar_size,pos = self.feedback_bar_pos);
-      self.screen.blit(feed,self.feedback_bar_pos)
+    if self.sent_data:
+      if self.test_word==self.word:
+        ### Display congrats
+        feed = bars.congrats(self.feedback_bar_size,pos = self.feedback_bar_pos);
+        self.screen.blit(feed,self.feedback_bar_pos)
 
+      else:
+        ### Display sorry
+        feed =  bars.sorry(self.feedback_bar_size,self.word,pos = self.feedback_bar_pos)
+        self.screen.blit(feed, self.feedback_bar_pos);
     else:
-      ### Display sorry
-      feed =  bars.sorry(self.feedback_bar_size,self.word,pos = self.feedback_bar_pos)
+      feed= bars.noData(self.feedback_bar_size,pos = self.feedback_bar_pos);
       self.screen.blit(feed, self.feedback_bar_pos);
+
   def disp(self):
     if self.state==self.SETUP:
       self.setup_display_handler()
@@ -415,7 +421,7 @@ class PykinectInt:
     print('     u - Increase elevation angle')
     print('     j - Decrease elevation angle')
 
-    pygame.time.set_timer(RECORDEVENT, 800);
+    pygame.time.set_timer(RECORDEVENT, 1000);
     done = False
     skeleton_counter = 0
     while not done:
@@ -442,12 +448,15 @@ class PykinectInt:
               print ""
               skeleton_counter=0
               self.skeletal_map = []
+              self.sent_data = True;
               if self.mode==self.USER:
                 thread = myThread(self.backend['get_classification'], self);
               if self.mode == self.TRAINING:
                 thread = myThread(self.backend['save_sequence'], self);
 
               thread.start()
+            else:
+              self.sent_data = False
             if self.mode == self.TRAINING:
               self.state = self.READY;
               self.counter=self.READY_COUNTER;
