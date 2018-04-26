@@ -198,7 +198,7 @@ class PykinectInt:
     #++++++++++
     self.setup_button = Button(text="SETUP");
     #++++++
-    self.puase_button = Button(text="PUASE");
+    self.puase_button = Button(text="PAUSE");
     self.sidar_bar = Sidebar(self.side_bar_pos,w=self.side_bar_w,h=self.side_bar_h,buttons=[self.quit_button,self.puase_button,self.setup_button])
     #++++++
     self.clock_pos = (self.camera_feed_pos[0]+self.DEPTH_WINSIZE[0]+10,self.camera_feed_pos[1])
@@ -464,8 +464,7 @@ class PykinectInt:
             if self.mode == self.USER:
               self.state = self.WAIT;
               self.state = self.WAIT_COUNTER
-            self.test_word=self.wordlist.roll();
-
+            
           else:
             self.counter-=1;
 
@@ -494,6 +493,7 @@ class PykinectInt:
               self.screen.fill(background_color)
             self.counter = self.READY_COUNTER
             self.state = self.READY
+            self.test_word=self.wordlist.roll();
 
           else:
             self.counter-=1
