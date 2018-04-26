@@ -3,14 +3,15 @@ from data.Gesture import *
 from recognize.nn_classifier import NNClassifier
 from recognize.dt_classifier import DTClassifier
 from recognize.dummy_classifier import DummyClassifier
-from recognize.net_classifier import NetClassifier
+#from recognize.net_classifier import NetClassifier
+from recognize.mm_classifier import MMClassifier
 import random
 
-dset_to_test = "mp2"
-num_gestures = 10
+dset_to_test = "Practice2"
+num_gestures = 3
 
-trainname = "train2"
-testname = "test2"
+trainname = "train3"
+testname = "test3"
 
 # for each gesture, we wanna select num_gestures examples of each gesture as a "train" set 
 # the rest is a test set 
@@ -47,7 +48,7 @@ def make_dsets():
 
 def test(): 
     classifiers = [] 
-    classifiers.append(NetClassifier(trainname))
+    classifiers.append(MMClassifier(trainname))
 
     log = ""
     accuracies = {} 
