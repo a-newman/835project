@@ -468,6 +468,7 @@ class PykinectInt:
             if self.mode == self.TRAINING:
               self.state = self.READY;
               self.counter=self.READY_COUNTER;
+              self.test_word = self.wordlist.roll()
             if self.mode == self.USER:
               self.state = self.WAIT;
               self.state = self.WAIT_COUNTER
