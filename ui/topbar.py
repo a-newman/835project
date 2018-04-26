@@ -42,7 +42,7 @@ def processing(size,pos = (0,0)):
   bar.back_color_h = (3,32,11);
   bar.font_color = (r,g,3);
   return bar.show();
-def noData(size,word,pos = (0,0)):
+def noData(size,pos = (0,0)):
   bar =  Button(dims=size,text = "No Data collected!");
   bar.pos = pos;
   bar.back_color_n = (12,12,55);
