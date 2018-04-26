@@ -204,6 +204,8 @@ class PykinectInt:
     self.clock = Clock(min(size,self.DEPTH_WINSIZE[1]));
     ####RECODRING display parameters 
     ####FEEDBACK parameters
+    self.feedback_bar_pos=(self.word_bar_pos[0], self.camera_feed_pos[1]+self.DEPTH_WINSIZE[1]+10);
+    self.feedback_bar_size = self.word_bar_size;
 
   def surface_to_array(self,surface):
     buffer_interface = surface.get_buffer()
@@ -354,9 +356,22 @@ class PykinectInt:
     self.screen.blit(self.sidar_bar.draw_buttons(),self.side_bar_pos);
     ##########Recording simple
   def wait_display_handler(self):
-    pass 
+    self.screen.blit(self.topbar,self.topbar_pos);
+    self.screen.blit(self.sidar_bar.draw_buttons(),self.side_bar_pos);
+    feed = bars.processing(self.feedback_bar_size,pos = self.feedback_bar_pos)
+    self.screen.blit(feed,self.feedback_bar_pos);
   def feedback_display_handler(self):
-    pass 
+    self.screen.blit(self.topbar,self.topbar_pos);
+    self.screen.blit(self.sidar_bar.draw_buttons(),self.side_bar_pos);
+    if self.test_word==self.word:
+      ### Display congrats
+      feed = bars.congrats(self.feedback_bar_size,pos = self.feedback_bar_pos);
+      self.screen.blit(feed,self.feedback_bar_pos)
+
+    else:
+      ### Display sorry
+      feed =  bars.sorry(self.feedback_bar_size,self.word,pos = self.feedback_bar_pos)
+      self.screen.blit(feed, self.feedback_bar_pos);
   def disp(self):
     if self.state==self.SETUP:
       self.setup_display_handler()
@@ -531,23 +546,38 @@ class PykinectInt:
         if self.state == self.READY:
           ##if hovering SETUP: back to hovering
           ## if hovering PAUSE: pause
-          ## if quit then quit: leave the game 
-          pass 
+          ## if quit then quit: leave the game
+          if self.quit_button.is_hovered():
+            done =True;
+          if self.setup_button.is_hovered():
+            self.state = self.SETUP;
         if self.state == self.RECORDING:
           ##if hovering SETUP: back to hovering
           ## if hovering PAUSE: pause
           ## if quit then quit: leave the game 
-          pass 
+          if self.quit_button.is_hovered():
+            done =True;
+          if self.setup_button.is_hovered():
+            self.state = self.SETUP;
+            self.skeletal_map = [];
         if self.state == self.WAIT:
           ##if hovering SETUP: back to hovering
           ## if hovering PAUSE: pause
           ## if quit then quit: leave the game 
-          pass 
+          if self.quit_button.is_hovered():
+            done =True;
+          if self.setup_button.is_hovered():
+            self.state = self.SETUP;
         if self.state == self.FEEDBACK:
           ##if hovering SETUP: back to hovering
           ## if hovering PAUSE: pause
           ## if quit then quit: leave the game e
-          pass 
+          if self.quit_button.is_hovered():
+            done =True;
+          if self.setup_button.is_hovered():
+            self.state = self.SETUP;
+          
+    pygame.quit()
       
 
 
