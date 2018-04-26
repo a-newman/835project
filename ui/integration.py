@@ -129,7 +129,7 @@ class PykinectInt:
   USER = 0;
   TRAINING = 1;
   #### Limits
-  READY_COUNTER=2;
+  READY_COUNTER=3;
   RECORDING_COUNTER=2;
   FEEDBACK_COUNTER = 3;
   WAIT_COUNTER=2;
@@ -347,7 +347,8 @@ class PykinectInt:
     word_bar = bars.wordBar(self.word_bar_size,self.test_word,pos=self.word_bar_pos)
     self.screen.blit(self.topbar,self.topbar_pos);
     self.screen.blit(word_bar,self.word_bar_pos);
-    self.screen.blit(self.clock.draw(count=self.counter),self.clock_pos)
+    data = ["GO"]+range(READY_COUNTER-1)[::-1]
+    self.screen.blit(self.clock.draw(count=data[self.counter]),self.clock_pos)
     self.screen.blit(self.sidar_bar.draw_buttons(),self.side_bar_pos);
   def recording_display_handler(self):
     word_bar = bars.wordBar(self.word_bar_size,self.test_word,pos=self.word_bar_pos)
