@@ -131,8 +131,8 @@ class PykinectInt:
   #### Limits
   READY_COUNTER=3;
   RECORDING_COUNTER=2;
-  FEEDBACK_COUNTER = 3;
-  WAIT_COUNTER=2;
+  FEEDBACK_COUNTER = 4;
+  WAIT_COUNTER=4;
   
 
   def __init__(self,screen,backend = {}):
@@ -207,6 +207,13 @@ class PykinectInt:
     ####FEEDBACK parameters
     self.feedback_bar_pos=(self.word_bar_pos[0], self.camera_feed_pos[1]+self.DEPTH_WINSIZE[1]+10);
     self.feedback_bar_size = self.word_bar_size;
+
+
+    ###Text input
+    self.text_in_h = 100;
+    self.text_in_w = 100;
+    self.text_in_x = self.
+    text_input = InputBox
 
   def surface_to_array(self,surface):
     buffer_interface = surface.get_buffer()
