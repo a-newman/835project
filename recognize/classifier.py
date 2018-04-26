@@ -1,6 +1,5 @@
 import pickle
-from sklearn.cluster import KMeans
-import numpy as np
+
 
 class Classifier(object): 
 	"""
@@ -8,7 +7,6 @@ class Classifier(object):
 	"""
 	def __init__(self): 
 		self.last_savepath = None
-    self.n_clusters = 10;
 
 
 	def prep(self): 
