@@ -19,6 +19,8 @@ tmp_testing_gesture = None # buffer a gesture in testing mode here; wait for fee
 def process_gesture_test(ui_object): 
 	#sleep(2)
 	seq = _sf_to_sequence(ui_object.backend_data)
+	print "length of the seq: ", len(seq.frames);
+	print "length of the data: ", len(ui_object.backend_data)
 	if (seq): 
 		tmp_testing_gesture = seq
 		pred_gesture = CLASSIFIER.classify(seq)
@@ -31,7 +33,9 @@ def process_gesture_test(ui_object):
 def process_gesture_train(ui_object): 
 	data = ui_object.backend_data
 	gesture_name = ui_object.test_word
+	print "word", gesture_name
 	seq = _sf_to_sequence(data)
+
 	if (seq): 
 		dset_ops.add_gesture_example(DATASET_NAME, gesture_name, seq)
 	ui_object.backend_wait = False
@@ -82,10 +86,11 @@ def _sf_to_sequence(scan_frame_list):
 		return Sequence(frames, timestamp)
 
 def _get_closest_skel(skeletons): 
-	metric = lambda skel: sum([elt**2 for elt in skel.hip_center])**.5 
-	metrics = [metric(skel) for skel in skeletons]
-	idx = np.argmin(metrics)
-	return skeletons[idx]
+	# metric = lambda skel: sum([elt**2 for elt in skel.hip_center])**.5 
+	# metrics = [metric(skel) for skel in skeletons]
+	# idx = np.argmin(metrics)
+	# return skeletons[idx]
+	return skeletons[0]
 
 if __name__ == "__main__": 
 	# load the config file 

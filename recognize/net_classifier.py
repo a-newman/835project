@@ -1,6 +1,6 @@
 import numpy as np
 from keras.models import Model
-from keras.layers import Input, LSTM, Dense, concatenate
+from keras.layers import Input, LSTM, Dense, concatenate, GaussianNoise
 
 from recognize.classifier import Classifier
 from recognize.normalize_frames import resize_seq
@@ -10,7 +10,7 @@ class NetClassifier(Classifier):
     """
     ABSTRACT CLASS serving as an interface for a classifier for use in the system 
     """
-    def __init__(self, dset_name, num_frames=30, batch_size=12, epochs=100, latent_dim=16): 
+    def __init__(self, dset_name, num_frames=30, batch_size=12, epochs=10, latent_dim=16): 
         super(NetClassifier, self).__init__()
         self.last_savepath = None
         self.dset_name = dset_name
@@ -46,8 +46,7 @@ class NetClassifier(Classifier):
         """
         Given a sample, run the model on it and returns label of highest-scoring gesture
         """
-        frames = resize_seq(seq.frames, self.num_frames)
-        sample = np.array([np.vstack(list(map(lambda x: x.frame, frames)))])
+        sample = self._get_feat_vec(seq)
 
         probs = self.model.predict(sample)[0]
         prediction_id = np.argmax(probs)
@@ -83,8 +82,7 @@ class NetClassifier(Classifier):
             self.g_ids_to_names[g_id] = g_name 
 
             for seq in g.sequences: 
-                frames = resize_seq(seq.frames, self.num_frames)
-                sample = np.vstack(list(map(lambda x: x.frame, frames)))
+                sample = self._get_feat_vec(seq)
                 samples.append(sample)
                 labels.append(g_id)
 
@@ -93,7 +91,8 @@ class NetClassifier(Classifier):
 
     def _make_model(self): 
         input_layer = Input(shape=(self.X.shape[1:]))
-        lstm = LSTM(self.latent_dim)(input_layer)
+        noise_layer = GaussianNoise(stddev=5)(input_layer)
+        lstm = LSTM(self.latent_dim)(noise_layer)
         lstm_reversed = LSTM(self.latent_dim, go_backwards=True)(input_layer)
         bidir = concatenate([lstm, lstm_reversed])
 
@@ -103,3 +102,10 @@ class NetClassifier(Classifier):
         self.model = Model(inputs=input_layer, outputs=pred)
         self.model.compile(loss="sparse_categorical_crossentropy", optimizer='adam', metrics=["acc"])
 
+    def _get_feat_vec(self, seq): 
+        frames = resize_seq(seq.frames, self.num_frames)
+        frames = np.array([f.frame for f in frames])
+        sample = np.dot(frames.transpose(), frames)
+        #print("sample", sample.shape)
+        #sample = np.vstack(list(map(lambda x: x.frame, frames)))
+        return sample

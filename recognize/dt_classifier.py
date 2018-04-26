@@ -10,7 +10,7 @@ class DTClassifier(Classifier):
     """
     Classifies using a decision tree 
     """
-    def __init__(self, dset_name, num_frames=30, test_ratio=.8): 
+    def __init__(self, dset_name, num_frames=10, test_ratio=.8): 
         super(DTClassifier, self).__init__()
         self.last_savepath = None
         self.dset_name = dset_name
@@ -43,7 +43,8 @@ class DTClassifier(Classifier):
         Given a sample, run the model on it and returns label of highest-scoring gesture
         """
         # resize the seq 
-        frames = resize_seq(seq.frames, self.num_frames)
+        seq_norm = seq.normalize()
+        frames = resize_seq(seq_norm.frames, self.num_frames)
         sample = np.array([np.concatenate(list(map(lambda x: x.frame, frames)))])
 
         prediction_id = self.clf.predict(sample)[0]
@@ -73,7 +74,8 @@ class DTClassifier(Classifier):
             self.g_ids_to_names[g_id] = g_name 
 
             for seq in g.sequences: 
-                frames = resize_seq(seq.frames, self.num_frames)
+                seq_norm = seq.normalize()
+                frames = resize_seq(seq_norm.frames, self.num_frames)
                 sample = np.concatenate(list(map(lambda x: x.frame, frames))) # a sample is the concatenation of all the frames in a single seq
                 samples.append(sample)
                 labels.append(int(g_id))

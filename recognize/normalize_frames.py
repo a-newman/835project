@@ -26,6 +26,7 @@ import math
 #     return new_sets 
 
 def resize_seq(frames, n): 
+    #print("frames", frames)
     if len(frames) == 0: 
         raise RuntimeError("must provide at least one frame")
     delta = n - len(frames)
@@ -34,7 +35,7 @@ def resize_seq(frames, n):
     if delta==0: return frames
 
     # reduce problem 
-    interval = math.ceil(len(frames)/abs(delta))
+    interval = math.ceil(float(len(frames))/abs(delta))
     new_frames = []
     subtract_frames = delta < 0
     for i in range(len(frames)): 

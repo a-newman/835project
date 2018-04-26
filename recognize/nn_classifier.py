@@ -5,7 +5,7 @@ import heapq
 import numpy as np
 
 class NNClassifier(Classifier): 
-    def __init__(self, dset_name, k=1, num_frames=30): 
+    def __init__(self, dset_name, k=3, num_frames=30): 
         super(NNClassifier, self).__init__()
         self.dset_name = dset_name
         self.k = k
@@ -72,6 +72,7 @@ class NNClassifier(Classifier):
 
     def _get_feat_vec(self, seq): 
         # reduce to the right number of frames 
+        seq = seq.normalize()
         frames = resize_seq(seq.frames, self.num_frames)
         vec = np.hstack([np.array(f.frame) for f in frames])
         return vec
