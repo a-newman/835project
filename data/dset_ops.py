@@ -68,6 +68,7 @@ def get_defined_gestures(name):
 
 def _load_dset(name): 
     index = _load_index()
+    print "KNOWN INDICES:",index
 
     if name not in index: 
         raise RuntimeError(name + " is not a known dataset")

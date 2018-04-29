@@ -14,24 +14,22 @@
 # See the Apache Version 2.0 License for specific language governing
 # permissions and limitations under the License.
 
-from data_utils import *
+from ui.data_utils import *
 import thread
 import random
 import itertools
 from copy import deepcopy
 import time
 import ctypes
-from ui_utils import TextRender,CircularArray,Clock ,resize
+from ui.ui_utils import TextRender,CircularArray,Clock ,resize
 from button import Button;
 import topbar as bars
 from sidebar import Sidebar
-import threading
 from disp_func import disp
 from event_handlers import *
-
-import pykinect
-from pykinect import nui
-from pykinect.nui import JointId
+# import pykinect
+# from pykinect import nui
+# from pykinect.nui import JointId
 
 import pygame
 from pygame.color import THECOLORS
@@ -70,30 +68,30 @@ SKELETON_COLORS = [THECOLORS["red"],
                    THECOLORS["yellow"], 
                    THECOLORS["violet"]]
 
-LEFT_ARM = (JointId.ShoulderCenter, 
-            JointId.ShoulderLeft, 
-            JointId.ElbowLeft, 
-            JointId.WristLeft, 
-            JointId.HandLeft)
-RIGHT_ARM = (JointId.ShoulderCenter, 
-             JointId.ShoulderRight, 
-             JointId.ElbowRight, 
-             JointId.WristRight, 
-             JointId.HandRight)
-LEFT_LEG = (JointId.HipCenter, 
-            JointId.HipLeft, 
-            JointId.KneeLeft, 
-            JointId.AnkleLeft, 
-            JointId.FootLeft)
-RIGHT_LEG = (JointId.HipCenter, 
-             JointId.HipRight, 
-             JointId.KneeRight, 
-             JointId.AnkleRight, 
-             JointId.FootRight)
-SPINE = (JointId.HipCenter, 
-         JointId.Spine, 
-         JointId.ShoulderCenter, 
-         JointId.Head)
+# LEFT_ARM = (JointId.ShoulderCenter, 
+#             JointId.ShoulderLeft, 
+#             JointId.ElbowLeft, 
+#             JointId.WristLeft, 
+#             JointId.HandLeft)
+# RIGHT_ARM = (JointId.ShoulderCenter, 
+#              JointId.ShoulderRight, 
+#              JointId.ElbowRight, 
+#              JointId.WristRight, 
+#              JointId.HandRight)
+# LEFT_LEG = (JointId.HipCenter, 
+#             JointId.HipLeft, 
+#             JointId.KneeLeft, 
+#             JointId.AnkleLeft, 
+#             JointId.FootLeft)
+# RIGHT_LEG = (JointId.HipCenter, 
+#              JointId.HipRight, 
+#              JointId.KneeRight, 
+#              JointId.AnkleRight, 
+#              JointId.FootRight)
+# SPINE = (JointId.HipCenter, 
+#          JointId.Spine, 
+#          JointId.ShoulderCenter, 
+#          JointId.Head)
 
 
 
@@ -143,7 +141,8 @@ class PykinectInt:
     self.draw_skeleton = True
     self.video_display = False
     self.dispInfo = pygame.display.Info()
-    self.skeleton_to_depth_image = nui.SkeletonEngine.skeleton_to_depth_image
+    #self.skeleton_to_depth_image = nui.SkeletonEngine.skeleton_to_depth_image
+    self.paused = False;
     self.skeletons = None
     self.DEPTH_WINSIZE = 320,240
     self.VIDEO_WINSIZE = 640,480
@@ -212,10 +211,10 @@ class PykinectInt:
 
 
     ###Text input
-    self.text_in_h = 100;
-    self.text_in_w = 100;
-    self.text_in_x = self.
-    text_input = InputBox
+    #self.text_in_h = 100;
+    #self.text_in_w = 100;
+    ##self.text_in_x = self.
+    #text_input = InputBox
 
   def surface_to_array(self,surface):
     buffer_interface = surface.get_buffer()
@@ -347,25 +346,28 @@ class PykinectInt:
           self.collect(self.skeletons);
       disp(self)
       pygame.display.update()
+
+
+
   def loop(self):
     pygame.display.set_caption('Louder than words')
     self.screen.fill(THECOLORS["black"])
 
 
-    kinect = nui.Runtime()
-    kinect.skeleton_engine.enabled = True
+    # kinect = nui.Runtime()
+    # kinect.skeleton_engine.enabled = True
     def post_frame(frame):
         try:
           pygame.event.post(pygame.event.Event(KINECTEVENT, skeletons = frame.SkeletonData))
         except:
           pass
-    kinect.skeleton_frame_ready += post_frame
+    # kinect.skeleton_frame_ready += post_frame
     
-    kinect.depth_frame_ready += self.depth_frame_ready    
-    kinect.video_frame_ready += self.video_frame_ready    
+    # kinect.depth_frame_ready += self.depth_frame_ready    
+    # kinect.video_frame_ready += self.video_frame_ready    
     
-    kinect.video_stream.open(nui.ImageStreamType.Video, 2, nui.ImageResolution.Resolution640x480, nui.ImageType.Color)
-    kinect.depth_stream.open(nui.ImageStreamType.Depth, 2, nui.ImageResolution.Resolution320x240, nui.ImageType.Depth)
+    # kinect.video_stream.open(nui.ImageStreamType.Video, 2, nui.ImageResolution.Resolution640x480, nui.ImageType.Color)
+    # kinect.depth_stream.open(nui.ImageStreamType.Depth, 2, nui.ImageResolution.Resolution320x240, nui.ImageType.Depth)
 
     print('Controls: ')
     print('     d - Switch to depth view')
@@ -377,6 +379,7 @@ class PykinectInt:
     pygame.time.set_timer(RECORDEVENT, 1000);
     done = False
     skeleton_counter = 0
+    clock  = pygame.time.Clock()
     while not done:
       r = random.randint(0,34);
       g = random.randint(0,34);
@@ -431,6 +434,7 @@ class PykinectInt:
       clock.tick();
           
     pygame.quit()
+
 
 def runUI(backend):
   WINSIZE = 800,640;

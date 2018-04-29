@@ -5,7 +5,7 @@ import numpy as np
 from time import sleep, time
 from data import dset_ops
 from data.Gesture import GestureSet, Sequence, Frame
-from ui import integration
+from ui import integration2
 from recognize import nn_classifier
 
 CLASSIFIERS_BASE_PATH = "recognize/classifiers/"
@@ -121,4 +121,4 @@ if __name__ == "__main__":
 	# game = PykinectInt()
 	#  WordGameUI(backend_map=backend)
 	# game.display_logic()
-	integration.runUI(backend)
+	integration2.runUI(backend)

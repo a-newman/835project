@@ -3,9 +3,9 @@ import pygame
 import thread
 import itertools
 import ctypes
-import pykinect
-from pykinect import nui
-from pykinect.nui import JointId
+# import pykinect
+# from pykinect import nui
+# from pykinect.nui import JointId
 from pygame.color import THECOLORS
 import numpy as np
 class ColorMap:
