@@ -138,12 +138,13 @@ class PykinectInt:
   
 
   def __init__(self,screen,backend = {}):
-    self.screen = screen;
+        self.screen = screen;
     self.screen_lock = thread.allocate()
     self.draw_skeleton = True
     self.video_display = False
     self.dispInfo = pygame.display.Info()
-    self.skeleton_to_depth_image = nui.SkeletonEngine.skeleton_to_depth_image
+    #self.skeleton_to_depth_image = nui.SkeletonEngine.skeleton_to_depth_image
+    self.paused = False;
     self.skeletons = None
     self.DEPTH_WINSIZE = 320,240
     self.VIDEO_WINSIZE = 640,480
@@ -155,6 +156,7 @@ class PykinectInt:
     self.word = "None"
     self.test_word = self.wordlist.roll()
     self.backend_wait = True;
+    self.show_depth = False;
     ####
     if self.video_display:
       size = self.dispInfo.current_w-self.VIDEO_WINSIZE[0];
@@ -192,8 +194,11 @@ class PykinectInt:
     self.train_button = Button(pos=self.train_button_pos,text="TRAINING");
     #++++++++++
     self.user_button_pos = (100,210);
+    #++++++++
+    self.depth_button = Button(text="DEPTH")
+    #++++++
     self.user_button = Button(pos=self.user_button_pos,text="USER");
-    self.setup_sidebar = Sidebar(self.side_bar_pos,w=self.side_bar_w,h=self.side_bar_h,buttons=[self.train_button,self.user_button])
+    self.setup_sidebar = Sidebar(self.side_bar_pos,w=self.side_bar_w,h=self.side_bar_h,buttons=[self.train_button,self.user_button,self.depth_button])
 
     ####READY display parameters
     self.quit_button = Button(text="QUIT");
@@ -201,7 +206,9 @@ class PykinectInt:
     self.setup_button = Button(text="SETUP");
     #++++++
     self.puase_button = Button(text="PAUSE");
-    self.sidar_bar = Sidebar(self.side_bar_pos,w=self.side_bar_w,h=self.side_bar_h,buttons=[self.quit_button,self.puase_button,self.setup_button])
+    #++++++
+
+    self.sidar_bar = Sidebar(self.side_bar_pos,w=self.side_bar_w,h=self.side_bar_h,buttons=[self.quit_button,self.puase_button,self.setup_button,self.depth_button])
     #++++++
     self.clock_pos = (self.camera_feed_pos[0]+self.DEPTH_WINSIZE[0]+10,self.camera_feed_pos[1])
     self.clock = Clock(min(size,self.DEPTH_WINSIZE[1]));
@@ -314,16 +321,17 @@ class PykinectInt:
     depth_surface = pygame.Surface(self.DEPTH_WINSIZE);
 
     with self.screen_lock:
-      address = self.surface_to_array(depth_surface)
-      frame.image.copy_bits(address)
-      #print "deleting..."
-      del address
+      if self.show_depth:
+        address = self.surface_to_array(depth_surface)
+        frame.image.copy_bits(address)
+        del address
+        self.screen.blit(depth_surface,self.camera_feed_pos)
       if self.skeletons is not None and self.draw_skeleton:
         self.draw_skeletons(self.skeletons)
         if self.state==self.RECORDING:
           self.collect(self.skeletons);
 
-      self.screen.blit(depth_surface,self.camera_feed_pos)
+      
       disp(self)
       pygame.display.update()
       #print "deleted!"
@@ -337,10 +345,11 @@ class PykinectInt:
     vid_surface = pygame.Surface(self.VIDEO_WINSIZE);
 
     with self.screen_lock:
-      address = self.surface_to_array(vid_surface)
-      frame.image.copy_bits(address)
-      del address
-      self.screen.blit(vid_surface,self.camera_feed_pos);
+      if self.show_depth:
+        address = self.surface_to_array(vid_surface)
+        frame.image.copy_bits(address)
+        del address
+        self.screen.blit(vid_surface,self.camera_feed_pos);
       if self.skeletons is not None and self.draw_skeleton:
         self.draw_skeletons(self.skeletons)
         if self.state==self.RECORDING:

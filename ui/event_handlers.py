@@ -1,6 +1,8 @@
 
 import threading
 def mouse_handle(obj,done):
+  if self.obj.depth_button.is_hovered():
+    obj.self.show_depth=not obj.self.show_depth
   if obj.state==obj.SETUP:
     ##if hovering mode: set the mode to mode that mode 
     ##transition to next READY

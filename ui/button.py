@@ -26,6 +26,9 @@ class Button:
     if font.size(self.label)[0]>self.dims[0]:
       self.font_size=self.font_size-max(1,(font.size(self.label)[0]-self.dims[0])/len(self.label));
       self.set_font_size();
+  def set_font_color(self):
+    self.font = pygame.font.Font(self.font_fam, self.font_size);
+    self.surf = self.font.render(self.label, True, self.font_color);
 
 
   def reinitialize(self):
@@ -38,6 +41,7 @@ class Button:
       return True;
     return False;
   def show(self):
+    self.set_font_color()
     if self.is_hovered():
       self.surface.fill(self.back_color_h);
     else:
