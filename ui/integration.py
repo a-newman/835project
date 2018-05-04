@@ -135,15 +135,16 @@ class PykinectInt:
   RECORDING_COUNTER=2;
   FEEDBACK_COUNTER = 4;
   WAIT_COUNTER=4;
-  
+  WORDS = {"pause: ":"to pause","run: ": "to unpause","quit: ":"to quit","repeat: ": "to repeat the last word"}
 
   def __init__(self,screen,backend = {}):
-        self.screen = screen;
+    self.screen = screen;
     self.screen_lock = thread.allocate()
     self.draw_skeleton = True
     self.video_display = False
     self.dispInfo = pygame.display.Info()
     #self.skeleton_to_depth_image = nui.SkeletonEngine.skeleton_to_depth_image
+    self.control_words = ['pause','run','quit','repeat']
     self.paused = False;
     self.skeletons = None
     self.DEPTH_WINSIZE = 320,240
@@ -164,6 +165,7 @@ class PykinectInt:
       size = self.dispInfo.current_w-self.DEPTH_WINSIZE[0];
     #self.clock_image = resize((size,size), ou_img="ui/images/_clock.gif");
     self.sent_data = False;
+    self.use_speech = True;
     
     
     ##########
@@ -219,11 +221,17 @@ class PykinectInt:
 
 
     ###Text input
-    # self.text_in_h = 100;
-    # self.text_in_w = 100;
-    # self.text_in_x = self.
-    # text_input = InputBox
-
+    #self.text_in_h = 100;
+    #self.text_in_w = 100;
+    ##self.text_in_x = self.
+    #text_input = InputBox
+    self.speech_thread = SpeechTrigger(self);
+    self.listen = False;
+    ###
+    self.ctl_word_size = 40;
+    self.ctl_pose = self.camera_feed_pos[0],self.camera_feed_pos[1]+self.DEPTH_WINSIZE[1]+30
+    self.ctl_size = self.word_bar_size[0],300
+    self.clt_words=ControlWords(self.WORDS,font_size=self.ctl_word_size,pose=self.ctl_pose,size=self.ctl_size)
   def surface_to_array(self,surface):
     buffer_interface = surface.get_buffer()
     address = ctypes.c_void_p()
@@ -314,6 +322,8 @@ class PykinectInt:
       self.draw_skeleton_data(data, index, RIGHT_ARM)
       self.draw_skeleton_data(data, index, LEFT_LEG)
       self.draw_skeleton_data(data, index, RIGHT_LEG)
+  def word_trigger(self,_words):
+    pygame.event.post(pygame.event.Event(SPEECHEVENT,words = _words));
   def depth_frame_ready(self,frame):
     if self.video_display:
       return
@@ -359,6 +369,9 @@ class PykinectInt:
   def loop(self):
     pygame.display.set_caption('Louder than words')
     self.screen.fill(THECOLORS["black"])
+    if self.use_speech:
+      self.listen = True;
+      self.speech_thread.start()
 
 
     kinect = nui.Runtime()
@@ -386,6 +399,7 @@ class PykinectInt:
     pygame.time.set_timer(RECORDEVENT, 1000);
     done = False
     skeleton_counter = 0
+    clock  = pygame.time.Clock()
     while not done:
       r = random.randint(0,34);
       g = random.randint(0,34);
@@ -394,91 +408,12 @@ class PykinectInt:
       e = pygame.event.wait()
       self.dispInfo = pygame.display.Info()
       if e.type == pygame.QUIT:
+        self.listen = False
         done = True
         break
       elif e.type == RECORDEVENT:
         ##recording
-<<<<<<< HEAD
         transition_handle(self,background_color,skeleton_counter)
-=======
-        if self.state == self.RECORDING:
-          if self.counter<=0:
-            with self.screen_lock:
-              self.screen.fill(background_color)
-            if not self.skeletal_map==[]:
-              self.backend_data = deepcopy(self.skeletal_map)
-              print ""
-              print "number of frames send:", len(self.backend_data)
-              print "number of frames recieved:", skeleton_counter;
-              print ""
-              skeleton_counter=0
-              self.skeletal_map = []
-              self.sent_data = True;
-              if self.mode==self.USER:
-                thread = myThread(self.backend['get_classification'], self);
-              if self.mode == self.TRAINING:
-                thread = myThread(self.backend['save_sequence'], self);
-
-              thread.start()
-            else:
-              self.sent_data = False
-            if self.mode == self.TRAINING:
-              self.state = self.READY;
-              self.counter=self.READY_COUNTER;
-              self.test_word = self.wordlist.roll()
-            if self.mode == self.USER:
-              self.state = self.WAIT;
-              self.state = self.WAIT_COUNTER
-            
-          else:
-            self.counter-=1;
-
-        ##waiting 
-        elif self.state==self.WAIT:
-          if not self.backend_wait:
-            with self.screen_lock:
-              self.screen.fill(background_color)
-            self.state = self.FEEDBACK;
-            self.counter = self.FEEDBACK_COUNTER;
-            self.backend_wait=True;
-          elif self.counter<=0:
-            with self.screen_lock:
-              self.screen.fill(background_color)
-            self.state = self.FEEDBACK
-            self.counter = self.FEEDBACK_COUNTER;
-            self.word = "None";
-            self.backend_wait = True;
-
-          else:
-            self.counter-=1;
-        ##feedback state
-        elif self.state == self.FEEDBACK:
-          if self.counter<=0:
-            with self.screen_lock:
-              self.screen.fill(background_color)
-            self.counter = self.READY_COUNTER
-            self.state = self.READY
-            self.test_word=self.wordlist.roll();
-
-          else:
-            self.counter-=1
-        ## state READY->countdown to word 
-        elif self.state==self.READY:
-          if self.counter<=0:
-            with self.screen_lock:
-              self.screen.fill(background_color)
-            if self.mode == self.TRAINING:
-              self.state = self.RECORDING;
-              self.counter = self.RECORDING_COUNTER;
-            if self.mode == self.USER:
-              self.state = self.RECORDING
-              self.counter = self.RECORDING_COUNTER
-          else:
-            self.counter-=1;
-
-
-
->>>>>>> IS&T machine main fixes
       elif e.type == KINECTEVENT:
           skeletons = e.skeletons
           ###COLLECTING DATA
@@ -515,6 +450,11 @@ class PykinectInt:
       ###
       if e.type ==MOUSEBUTTONDOWN:
         done=mouse_handle(self,done);
+      if e.type==SPEECHEVENT:
+        while len(e.words)!=0:
+          speech_word = e.words.pop(0)
+          done = word_handle(self,speech_word,done)
+        
       disp(self);
       pygame.display.update();
       clock.tick();
