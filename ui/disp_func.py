@@ -6,7 +6,7 @@ def setup_display_handler(obj):
   obj.screen.blit(obj.clt_words.show(),obj.ctl_pose)
 def ready_display_handler(obj):
   if obj.mode==obj.TRAINING:
-    word_bar = bars.wordBar(obj.word_bar_size,obj.test_word[0]+"=>"obj.test_word[1]+,pos=obj.word_bar_pos)
+    word_bar = bars.wordBar(obj.word_bar_size,obj.test_word[0]+"=>"+obj.test_word[1]+,pos=obj.word_bar_pos)
   else:
     word_bar = bars.wordBar(obj.word_bar_size,obj.test_word[0],pos=obj.word_bar_pos)
   obj.screen.blit(obj.topbar,obj.topbar_pos);
