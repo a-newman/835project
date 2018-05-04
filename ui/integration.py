@@ -219,10 +219,10 @@ class PykinectInt:
 
 
     ###Text input
-    self.text_in_h = 100;
-    self.text_in_w = 100;
-    self.text_in_x = self.
-    text_input = InputBox
+    # self.text_in_h = 100;
+    # self.text_in_w = 100;
+    # self.text_in_x = self.
+    # text_input = InputBox
 
   def surface_to_array(self,surface):
     buffer_interface = surface.get_buffer()
@@ -398,7 +398,87 @@ class PykinectInt:
         break
       elif e.type == RECORDEVENT:
         ##recording
+<<<<<<< HEAD
         transition_handle(self,background_color,skeleton_counter)
+=======
+        if self.state == self.RECORDING:
+          if self.counter<=0:
+            with self.screen_lock:
+              self.screen.fill(background_color)
+            if not self.skeletal_map==[]:
+              self.backend_data = deepcopy(self.skeletal_map)
+              print ""
+              print "number of frames send:", len(self.backend_data)
+              print "number of frames recieved:", skeleton_counter;
+              print ""
+              skeleton_counter=0
+              self.skeletal_map = []
+              self.sent_data = True;
+              if self.mode==self.USER:
+                thread = myThread(self.backend['get_classification'], self);
+              if self.mode == self.TRAINING:
+                thread = myThread(self.backend['save_sequence'], self);
+
+              thread.start()
+            else:
+              self.sent_data = False
+            if self.mode == self.TRAINING:
+              self.state = self.READY;
+              self.counter=self.READY_COUNTER;
+              self.test_word = self.wordlist.roll()
+            if self.mode == self.USER:
+              self.state = self.WAIT;
+              self.state = self.WAIT_COUNTER
+            
+          else:
+            self.counter-=1;
+
+        ##waiting 
+        elif self.state==self.WAIT:
+          if not self.backend_wait:
+            with self.screen_lock:
+              self.screen.fill(background_color)
+            self.state = self.FEEDBACK;
+            self.counter = self.FEEDBACK_COUNTER;
+            self.backend_wait=True;
+          elif self.counter<=0:
+            with self.screen_lock:
+              self.screen.fill(background_color)
+            self.state = self.FEEDBACK
+            self.counter = self.FEEDBACK_COUNTER;
+            self.word = "None";
+            self.backend_wait = True;
+
+          else:
+            self.counter-=1;
+        ##feedback state
+        elif self.state == self.FEEDBACK:
+          if self.counter<=0:
+            with self.screen_lock:
+              self.screen.fill(background_color)
+            self.counter = self.READY_COUNTER
+            self.state = self.READY
+            self.test_word=self.wordlist.roll();
+
+          else:
+            self.counter-=1
+        ## state READY->countdown to word 
+        elif self.state==self.READY:
+          if self.counter<=0:
+            with self.screen_lock:
+              self.screen.fill(background_color)
+            if self.mode == self.TRAINING:
+              self.state = self.RECORDING;
+              self.counter = self.RECORDING_COUNTER;
+            if self.mode == self.USER:
+              self.state = self.RECORDING
+              self.counter = self.RECORDING_COUNTER
+          else:
+            self.counter-=1;
+
+
+
+>>>>>>> IS&T machine main fixes
       elif e.type == KINECTEVENT:
           skeletons = e.skeletons
           ###COLLECTING DATA

@@ -5,8 +5,13 @@ import numpy as np
 from time import sleep, time
 from data import dset_ops
 from data.Gesture import GestureSet, Sequence, Frame
+
 from ui import integration2
-from recognize import nn_classifier
+
+from ui import integration
+from recognize.nn_classifier import NNClassifier
+from recognize.dt_classifier import DTClassifier
+
 
 CLASSIFIERS_BASE_PATH = "recognize/classifiers/"
 CONFIG = None
@@ -106,7 +111,9 @@ if __name__ == "__main__":
 
 	# classifier.prep(); # does any required preprocessing
 
-	CLASSIFIER = nn_classifier.NNClassifier(DATASET_NAME)
+	CLASSIFIER = NNClassifier(DATASET_NAME)
+	CLASSIFIER.prep()
+	CLASSIFIER.train()
 
 	backend = {
 		'words': wordlist,
