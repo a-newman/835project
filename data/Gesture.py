@@ -6,14 +6,16 @@ class DataSet:
     """
     def __init__(self, name, filepath): 
         self.gestures = {} # maps gesture names to gsets
+        self.translations = {} # maps gesture names to English translations 
         self.name = name
         self.filepath = filepath
 
-    def make_gesture_class(self, gesture_name): 
+    def make_gesture_class(self, gesture_name, translation): 
         if gesture_name in self.gestures: 
             return
         else: 
             self.gestures[gesture_name] = GestureSet(label=gesture_name)
+            self.translations[gesture_name] = translation
 
     def store_gesture_example(self, gesture_name, sequence): 
         if gesture_name not in self.gestures: 

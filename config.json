@@ -1,6 +1,6 @@
 {
 	"classifier": "nn",
-	"dataset": "eval4",
+	"dataset": "test_nathan",
 	"save_data": true,
 	"mutate_classifier": false
 }

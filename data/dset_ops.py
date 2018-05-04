@@ -64,7 +64,9 @@ def exists(name):
 
 def get_defined_gestures(name): 
     dset = _load_dset(name)
-    return list(dset.gestures.keys())
+    print(dset)
+    print(dset.translations)
+    return [(key, val) for key, val in dset.translations.items()]
 
 def _load_dset(name): 
     index = _load_index()
@@ -85,9 +87,9 @@ def _save_dset(dset):
         json.dump(dset_json, outfile)
 
 
-def make_gesture(dset_name, gesture_name):
+def make_gesture(dset_name, gesture_name, translation):
     dset=_load_dset(dset_name)
-    dset.make_gesture_class(gesture_name)
+    dset.make_gesture_class(gesture_name, translation)
     _save_dset(dset)
     return dset
 
@@ -109,6 +111,7 @@ def _save_index(index):
 
 def _json_recover_dset(j): 
     dset = DataSet(name=j['name'], filepath=j['filepath'])
+    dset.translations = j['translations']
     for gname, g in j['gestures'].items(): 
         dset.gestures[gname] = _json_recover_gesture(g)
     return dset
@@ -124,7 +127,7 @@ def _json_recover_frame(j):
     return Frame(j)
 
 def _json_serialize_dset(dset): 
-    dd = {'name': dset.name, 'filepath': dset.filepath, 'gestures': {}}
+    dd = {'name': dset.name, 'filepath': dset.filepath, 'gestures': {}, 'translations': dset.translations}
     for gname, g in dset.gestures.items(): 
         dd['gestures'][gname] = _json_serialize_gesture(g)
     return dd  
