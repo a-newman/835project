@@ -140,6 +140,7 @@ class PykinectInt:
   WORDS = {"pause: ":"to pause","run: ": "to unpause","quit: ":"to quit","repeat: ": "to repeat the last word"}
 
   def __init__(self,screen,backend = {}):
+    self.skeleton_to_depth_image = nui.SkeletonEngine.skeleton_to_depth_image
     self.screen = screen;
     self.screen_lock = thread.allocate()
     self.draw_skeleton = True
