@@ -454,10 +454,10 @@ class PykinectInt:
       ###
       if e.type ==MOUSEBUTTONDOWN:
         done=mouse_handle(self,done);
-      if e.type==SPEECHEVENT:
-        while len(e.words)!=0:
-          speech_word = e.words.pop(0)
-          done = word_handle(self,speech_word,done)
+      # if e.type==SPEECHEVENT:
+      #   while len(e.words)!=0:
+      #     speech_word = e.words.pop(0)
+      #     done = word_handle(self,speech_word,done)
         
       disp(self);
       pygame.display.update();
