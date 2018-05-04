@@ -228,6 +228,7 @@ class PykinectInt:
     #self.text_in_h = 100;
     #self.text_in_w = 100;
     ##self.text_in_x = self.
+    self.camera_surf = pygame.Surface(self.DEPTH_WINSIZE)
     #text_input = InputBox
     self.speech_thread = SpeechTrigger(self);
     self.listen = False;
@@ -301,7 +302,7 @@ class PykinectInt:
           if curend[0]<self.VIDEO_WINSIZE[0] and curend[1]<self.VIDEO_WINSIZE[1]:
             curstart = curstart[0]+self.camera_feed_pos[0],curstart[1]+self.camera_feed_pos[1];
             curend = curend[0]+self.camera_feed_pos[0],curend[1]+self.camera_feed_pos[1]
-            pygame.draw.line(self.screen, SKELETON_COLORS[index], curstart, curend, width);
+            pygame.draw.line(self.camera_surf, SKELETON_COLORS[index], curstart, curend, width);
       else:
         curstart = self.skeleton_to_depth_image(start, self.DEPTH_WINSIZE[0], self.DEPTH_WINSIZE[1]) 
         curend = self.skeleton_to_depth_image(next, self.DEPTH_WINSIZE[0], self.DEPTH_WINSIZE[1])
@@ -309,7 +310,7 @@ class PykinectInt:
           if curend[0]<self.DEPTH_WINSIZE[0] and curend[1]<self.DEPTH_WINSIZE[1]:
             curstart = curstart[0]+self.camera_feed_pos[0],curstart[1]+self.camera_feed_pos[1];
             curend = curend[0]+self.camera_feed_pos[0],curend[1]+self.camera_feed_pos[1]
-            pygame.draw.line(self.screen, SKELETON_COLORS[index], curstart, curend, width);
+            pygame.draw.line(self.camera_surf, SKELETON_COLORS[index], curstart, curend, width);
       start = next
   def draw_skeletons(self,skeletons):
     for index, data in enumerate(skeletons):
@@ -319,7 +320,7 @@ class PykinectInt:
       else:
         HeadPos = self.skeleton_to_depth_image(data.SkeletonPositions[JointId.Head], self.DEPTH_WINSIZE[0], self.DEPTH_WINSIZE[1])
       self.draw_skeleton_data(data, index, SPINE, 10)
-      pygame.draw.circle(self.screen, SKELETON_COLORS[index], (int(HeadPos[0])+self.camera_feed_pos[0], self.camera_feed_pos[1]+int(HeadPos[1])), 20, 0)
+      pygame.draw.circle(self.camera_surf, SKELETON_COLORS[index], (int(HeadPos[0])+self.camera_feed_pos[0], self.camera_feed_pos[1]+int(HeadPos[1])), 20, 0)
   
       # drawing the limbs
       self.draw_skeleton_data(data, index, LEFT_ARM)
@@ -336,7 +337,7 @@ class PykinectInt:
 
     with self.screen_lock:
       if self.show_depth:
-        address = self.surface_to_array(depth_surface)
+        address = self.surface_to_array(self.camera_surf)
         frame.image.copy_bits(address)
         del address
         self.screen.blit(depth_surface,self.camera_feed_pos)
@@ -360,7 +361,7 @@ class PykinectInt:
 
     with self.screen_lock:
       if self.show_depth:
-        address = self.surface_to_array(vid_surface)
+        address = self.surface_to_array(self.camera_surf)
         frame.image.copy_bits(address)
         del address
         self.screen.blit(vid_surface,self.camera_feed_pos);
