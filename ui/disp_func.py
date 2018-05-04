@@ -21,7 +21,7 @@ def recording_display_handler(obj):
   if obj.mode==obj.TRAINING:
     word_bar = bars.wordBar(obj.word_bar_size,obj.test_word[0]+"=>"+obj.test_word[1],pos=obj.word_bar_pos)
   else:
-    word_b
+    word_bar = bars.wordBar(obj.word_bar_size,obj.test_word[0],pos=obj.word_bar_pos)
   gogo = bars.gogo(obj.DEPTH_WINSIZE,pos=obj.clock_pos);
   obj.screen.blit(gogo,obj.clock_pos)
   obj.screen.blit(obj.topbar,obj.topbar_pos);
