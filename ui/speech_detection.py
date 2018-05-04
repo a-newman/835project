@@ -20,7 +20,7 @@ class SpeechRecog:
           self.detect(text);
           
       except sr.UnknownValueError:
-          print("Google Speech Recognition could not understand audio")
+          print("I can't hear you! Speak louder!")
       except sr.RequestError as e:
           print("Could not request results from Google Speech Recognition service; {0}".format(e))
   def is_word_in_text(self,w):
