@@ -79,8 +79,10 @@ def transition_handle(obj,background_color,skeleton_counter):
           obj.skeletal_map = []
           obj.sent_data = True;
           if obj.mode==obj.USER:
+            pass
             thread = myThread(obj.backend['get_classification'], obj);
           if obj.mode == obj.TRAINING:
+            pass
             thread = myThread(obj.backend['save_sequence'], obj);
 
           thread.start()
