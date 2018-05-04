@@ -375,7 +375,7 @@ class PykinectInt:
     self.screen.fill(THECOLORS["black"])
     if self.use_speech:
       self.listen = True;
-      self.speech_thread.start()
+      #self.speech_thread.start()
 
 
     kinect = nui.Runtime()
