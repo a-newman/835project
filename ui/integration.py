@@ -14,21 +14,22 @@
 # See the Apache Version 2.0 License for specific language governing
 # permissions and limitations under the License.
 
-from data_utils import *
+from ui.data_utils import *
+from text import *
 import thread
 import random
 import itertools
 from copy import deepcopy
 import time
 import ctypes
-from ui_utils import TextRender,CircularArray,Clock ,resize
+from ui.ui_utils import TextRender,CircularArray,Clock ,resize
 from button import Button;
 import topbar as bars
 from sidebar import Sidebar
-import threading
 from disp_func import disp
 from event_handlers import *
-
+from speech_detection import SpeechTrigger
+from control_words import *
 import pykinect
 from pykinect import nui
 from pykinect.nui import JointId
