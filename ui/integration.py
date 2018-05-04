@@ -60,6 +60,7 @@ class Text:
 
 KINECTEVENT = pygame.USEREVENT
 RECORDEVENT = pygame.USEREVENT+1
+SPEECHEVENT = pygame.USEREVENT+3
 
 pygame.init()
 
