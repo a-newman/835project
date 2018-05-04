@@ -169,6 +169,7 @@ class PykinectInt:
     #self.clock_image = resize((size,size), ou_img="ui/images/_clock.gif");
     self.sent_data = False;
     self.use_speech = True;
+    self.repeat = False
     
     
     ##########
