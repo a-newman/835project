@@ -15,6 +15,7 @@
 # permissions and limitations under the License.
 
 from ui.data_utils import *
+from text import *
 import thread
 import random
 import itertools
@@ -204,6 +205,11 @@ class PykinectInt:
     self.user_button = Button(pos=self.user_button_pos,text="USER");
     self.setup_sidebar = Sidebar(self.side_bar_pos,w=self.side_bar_w,h=self.side_bar_h,buttons=[self.train_button,self.user_button,self.depth_button])
 
+    ###Text input
+    self.text_in_h = 40;
+    self.text_in_w = 100;
+    self.text_in_pos = (self.camera_feed_pos[0]+self.DEPTH_WINSIZE[0]+10,self.camera_feed_pos[1])
+    self.text_input = InputBox(self.text_in_pos[0], self.text_in_pos[1], self.text_in_w, self.text_in_h)
     ####READY display parameters
     self.quit_button = Button(text="QUIT");
     #++++++++++
@@ -214,19 +220,18 @@ class PykinectInt:
 
     self.sidar_bar = Sidebar(self.side_bar_pos,w=self.side_bar_w,h=self.side_bar_h,buttons=[self.quit_button,self.puase_button,self.setup_button,self.depth_button])
     #++++++
-    self.clock_pos = (self.camera_feed_pos[0]+self.DEPTH_WINSIZE[0]+10,self.camera_feed_pos[1])
+    self.clock_pos = (self.camera_feed_pos[0]+self.DEPTH_WINSIZE[0]+10,self.camera_feed_pos[1]+self.text_in_h)
     self.clock = Clock(min(size,self.DEPTH_WINSIZE[1]));
     ####RECODRING display parameters 
+    
+
     ####FEEDBACK parameters
     self.feedback_bar_pos=(self.word_bar_pos[0], self.camera_feed_pos[1]+self.DEPTH_WINSIZE[1]+10);
     self.feedback_bar_size = self.word_bar_size;
 
 
-    ###Text input
-    #self.text_in_h = 100;
-    #self.text_in_w = 100;
-    ##self.text_in_x = self.
-    #text_input = InputBox
+    
+   
     self.speech_thread = SpeechTrigger(self);
     self.listen = False;
     ###
@@ -234,6 +239,7 @@ class PykinectInt:
     self.ctl_pose = self.camera_feed_pos[0],self.camera_feed_pos[1]+self.DEPTH_WINSIZE[1]+30
     self.ctl_size = self.word_bar_size[0],300
     self.clt_words=ControlWords(self.WORDS,font_size=self.ctl_word_size,pose=self.ctl_pose,size=self.ctl_size)
+
 
   def surface_to_array(self,surface):
     buffer_interface = surface.get_buffer()
@@ -411,6 +417,9 @@ class PykinectInt:
       b = random.randint(0,34);
       background_color = (r,g,b);
       e = pygame.event.wait()
+      self.text_input.handle_event(e)
+      # self.text_input.update()
+      self.text_input.draw(self.screen)
       self.dispInfo = pygame.display.Info()
       if e.type == pygame.QUIT:
         self.listen = False
@@ -430,25 +439,6 @@ class PykinectInt:
             
             self.draw_skeletons(skeletons)
             pygame.display.update()
-      elif e.type == KEYDOWN:
-        if e.key == K_ESCAPE:
-          done = True
-          break
-        elif e.key == K_d:
-          with self.screen_lock:
-            self.video_display = False
-        elif e.key == K_v:
-          with self.screen_lock:
-            self.screen = pygame.display.set_mode(self.VIDEO_WINSIZE,0,16)
-            self.video_display = True
-        elif e.key == K_s:
-          self.draw_skeleton = not self.draw_skeleton
-        elif e.key == K_u:
-          kinect.camera.elevation_angle = kinect.camera.elevation_angle + 2
-        elif e.key == K_j:
-          kinect.camera.elevation_angle = kinect.camera.elevation_angle - 2
-        elif e.key == K_x:
-          kinect.camera.elevation_angle = 2
 
       ######
       ##Click response

@@ -8,7 +8,7 @@ from data.Gesture import GestureSet, Sequence, Frame
 
 from ui import integration2
 
-from ui import integration
+#from ui import integration
 from recognize.nn_classifier import NNClassifier
 from recognize.dt_classifier import DTClassifier
 
