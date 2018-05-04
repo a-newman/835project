@@ -8,7 +8,7 @@ from data.Gesture import GestureSet, Sequence, Frame
 
 from ui import integration2
 
-#from ui import integration
+from ui import integration
 from recognize.nn_classifier import NNClassifier
 from recognize.dt_classifier import DTClassifier
 
@@ -128,4 +128,4 @@ if __name__ == "__main__":
 	# game = PykinectInt()
 	#  WordGameUI(backend_map=backend)
 	# game.display_logic()
-	integration2.runUI(backend)
+	integration.runUI(backend)
