@@ -54,26 +54,6 @@ def test():
 
 
   pygame.quit()
-test()
 
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
+# NOTE: this example requires PyAudio because it uses the Microphone class
 

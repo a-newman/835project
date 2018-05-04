@@ -27,6 +27,8 @@ import topbar as bars
 from sidebar import Sidebar
 from disp_func import disp
 from event_handlers import *
+from speech_detection import SpeechTrigger
+from control_words import *
 # import pykinect
 # from pykinect import nui
 # from pykinect.nui import JointId
@@ -57,6 +59,7 @@ class Text:
 
 KINECTEVENT = pygame.USEREVENT
 RECORDEVENT = pygame.USEREVENT+1
+SPEECHEVENT = pygame.USEREVENT+3
 
 pygame.init()
 
@@ -133,6 +136,7 @@ class PykinectInt:
   RECORDING_COUNTER=2;
   FEEDBACK_COUNTER = 4;
   WAIT_COUNTER=4;
+  WORDS = {"pause: ":"to pause","run: ": "to unpause","quit: ":"to quit","repeat: ": "to repeat the last word"}
   
 
   def __init__(self,screen,backend = {}):
@@ -142,6 +146,7 @@ class PykinectInt:
     self.video_display = False
     self.dispInfo = pygame.display.Info()
     #self.skeleton_to_depth_image = nui.SkeletonEngine.skeleton_to_depth_image
+    self.control_words = ['pause','run','quit','repeat']
     self.paused = False;
     self.skeletons = None
     self.DEPTH_WINSIZE = 320,240
@@ -162,6 +167,7 @@ class PykinectInt:
       size = self.dispInfo.current_w-self.DEPTH_WINSIZE[0];
     #self.clock_image = resize((size,size), ou_img="ui/images/_clock.gif");
     self.sent_data = False;
+    self.use_speech = True;
     
     
     ##########
@@ -221,6 +227,13 @@ class PykinectInt:
     #self.text_in_w = 100;
     ##self.text_in_x = self.
     #text_input = InputBox
+    self.speech_thread = SpeechTrigger(self);
+    self.listen = False;
+    ###
+    self.ctl_word_size = 40;
+    self.ctl_pose = self.camera_feed_pos[0],self.camera_feed_pos[1]+self.DEPTH_WINSIZE[1]+30
+    self.ctl_size = self.word_bar_size[0],300
+    self.clt_words=ControlWords(self.WORDS,font_size=self.ctl_word_size,pose=self.ctl_pose,size=self.ctl_size)
 
   def surface_to_array(self,surface):
     buffer_interface = surface.get_buffer()
@@ -333,7 +346,8 @@ class PykinectInt:
       disp(self)
       pygame.display.update()
       #print "deleted!"
-
+  def word_trigger(self,_words):
+    pygame.event.post(pygame.event.Event(SPEECHEVENT,words = _words));
 
   def video_frame_ready(self,frame):
     #print "video_display: ",self.video_display
@@ -360,6 +374,9 @@ class PykinectInt:
   def loop(self):
     pygame.display.set_caption('Louder than words')
     self.screen.fill(THECOLORS["black"])
+    if self.use_speech:
+      self.listen = True;
+      self.speech_thread.start()
 
 
     # kinect = nui.Runtime()
@@ -396,6 +413,7 @@ class PykinectInt:
       e = pygame.event.wait()
       self.dispInfo = pygame.display.Info()
       if e.type == pygame.QUIT:
+        self.listen = False
         done = True
         break
       elif e.type == RECORDEVENT:
@@ -437,12 +455,16 @@ class PykinectInt:
       ###
       if e.type ==MOUSEBUTTONDOWN:
         done=mouse_handle(self,done);
+      if e.type==SPEECHEVENT:
+        while len(e.words)!=0:
+          speech_word = e.words.pop(0)
+          done = word_handle(self,speech_word,done)
+        
       disp(self);
       pygame.display.update();
       clock.tick();
           
     pygame.quit()
-
 
 def runUI(backend):
   WINSIZE = 800,640;

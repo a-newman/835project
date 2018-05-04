@@ -403,9 +403,9 @@ class PykinectInt:
           skeletons = e.skeletons
           ###COLLECTING DATA
           if self.state==self.RECORDING:
-          if not self.paused:
-            skeleton_counter+=1;
-            self.collect(skeletons);
+            if not self.paused:
+              skeleton_counter+=1;
+              self.collect(skeletons);
           if self.draw_skeleton:
             
             self.draw_skeletons(skeletons)

@@ -1,8 +1,8 @@
 
 import threading
 def mouse_handle(obj,done):
-  if self.obj.depth_button.is_hovered():
-    obj.self.show_depth=not obj.self.show_depth
+  if obj.depth_button.is_hovered():
+    obj.show_depth=not obj.show_depth
   if obj.state==obj.SETUP:
     ##if hovering mode: set the mode to mode that mode 
     ##transition to next READY
@@ -19,6 +19,7 @@ def mouse_handle(obj,done):
     ## if hovering PAUSE: pause
     ## if quit then quit: leave the game
     if obj.quit_button.is_hovered():
+      obj.listen=False;
       done =True;
     elif obj.setup_button.is_hovered():
       obj.state = obj.SETUP;
@@ -31,6 +32,7 @@ def mouse_handle(obj,done):
     ## if hovering PAUSE: pause
     ## if quit then quit: leave the game 
     if obj.quit_button.is_hovered():
+      obj.listen=False;
       done =True;
     if obj.setup_button.is_hovered():
       obj.state = obj.SETUP;
@@ -42,6 +44,7 @@ def mouse_handle(obj,done):
     ## if hovering PAUSE: pause
     ## if quit then quit: leave the game 
     if obj.quit_button.is_hovered():
+      obj.listen=False;
       done =True;
     if obj.setup_button.is_hovered():
       obj.state = obj.SETUP;
@@ -52,6 +55,7 @@ def mouse_handle(obj,done):
     ## if hovering PAUSE: pause
     ## if quit then quit: leave the game e
     if obj.quit_button.is_hovered():
+      obj.listen=False;
       done =True;
     if obj.setup_button.is_hovered():
       obj.state = obj.SETUP;
@@ -117,7 +121,9 @@ def transition_handle(obj,background_color,skeleton_counter):
           obj.screen.fill(background_color)
         obj.counter = obj.READY_COUNTER
         obj.state = obj.READY
-        obj.test_word=obj.wordlist.roll();
+        if not obj.repeat:
+          obj.test_word=obj.wordlist.roll();
+        obj.repeat=False;
 
       else:
         obj.counter-=1
@@ -134,6 +140,22 @@ def transition_handle(obj,background_color,skeleton_counter):
           obj.counter = obj.RECORDING_COUNTER
       else:
         obj.counter-=1;
+def word_handle(obj,word,done):
+  if word=="pause":
+    print "pausing"
+    obj.paused = True
+  elif word == "quit":
+    print "quitting"
+    obj.listen = False
+    done = True;
+  elif word == "run":
+    print "running"
+    
+    obj.paused=False
+  elif word == "repeat":
+    obj.repeat=True;
+  return done
+
 class myThread (threading.Thread):
   def __init__(self, funct, obj):
     threading.Thread.__init__(self)
