@@ -145,7 +145,7 @@ class PykinectInt:
     self.draw_skeleton = True
     self.video_display = False
     self.dispInfo = pygame.display.Info()
-    #self.skeleton_to_depth_image = nui.SkeletonEngine.skeleton_to_depth_image
+    self.skeleton_to_depth_image = nui.SkeletonEngine.skeleton_to_depth_image
     self.control_words = ['pause','run','quit','repeat']
     self.paused = False;
     self.skeletons = None
