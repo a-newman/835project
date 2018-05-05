@@ -66,7 +66,7 @@ def mouse_handle(obj,done):
 def transition_handle(obj,background_color,skeleton_counter):
   if not obj.paused:
     if obj.state == obj.RECORDING:
-      print obj.skeletal_map
+      #print obj.skeletal_map
       if obj.counter<=0:
         with obj.screen_lock:
           obj.screen.fill(background_color)
@@ -86,6 +86,7 @@ def transition_handle(obj,background_color,skeleton_counter):
 
           thread.start()
         else:
+          print("No data recieved")
           obj.sent_data = False
         if obj.mode == obj.TRAINING:
           obj.state = obj.READY;
