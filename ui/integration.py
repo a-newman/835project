@@ -428,6 +428,7 @@ class PykinectInt:
         break
       elif e.type == RECORDEVENT:
         ##recording
+        
         transition_handle(self,background_color,skeleton_counter)
       elif e.type == KINECTEVENT:
           skeletons = e.skeletons
