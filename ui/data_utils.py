@@ -29,7 +29,7 @@ class Skeletal:
 
     self.knee_left = [];
     self.knee_right = [];
-  def is_empty(self):
+  def is_not_empty(self):
     attr = [
     self.head,self.spine,self.should_center,
     self.shoulder_left,self.shoulder_right,
