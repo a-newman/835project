@@ -1,6 +1,6 @@
 {
 	"classifier": "nn",
-	"dataset": "test_nathan",
+	"dataset": "test_mubarik",
 	"save_data": true,
 	"mutate_classifier": false
 }
