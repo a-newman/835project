@@ -103,6 +103,7 @@ def main():
 		CONFIG = json.load(infile)
 
 	DATASET_NAME = CONFIG['dataset']
+	print("DATASET_NAME", DATASET_NAME)
 
 	wordlist = dset_ops.get_defined_gestures(DATASET_NAME)
 
