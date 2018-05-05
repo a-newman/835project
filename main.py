@@ -7,8 +7,9 @@ from data import dset_ops
 from data.Gesture import GestureSet, Sequence, Frame
 
 from ui import integration2
-
-from ui import integration
+from pycallgraph import PyCallGraph
+from pycallgraph.output import GraphvizOutput
+# from ui import integration
 from recognize.nn_classifier import NNClassifier
 from recognize.dt_classifier import DTClassifier
 
@@ -96,8 +97,7 @@ def _get_closest_skel(skeletons):
 	# idx = np.argmin(metrics)
 	# return skeletons[idx]
 	return skeletons[0]
-
-if __name__ == "__main__": 
+def main(): 
 	# load the config file 
 	with open('config.json', 'r') as infile: 
 		CONFIG = json.load(infile)
@@ -116,7 +116,7 @@ if __name__ == "__main__":
 	CLASSIFIER.train()
 
 	backend = {
-		'words': wordlist,
+		'words': ['a','b'],#wordlist,
 		'get_classification': process_gesture_test,
 		'save_sequence': process_gesture_train,
 		'record_delay': 2
@@ -128,4 +128,6 @@ if __name__ == "__main__":
 	# game = PykinectInt()
 	#  WordGameUI(backend_map=backend)
 	# game.display_logic()
-	integration.runUI(backend)
+	integration2.runUI(backend)
+if __name__ == "__main__":
+  with PyCallGraph(output=GraphvizOutput()): main()

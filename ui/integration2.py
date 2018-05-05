@@ -169,6 +169,7 @@ class PykinectInt:
     #self.clock_image = resize((size,size), ou_img="ui/images/_clock.gif");
     self.sent_data = False;
     self.use_speech = True;
+    self.repeat = False
     
     
     ##########
@@ -204,6 +205,7 @@ class PykinectInt:
     #++++++
     self.user_button = Button(pos=self.user_button_pos,text="USER");
     self.setup_sidebar = Sidebar(self.side_bar_pos,w=self.side_bar_w,h=self.side_bar_h,buttons=[self.train_button,self.user_button,self.depth_button])
+    self.setup_sidebar_surf = self.setup_sidebar.draw_buttons()
 
     ###Text input
     self.text_in_h = 40;
@@ -219,6 +221,7 @@ class PykinectInt:
     #++++++
 
     self.sidar_bar = Sidebar(self.side_bar_pos,w=self.side_bar_w,h=self.side_bar_h,buttons=[self.quit_button,self.puase_button,self.setup_button,self.depth_button])
+    self.sidebar_surf = self.sidar_bar.draw_buttons()
     #++++++
     self.clock_pos = (self.camera_feed_pos[0]+self.DEPTH_WINSIZE[0]+10,self.camera_feed_pos[1]+self.text_in_h)
     self.clock = Clock(min(size,self.DEPTH_WINSIZE[1]));
@@ -239,6 +242,7 @@ class PykinectInt:
     self.ctl_pose = self.camera_feed_pos[0],self.camera_feed_pos[1]+self.DEPTH_WINSIZE[1]+30
     self.ctl_size = self.word_bar_size[0],300
     self.clt_words=ControlWords(self.WORDS,font_size=self.ctl_word_size,pose=self.ctl_pose,size=self.ctl_size)
+    self.ctl_surf = self.clt_words.show()
 
 
   def surface_to_array(self,surface):

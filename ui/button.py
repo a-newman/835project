@@ -14,7 +14,7 @@ class Button:
     ######components
     self.label = text;
     self.surface = pygame.Surface(self.dims)
-    self.font_size = (self.dims[0]);
+    self.font_size = (self.dims[1]);
     self.set_font_size()
     if self.font_size>self.dims[1]:
       self.font_size = self.dims[1];
