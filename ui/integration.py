@@ -169,6 +169,7 @@ class PykinectInt:
     self.sent_data = False;
     self.use_speech = True;
     self.repeat = False
+    self.camera_surf = pygame.Surface(self.DEPTH_WINSIZE)
     
     
     ##########
@@ -305,16 +306,16 @@ class PykinectInt:
         curend = self.skeleton_to_depth_image(next, self.VIDEO_WINSIZE[0], self.VIDEO_WINSIZE[1])
         if curstart[0]<self.VIDEO_WINSIZE[0] and curstart[1]<self.VIDEO_WINSIZE[1]:
           if curend[0]<self.VIDEO_WINSIZE[0] and curend[1]<self.VIDEO_WINSIZE[1]:
-            curstart = curstart[0]+self.camera_feed_pos[0],curstart[1]+self.camera_feed_pos[1];
-            curend = curend[0]+self.camera_feed_pos[0],curend[1]+self.camera_feed_pos[1]
+            # curstart = curstart[0]+self.camera_feed_pos[0],curstart[1]+self.camera_feed_pos[1];
+            # curend = curend[0]+self.camera_feed_pos[0],curend[1]+self.camera_feed_pos[1]
             pygame.draw.line(self.camera_surf, SKELETON_COLORS[index], curstart, curend, width);
       else:
         curstart = self.skeleton_to_depth_image(start, self.DEPTH_WINSIZE[0], self.DEPTH_WINSIZE[1]) 
         curend = self.skeleton_to_depth_image(next, self.DEPTH_WINSIZE[0], self.DEPTH_WINSIZE[1])
         if curstart[0]<self.DEPTH_WINSIZE[0] and curstart[1]<self.DEPTH_WINSIZE[1]:
           if curend[0]<self.DEPTH_WINSIZE[0] and curend[1]<self.DEPTH_WINSIZE[1]:
-            curstart = curstart[0]+self.camera_feed_pos[0],curstart[1]+self.camera_feed_pos[1];
-            curend = curend[0]+self.camera_feed_pos[0],curend[1]+self.camera_feed_pos[1]
+            # curstart = curstart[0]+self.camera_feed_pos[0],curstart[1]+self.camera_feed_pos[1];
+            # curend = curend[0]+self.camera_feed_pos[0],curend[1]+self.camera_feed_pos[1]
             pygame.draw.line(self.camera_surf, SKELETON_COLORS[index], curstart, curend, width);
       start = next
   def draw_skeletons(self,skeletons):
@@ -325,13 +326,14 @@ class PykinectInt:
       else:
         HeadPos = self.skeleton_to_depth_image(data.SkeletonPositions[JointId.Head], self.DEPTH_WINSIZE[0], self.DEPTH_WINSIZE[1])
       self.draw_skeleton_data(data, index, SPINE, 10)
-      pygame.draw.circle(self.camera_surf, SKELETON_COLORS[index], (int(HeadPos[0])+self.camera_feed_pos[0], self.camera_feed_pos[1]+int(HeadPos[1])), 20, 0)
+      pygame.draw.circle(self.camera_surf, SKELETON_COLORS[index], (int(HeadPos[0]), int(HeadPos[1])), 20, 0)
   
       # drawing the limbs
       self.draw_skeleton_data(data, index, LEFT_ARM)
       self.draw_skeleton_data(data, index, RIGHT_ARM)
       self.draw_skeleton_data(data, index, LEFT_LEG)
       self.draw_skeleton_data(data, index, RIGHT_LEG)
+    pygame.display.update()
   def word_trigger(self,_words):
     pygame.event.post(pygame.event.Event(SPEECHEVENT,words = _words));
   def depth_frame_ready(self,frame):
@@ -345,7 +347,7 @@ class PykinectInt:
         address = self.surface_to_array(self.camera_surf)
         frame.image.copy_bits(address)
         del address
-        self.screen.blit(depth_surface,self.camera_feed_pos)
+        self.screen.blit(self.camera_surf,self.camera_feed_pos)
       if self.skeletons is not None and self.draw_skeleton:
         self.draw_skeletons(self.skeletons)
         if self.state==self.RECORDING:
@@ -369,7 +371,7 @@ class PykinectInt:
         address = self.surface_to_array(self.camera_surf)
         frame.image.copy_bits(address)
         del address
-        self.screen.blit(vid_surface,self.camera_feed_pos);
+        self.screen.blit(self.camera_surf,self.camera_feed_pos);
       if self.skeletons is not None and self.draw_skeleton:
         self.draw_skeletons(self.skeletons)
         if self.state==self.RECORDING:
