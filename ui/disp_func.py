@@ -6,22 +6,22 @@ def setup_display_handler(obj):
   obj.screen.blit(obj.setup_sidebar_surf,obj.side_bar_pos);
   obj.screen.blit(obj.ctl_surf,obj.ctl_pose)
 def ready_display_handler(obj):
-  word_bar = bars.wordBar(obj.word_bar_size,obj.test_word,pos=obj.word_bar_pos)
-  # if obj.mode==obj.TRAINING:
-  #   word_bar = bars.wordBar(obj.word_bar_size,obj.test_word[0]+"=>"+obj.test_word[1],pos=obj.word_bar_pos)
-  # else:
-  #   word_bar = bars.wordBar(obj.word_bar_size,obj.test_word[0],pos=obj.word_bar_pos)
+  #word_bar = bars.wordBar(obj.word_bar_size,obj.test_word,pos=obj.word_bar_pos)
+  if obj.mode==obj.TRAINING:
+    word_bar = bars.wordBar(obj.word_bar_size,obj.test_word[0]+"=>"+obj.test_word[1],pos=obj.word_bar_pos)
+  else:
+    word_bar = bars.wordBar(obj.word_bar_size,obj.test_word[0],pos=obj.word_bar_pos)
   obj.screen.blit(obj.topbar,obj.topbar_pos);
   obj.screen.blit(word_bar,obj.word_bar_pos);
   obj.screen.blit(obj.ctl_surf,obj.clt_words.pose)
   obj.screen.blit(obj.clock.draw(count=obj.counter),obj.clock_pos)
   obj.screen.blit(obj.sidebar_surf,obj.side_bar_pos);
 def recording_display_handler(obj):
-  word_bar = bars.wordBar(obj.word_bar_size,obj.test_word,pos=obj.word_bar_pos)
-  # if obj.mode==obj.TRAINING:
-  #   word_bar = bars.wordBar(obj.word_bar_size,obj.test_word[0]+"=>"+obj.test_word[1],pos=obj.word_bar_pos)
-  # else:
-  #   word_bar = bars.wordBar(obj.word_bar_size,obj.test_word[0],pos=obj.word_bar_pos)
+  # word_bar = bars.wordBar(obj.word_bar_size,obj.test_word,pos=obj.word_bar_pos)
+  if obj.mode==obj.TRAINING:
+    word_bar = bars.wordBar(obj.word_bar_size,obj.test_word[0]+"=>"+obj.test_word[1],pos=obj.word_bar_pos)
+  else:
+    word_bar = bars.wordBar(obj.word_bar_size,obj.test_word[0],pos=obj.word_bar_pos)
   gogo = bars.gogo(obj.DEPTH_WINSIZE,pos=obj.clock_pos);
   obj.screen.blit(gogo,obj.clock_pos)
   obj.screen.blit(obj.topbar,obj.topbar_pos);
