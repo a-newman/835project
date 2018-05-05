@@ -116,7 +116,7 @@ def main():
 	CLASSIFIER.train()
 
 	backend = {
-		'words': ['a','b'],#wordlist,
+		'words': wordlist,
 		'get_classification': process_gesture_test,
 		'save_sequence': process_gesture_train,
 		'record_delay': 2
