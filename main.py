@@ -7,9 +7,9 @@ from data import dset_ops
 from data.Gesture import GestureSet, Sequence, Frame
 
 from ui import integration2
-from pycallgraph import PyCallGraph
-from pycallgraph.output import GraphvizOutput
-# from ui import integration
+#from pycallgraph import PyCallGraph
+#from pycallgraph.output import GraphvizOutput
+from ui import integration
 from recognize.nn_classifier import NNClassifier
 from recognize.dt_classifier import DTClassifier
 
@@ -128,6 +128,7 @@ def main():
 	# game = PykinectInt()
 	#  WordGameUI(backend_map=backend)
 	# game.display_logic()
-	integration2.runUI(backend)
+	integration.runUI(backend)
 if __name__ == "__main__":
-  with PyCallGraph(output=GraphvizOutput()): main()
+  #with PyCallGraph(output=GraphvizOutput()): 
+  main()
