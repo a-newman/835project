@@ -174,7 +174,7 @@ class PykinectInt:
     
     ##########
     self.counter = self.READY_COUNTER;
-    self.action = Text(self.screen,w=100, h=50,pos=(485,0),text=self.test_word,color=THECOLORS['white']);
+    self.action = Text(self.screen,w=100, h=50,pos=(485,0),text=self.test_word[0],color=THECOLORS['white']);
     self.count = Text(self.screen,w=100, h=100,pos=(485,55),text=str(self.counter),color=THECOLORS['white']);
 
     ####general state display paramters
