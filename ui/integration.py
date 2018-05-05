@@ -140,7 +140,6 @@ class PykinectInt:
   WORDS = {"pause: ":"to pause","run: ": "to unpause","quit: ":"to quit","repeat: ": "to repeat the last word"}
 
   def __init__(self,screen,backend = {}):
-    self.skeleton_to_depth_image = nui.SkeletonEngine.skeleton_to_depth_image
     self.screen = screen;
     self.screen_lock = thread.allocate()
     self.draw_skeleton = True
@@ -174,7 +173,7 @@ class PykinectInt:
     
     ##########
     self.counter = self.READY_COUNTER;
-    self.action = Text(self.screen,w=100, h=50,pos=(485,0),text=self.test_word[0],color=THECOLORS['white']);
+    self.action = Text(self.screen,w=100, h=50,pos=(485,0),text=self.test_word,color=THECOLORS['white']);
     self.count = Text(self.screen,w=100, h=100,pos=(485,55),text=str(self.counter),color=THECOLORS['white']);
 
     ####general state display paramters
@@ -205,7 +204,13 @@ class PykinectInt:
     #++++++
     self.user_button = Button(pos=self.user_button_pos,text="USER");
     self.setup_sidebar = Sidebar(self.side_bar_pos,w=self.side_bar_w,h=self.side_bar_h,buttons=[self.train_button,self.user_button,self.depth_button])
+    self.setup_sidebar_surf = self.setup_sidebar.draw_buttons()
 
+    ###Text input
+    self.text_in_h = 40;
+    self.text_in_w = 100;
+    self.text_in_pos = (self.camera_feed_pos[0]+self.DEPTH_WINSIZE[0]+10,self.camera_feed_pos[1])
+    self.text_input = InputBox(self.text_in_pos[0], self.text_in_pos[1], self.text_in_w, self.text_in_h)
     ####READY display parameters
     self.quit_button = Button(text="QUIT");
     #++++++++++
@@ -215,21 +220,20 @@ class PykinectInt:
     #++++++
 
     self.sidar_bar = Sidebar(self.side_bar_pos,w=self.side_bar_w,h=self.side_bar_h,buttons=[self.quit_button,self.puase_button,self.setup_button,self.depth_button])
+    self.sidebar_surf = self.sidar_bar.draw_buttons()
     #++++++
-    self.clock_pos = (self.camera_feed_pos[0]+self.DEPTH_WINSIZE[0]+10,self.camera_feed_pos[1])
+    self.clock_pos = (self.camera_feed_pos[0]+self.DEPTH_WINSIZE[0]+10,self.camera_feed_pos[1]+self.text_in_h)
     self.clock = Clock(min(size,self.DEPTH_WINSIZE[1]));
     ####RECODRING display parameters 
+    
+
     ####FEEDBACK parameters
     self.feedback_bar_pos=(self.word_bar_pos[0], self.camera_feed_pos[1]+self.DEPTH_WINSIZE[1]+10);
     self.feedback_bar_size = self.word_bar_size;
 
 
-    ###Text input
-    #self.text_in_h = 100;
-    #self.text_in_w = 100;
-    ##self.text_in_x = self.
-    self.camera_surf = pygame.Surface(self.DEPTH_WINSIZE)
-    #text_input = InputBox
+    
+   
     self.speech_thread = SpeechTrigger(self);
     self.listen = False;
     ###
@@ -237,6 +241,7 @@ class PykinectInt:
     self.ctl_pose = self.camera_feed_pos[0],self.camera_feed_pos[1]+self.DEPTH_WINSIZE[1]+30
     self.ctl_size = self.word_bar_size[0],300
     self.clt_words=ControlWords(self.WORDS,font_size=self.ctl_word_size,pose=self.ctl_pose,size=self.ctl_size)
+    self.ctl_surf = self.clt_words.show()
   def surface_to_array(self,surface):
     buffer_interface = surface.get_buffer()
     address = ctypes.c_void_p()
