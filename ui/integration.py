@@ -319,6 +319,8 @@ class PykinectInt:
             pygame.draw.line(self.camera_surf, SKELETON_COLORS[index], curstart, curend, width);
       start = next
   def draw_skeletons(self,skeletons):
+    if not self.show_depth:
+      self.camera_surf.fill((0,0,0))
     for index, data in enumerate(skeletons):
       # draw the Head
       if self.video_display:
@@ -333,6 +335,7 @@ class PykinectInt:
       self.draw_skeleton_data(data, index, RIGHT_ARM)
       self.draw_skeleton_data(data, index, LEFT_LEG)
       self.draw_skeleton_data(data, index, RIGHT_LEG)
+    self.screen.blit(self.camera_surf,self.camera_feed_pos)
     pygame.display.update()
   def word_trigger(self,_words):
     pygame.event.post(pygame.event.Event(SPEECHEVENT,words = _words));
@@ -428,12 +431,14 @@ class PykinectInt:
         transition_handle(self,background_color,skeleton_counter)
       elif e.type == KINECTEVENT:
           skeletons = e.skeletons
+          #print "recieving skeletons"
           ###COLLECTING DATA
           if self.state==self.RECORDING:
             if not self.paused:
               skeleton_counter+=1;
               self.collect(skeletons);
           if self.draw_skeleton:
+            #print "sending skeletons"
             
             self.draw_skeletons(skeletons)
             pygame.display.update()
