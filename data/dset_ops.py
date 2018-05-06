@@ -1,7 +1,6 @@
 import json
 import os
 import re
-import time
 from data.Gesture import DataSet, GestureSet, Sequence, Frame
 
 BASE_PATH = 'data/sets/'
@@ -99,29 +98,6 @@ def add_gesture_example(dset_name, gesture_name, sequence):
     _save_dset(dset)
     return dset
 
-def save_gesture(dset, gesture_name): 
-    gesture_file = BASE_PATH + dset.name + "_" + gesture_name + ".json"
-    start = time.time()
-    g_json = _json_serialize_gesture(dset.gestures[gesture_name])
-    serialized = time.time()
-    with open(gesture_file, 'w') as outfile: 
-        json.dump(g_json, outfile)
-    saved = time.time()
-    print ("time to serialize", serialized - start)
-    print("time to save", saved - serialized)
-    print("whole time", saved - start)
-
-def save_sequence(dset, gesture_name): 
-    start = time.time()
-    i = len(dset.gestures[gesture_name].sequences)
-    seq_to_save = dset.gestures[gesture_name].sequences[-1]
-    seq_path = BASE_PATH + dset.name + "_" + gesture_name + "_" + str(i) + ".json"
-    with open(seq_path, 'w') as outfile: 
-        json.dump(_json_serialize_seq(seq_to_save), outfile)
-    done = time.time()
-    print("time to serialize", done-start)
-
-
 def _load_index(): 
     with open(INDEX_PATH, 'r') as infile: 
         index = json.load(infile)
@@ -135,18 +111,12 @@ def _save_index(index):
 def _json_recover_dset(j): 
     dset = DataSet(name=j['name'], filepath=j['filepath'])
     dset.translations = j['translations']
-    for gname, g_path in j['gestures'].items():
-        with open(g_path, 'r') as infile: 
-            g = json.load(infile)
+    for gname, g in j['gestures'].items(): 
         dset.gestures[gname] = _json_recover_gesture(g)
     return dset
 
 def _json_recover_gesture(j): 
-    sequences = [] 
-    for path in j['sequences']: 
-        with open(path, 'r') as infile: 
-            s = _json_recover_seq(json.load(infile))
-            sequences.append(s)
+    sequences = [_json_recover_seq(s) for s in j['sequences']]
     return GestureSet(label = j['label'], sequences=sequences)
 
 def _json_recover_seq(j): 
@@ -158,22 +128,14 @@ def _json_recover_frame(j):
 def _json_serialize_dset(dset): 
     dd = {'name': dset.name, 'filepath': dset.filepath, 'gestures': {}, 'translations': dset.translations}
     for gname, g in dset.gestures.items(): 
-        g_path = BASE_PATH + dset.name + "_" + gname + ".json"
-        with open(g_path, 'w') as outfile: 
-            json.dump(_json_serialize_gesture(g), outfile)
-        dd['gestures'][gname] = g_path
+        dd['gestures'][gname] = _json_serialize_gesture(g)
     return dd  
 
 def _json_serialize_gesture(g): 
     gd = {
-        'sequences': [],
+        'sequences': [_json_serialize_seq(s) for s in g.sequences],
         'label': g.label,
     }
-    for i, seq in g.sequences: 
-        seq_path = BASE_PATH + dset.name + "_" + gesture_name + "_" + str(i) + ".json"
-        with open(seq_path, 'w') as outfile: 
-            json.dump(_json_serialize_seq(seq), outfile)
-            gd['sequences'].append(seq)
     return gd
 
 def _json_serialize_seq(s): 
