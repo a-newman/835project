@@ -244,6 +244,12 @@ class PykinectInt:
     self.clt_words=ControlWords(self.WORDS,font_size=self.ctl_word_size,pose=self.ctl_pose,size=self.ctl_size)
     self.ctl_surf = self.clt_words.show()
 
+    ### Feedback bars
+    self.congrats_bar = bars.congrats(self.feedback_bar_size,pos = self.feedback_bar_pos);
+    self.no_data_bar = bars.noData(self.feedback_bar_size,pos = self.feedback_bar_pos);
+    self.processing_bar = bars.processing(self.feedback_bar_size,pos = self.feedback_bar_pos)
+    self.gogo_bar = bars.gogo(size=(self.clock.size, self.clock.size),pos=self.clock_pos);
+
 
   def surface_to_array(self,surface):
     buffer_interface = surface.get_buffer()

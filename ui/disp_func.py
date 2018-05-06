@@ -23,7 +23,7 @@ def recording_display_handler(obj):
   else:
     word_bar = bars.wordBar(obj.word_bar_size,obj.test_word[0],pos=obj.word_bar_pos)
   #gogo = bars.gogo(obj.DEPTH_WINSIZE,pos=obj.clock_pos);
-  gogo = bars.gogo(size=(obj.clock.size, obj.clock.size),pos=obj.clock_pos);
+  gogo = obj.gogo_bar
   obj.screen.blit(gogo,obj.clock_pos)
   obj.screen.blit(obj.topbar,obj.topbar_pos);
   obj.screen.blit(obj.ctl_surf,obj.clt_words.pose)
@@ -34,7 +34,7 @@ def wait_display_handler(obj):
   obj.screen.blit(obj.topbar,obj.topbar_pos);
   obj.screen.blit(obj.sidebar_surf,obj.side_bar_pos);
   obj.screen.blit(obj.ctl_surf,obj.clt_words.pose)
-  feed = bars.processing(obj.feedback_bar_size,pos = obj.feedback_bar_pos)
+  feed = obj.processing_bar
   obj.screen.blit(feed,obj.feedback_bar_pos);
 def feedback_display_handler(obj):
   obj.screen.blit(obj.topbar,obj.topbar_pos);
@@ -42,7 +42,7 @@ def feedback_display_handler(obj):
   if obj.sent_data:
     if obj.test_word==obj.word:
       ### Display congrats
-      feed = bars.congrats(obj.feedback_bar_size,pos = obj.feedback_bar_pos);
+      feed = obj.congrats_bar
       obj.screen.blit(feed,obj.feedback_bar_pos)
 
     else:
@@ -50,7 +50,7 @@ def feedback_display_handler(obj):
       feed =  bars.sorry(obj.feedback_bar_size,obj.word,pos = obj.feedback_bar_pos)
       obj.screen.blit(feed, obj.feedback_bar_pos);
   else:
-    feed= bars.noData(obj.feedback_bar_size,pos = obj.feedback_bar_pos);
+    feed= obj.no_data_bar
     obj.screen.blit(feed, obj.feedback_bar_pos);
 def disp(obj):
   if obj.state==obj.SETUP:
