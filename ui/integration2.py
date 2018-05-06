@@ -15,6 +15,7 @@
 # permissions and limitations under the License.
 
 from ui.data_utils import *
+import word_displaying_mapper as mappers
 from text import *
 import thread
 import random
@@ -249,6 +250,10 @@ class PykinectInt:
     self.no_data_bar = bars.noData(self.feedback_bar_size,pos = self.feedback_bar_pos);
     self.processing_bar = bars.processing(self.feedback_bar_size,pos = self.feedback_bar_pos)
     self.gogo_bar = bars.gogo(size=(self.clock.size, self.clock.size),pos=self.clock_pos);
+    ####Test words
+    self.train_bars = mappers.trainer_vocab_display_mapper(self);
+    self.test_bars = mappers.test__vocab_display_mapper(self);
+    self.sorry_bar_mapper = mappers.sorry_bar_mapper(self);
 
 
   def surface_to_array(self,surface):

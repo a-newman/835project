@@ -20,12 +20,16 @@ class Button:
       self.font_size = self.dims[1];
     self.font = pygame.font.Font(self.font_fam, self.font_size);
     self.surf = self.font.render(self.label, True, self.font_color);
-    
+  def create(self):
+    return pygame.font.Font(self.font_fam,self.font_size);
   def set_font_size(self):
     font = pygame.font.Font(self.font_fam,self.font_size);
-    if font.size(self.label)[0]>self.dims[0]:
+    while True:
+      if font.size(self.label)[0]<=self.dims[0]:
+        break
       self.font_size=self.font_size-max(1,(font.size(self.label)[0]-self.dims[0])/len(self.label));
-      self.set_font_size();
+      font = pygame.font.Font(self.font_fam,self.font_size);
+      
   def set_font_color(self):
     self.font = pygame.font.Font(self.font_fam, self.font_size);
     self.surf = self.font.render(self.label, True, self.font_color);
