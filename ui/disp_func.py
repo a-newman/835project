@@ -38,7 +38,7 @@ def wait_display_handler(obj):
   obj.screen.blit(feed,obj.feedback_bar_pos);
 def feedback_display_handler(obj):
   obj.screen.blit(obj.topbar,obj.topbar_pos);
-  obj.screen.blit(obj.sidar_bar.draw_buttons(),obj.side_bar_pos);
+  obj.screen.blit(obj.sidebar_surf,obj.side_bar_pos);
   if obj.sent_data:
     if obj.test_word==obj.word:
       ### Display congrats
