@@ -15,7 +15,7 @@ def mouse_handle(obj,done):
       obj.paused = False
     elif obj.user_button.is_hovered():
       # user mode is starting; reload the database 
-      obj.backend['data_refresh']();
+      #obj.backend['data_refresh']();
       obj.mode=obj.USER
       obj.state = obj.READY;
       obj.counter = obj.READY_COUNTER;
