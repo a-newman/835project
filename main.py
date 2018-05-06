@@ -57,7 +57,8 @@ class MainObj():
 		if (seq): 
 			tmp_testing_gesture = seq
 			pred_gesture = self.CLASSIFIER.classify(seq)
-			ui_object.word = pred_gesture 
+			print("pred_gesture", pred_gesture)
+			ui_object.word = (pred_gesture, self.DATASET.translations[pred_gesture])
 		else: 
 			ui_object.word = None
 		ui_object.backend_wait = False
