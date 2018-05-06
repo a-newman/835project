@@ -18,7 +18,6 @@ class DataSet:
             self.translations[gesture_name] = translation
 
     def store_gesture_example(self, gesture_name, sequence): 
-        gesture_name = gesture_name[0]
         if gesture_name not in self.gestures: 
             raise RuntimeError("Not a valid gesture")
 

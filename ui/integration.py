@@ -486,7 +486,8 @@ class PykinectInt:
       disp(self);
       pygame.display.update();
       clock.tick();
-          
+    
+    self.backend['save_data']()
     pygame.quit()
 
 def runUI(backend):

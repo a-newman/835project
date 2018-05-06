@@ -5,13 +5,14 @@ import numpy as np
 from time import sleep, time
 from data import dset_ops
 from data.Gesture import GestureSet, Sequence, Frame
+from recognize.normalize_frames import resize_seq
 
 from ui import integration2
 
-from pycallgraph import PyCallGraph
-from pycallgraph.output import GraphvizOutput
-import os
-os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
+# from pycallgraph import PyCallGraph
+# from pycallgraph.output import GraphvizOutput
+# import os
+# os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
 
 from ui import integration
 from recognize.nn_classifier import NNClassifier
@@ -33,12 +34,20 @@ class MainObj():
 
 		self.DATASET_NAME = self.CONFIG['dataset']
 		print("DATASET_NAME", self.DATASET_NAME)
+		start = time()
+		self.DATASET = dset_ops._load_dset(self.DATASET_NAME)
+		end = time()
+		print("time to load", end-start)
 
 		self.wordlist = dset_ops.get_defined_gestures(self.DATASET_NAME)
 
-		self.CLASSIFIER = NNClassifier(self.DATASET_NAME)
+		self.CLASSIFIER = NNClassifier(self.DATASET_NAME, dset=self.DATASET)
 		self.CLASSIFIER.prep()
 		self.CLASSIFIER.train()
+
+	def save(self):
+		dset_ops._save_dset(self.DATASET)
+		print("DATA SUCCESFULLY SAVED")
 
 	def process_gesture_test(self, ui_object): 
 		#sleep(2)
@@ -59,20 +68,17 @@ class MainObj():
 		gesture_name = ui_object.test_word
 		print "word", gesture_name
 		seq = self._sf_to_sequence(data)
+		print("seq before", len(seq.frames))
+		seq.frames = resize_seq(seq.frames, 30)
+		print("seq after", len(seq.frames))
 
 		if (seq): 
 			print("DATASET NAME at add time", self.DATASET_NAME)
-			dset_ops.add_gesture_example(self.DATASET_NAME, gesture_name, seq)
+			#dset_ops.add_gesture_example(self.DATASET_NAME, gesture_name, seq)
+			self.DATASET.store_gesture_example(gesture_name[0], seq)
+			#dset_ops._save_dset(self.DATASET)
+			#dset_ops.save_sequence(self.DATASET, gesture_name[0])
 		ui_object.backend_wait = False
-
-	def process_gesture_practice(self, gesture_name): 
-		seq = pythonreader.get_data()
-		if self.CONFIG.save_data: 
-			dset_ops.add_gesture_example(self.DATASET_NAME, gesture_name, seq)
-		if self.CONFIG.mutate_classifier: 
-			self.CLASSIFIER.update(gesture_name, seq)
-			self.CLASSIFIER.save()
-		return seq
 
 	def _sf_to_sequence(self, scan_frame_list): 
 		timestamp = time() 
@@ -124,7 +130,7 @@ def main():
 		'words': mainobj.wordlist,
 		'get_classification': mainobj.process_gesture_test,
 		'save_sequence': mainobj.process_gesture_train,
-		'data_refresh': mainobj.CLASSIFIER.prep,
+		'save_data': mainobj.save,
 		'record_delay': 2
 	}
 
@@ -136,5 +142,5 @@ def main():
 	# game.display_logic()
 	integration.runUI(backend)
 if __name__ == "__main__":
-  with PyCallGraph(output=GraphvizOutput()): 
-  	main()
+  #with PyCallGraph(output=GraphvizOutput()): 
+  main()

@@ -5,11 +5,11 @@ import heapq
 import numpy as np
 
 class NNClassifier(Classifier): 
-    def __init__(self, dset_name, k=3, num_frames=30): 
+    def __init__(self, dset_name, k=3, num_frames=30, dset=None): 
         super(NNClassifier, self).__init__()
-        self.dset_name = dset_name
+        #self.dset_name = dset_name
         self.k = k
-        self.cached_dset = None
+        self.cached_dset = dset
         self.num_frames = num_frames
 
     def prep(self): 
@@ -17,7 +17,8 @@ class NNClassifier(Classifier):
         Do any pre-processing that needs to happen before it's ready to use
         Will be called on start-up. 
         """
-        self._reload()
+        if not self.cached_dset: 
+            self._reload()
 
     def update(self, label, sample): 
         """
