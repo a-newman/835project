@@ -7,8 +7,12 @@ from data import dset_ops
 from data.Gesture import GestureSet, Sequence, Frame
 
 from ui import integration2
-#from pycallgraph import PyCallGraph
-#from pycallgraph.output import GraphvizOutput
+
+from pycallgraph import PyCallGraph
+from pycallgraph.output import GraphvizOutput
+import os
+os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
+
 from ui import integration
 from recognize.nn_classifier import NNClassifier
 from recognize.dt_classifier import DTClassifier
@@ -132,5 +136,5 @@ def main():
 	# game.display_logic()
 	integration.runUI(backend)
 if __name__ == "__main__":
-  #with PyCallGraph(output=GraphvizOutput()): 
-  main()
+  with PyCallGraph(output=GraphvizOutput()): 
+  	main()

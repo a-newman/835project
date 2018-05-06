@@ -1,5 +1,5 @@
 from data.dset_ops import * 
-NAME = "test_nathan"
+NAME = "test_anelise"
 
 #delete_dset("eval")
 make_dset(NAME, safe=False)
