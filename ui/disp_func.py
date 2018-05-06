@@ -47,7 +47,7 @@ def feedback_display_handler(obj):
 
     else:
       ### Display sorry
-      feed =  obj.sorry_bar_mapper[obj.word]#bars.sorry(obj.feedback_bar_size,obj.word,pos = obj.feedback_bar_pos)
+      feed =  obj.sorry_bar_mapper[obj.word[0]]#bars.sorry(obj.feedback_bar_size,obj.word,pos = obj.feedback_bar_pos)
       obj.screen.blit(feed, obj.feedback_bar_pos);
   else:
     feed= obj.no_data_bar
