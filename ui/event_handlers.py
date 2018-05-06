@@ -11,10 +11,16 @@ def mouse_handle(obj,done):
       obj.mode = obj.TRAINING;
       obj.state = obj.READY
       obj.counter=obj.READY_COUNTER;
+      # turn pause off 
+      obj.paused = False
     elif obj.user_button.is_hovered():
+      # user mode is starting; reload the database 
+      obj.backend['data_refresh']();
       obj.mode=obj.USER
       obj.state = obj.READY;
       obj.counter = obj.READY_COUNTER;
+      # turn pause off
+      obj.paused = False
   elif obj.state == obj.READY:
     ##if hovering SETUP: back to hovering
     ## if hovering PAUSE: pause
@@ -40,8 +46,7 @@ def mouse_handle(obj,done):
       obj.skeletal_map = [];
     elif obj.puase_button.is_hovered():
       obj.paused = not obj.paused
-  elif obj.state == obj.WAIT:
-    ##if hovering SETUP: back to hovering
+  elif obj.state == obj.WAIT:    ##if hovering SETUP: back to hovering
     ## if hovering PAUSE: pause
     ## if quit then quit: leave the game 
     if obj.quit_button.is_hovered():

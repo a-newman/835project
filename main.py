@@ -120,6 +120,7 @@ def main():
 		'words': mainobj.wordlist,
 		'get_classification': mainobj.process_gesture_test,
 		'save_sequence': mainobj.process_gesture_train,
+		'data_refresh': mainobj.CLASSIFIER.prep,
 		'record_delay': 2
 	}
 

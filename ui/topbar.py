@@ -36,12 +36,13 @@ def sorry(size,word,pos = (0,0)):
   return bar.show();
 def processing(size,pos = (0,0)):
   bar =  Button(dims=size,text = "processing...");
-  r= rn.randint(0,255);
-  g = rn.randint(0,255);
+  #r= rn.randint(0,255);
+  #g = rn.randint(0,255);
   bar.pos = pos;
   bar.back_color_n = (12,12,55);
   bar.back_color_h = (3,255,255);
-  bar.font_color = (r,g,3);
+  #bar.font_color = (r,g,3);
+  bar.font_color = (247, 255, 40)
   return bar.show();
 def noData(size,pos = (0,0)):
   bar =  Button(dims=size,text = "No Data collected!");

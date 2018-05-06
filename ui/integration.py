@@ -165,6 +165,7 @@ class PykinectInt:
       size = self.dispInfo.current_w-self.VIDEO_WINSIZE[0];
     else:
       size = self.dispInfo.current_w-self.DEPTH_WINSIZE[0];
+    size = size + 100
     #self.clock_image = resize((size,size), ou_img="ui/images/_clock.gif");
     self.sent_data = False;
     self.use_speech = True;
@@ -223,8 +224,9 @@ class PykinectInt:
     self.sidar_bar = Sidebar(self.side_bar_pos,w=self.side_bar_w,h=self.side_bar_h,buttons=[self.quit_button,self.puase_button,self.setup_button,self.depth_button])
     self.sidebar_surf = self.sidar_bar.draw_buttons()
     #++++++
-    self.clock_pos = (self.camera_feed_pos[0]+self.DEPTH_WINSIZE[0]+10,self.camera_feed_pos[1]+self.text_in_h)
-    self.clock = Clock(min(size,self.DEPTH_WINSIZE[1]));
+    #self.clock_pos = (self.camera_feed_pos[0]+self.DEPTH_WINSIZE[0]+10,self.camera_feed_pos[1]+self.text_in_h)
+    self.clock_pos = (self.camera_feed_pos[0]+self.DEPTH_WINSIZE[0]+70,self.camera_feed_pos[1])
+    self.clock = Clock(size=self.DEPTH_WINSIZE[1] + 30);
     ####RECODRING display parameters 
     
 
@@ -416,10 +418,11 @@ class PykinectInt:
     skeleton_counter = 0
     clock  = pygame.time.Clock()
     while not done:
-      r = random.randint(0,34);
-      g = random.randint(0,34);
-      b = random.randint(0,34);
-      background_color = (r,g,b);
+      #r = random.randint(0,34);
+      #g = random.randint(0,34);
+      #b = random.randint(0,34);
+      #background_color = (r,g,b);
+      background_color = (1, 0, 79)
       e = pygame.event.wait()
       self.dispInfo = pygame.display.Info()
       if e.type == pygame.QUIT:
