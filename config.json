@@ -1,6 +1,6 @@
 {
 	"classifier": "nn",
-	"dataset": "test_prafull",
+	"dataset": "test_Luis",
 	"save_data": true,
 	"mutate_classifier": false
 }
