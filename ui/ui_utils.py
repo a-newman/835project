@@ -278,7 +278,7 @@ class Clock:
     self.diagnol = self.get_diagnol();
     ##
     self.background_color=(0,0,0)
-    self.clock_color = (0,255,0);
+    self.clock_color = (255,0,0);
 
     self.font = pygame.font.Font("ui/fonts/font.ttf", int(self.size*.8));
     
