@@ -139,6 +139,7 @@ class PykinectInt:
   FEEDBACK_COUNTER = 4;
   WAIT_COUNTER=4;
   WORDS = {"pause: ":"to pause","run: ": "to unpause","quit: ":"to quit","repeat: ": "to repeat the last word"}
+  SETUP_WORDS = {"train":"to start practice mode", "test": "To start test mode"}
 
   def __init__(self,screen,backend = {}):
     self.screen = screen;
@@ -147,7 +148,7 @@ class PykinectInt:
     self.video_display = False
     self.dispInfo = pygame.display.Info()
     self.skeleton_to_depth_image = nui.SkeletonEngine.skeleton_to_depth_image
-    self.control_words = ['pause','run','quit','repeat']
+    self.control_words = ['pause','run','quit','repeat',"train",'test']
     self.paused = False;
     self.skeletons = None
     self.DEPTH_WINSIZE = 320,240
@@ -245,7 +246,9 @@ class PykinectInt:
     self.ctl_pose = self.camera_feed_pos[0],self.camera_feed_pos[1]+self.DEPTH_WINSIZE[1]+30
     self.ctl_size = self.word_bar_size[0],300
     self.clt_words=ControlWords(self.WORDS,font_size=self.ctl_word_size,pose=self.ctl_pose,size=self.ctl_size)
+    self.setup_clt_words=ControlWords(self.SETUP_WORDS,font_size=self.ctl_word_size,pose=self.ctl_pose,size=self.ctl_size)
     self.ctl_surf = self.clt_words.show()
+    self.setup_ctl_surf=self.setup_clt_words.show()
 
     ### Feedback bars
     self.congrats_bar = bars.congrats(self.feedback_bar_size,pos = self.feedback_bar_pos);
@@ -402,7 +405,7 @@ class PykinectInt:
     self.screen.fill(THECOLORS["black"])
     if self.use_speech:
       self.listen = True;
-      #self.speech_thread.start()
+      self.speech_thread.start()
 
 
     kinect = nui.Runtime()
@@ -485,10 +488,10 @@ class PykinectInt:
       ###
       if e.type ==MOUSEBUTTONDOWN:
         done=mouse_handle(self,done);
-      # if e.type==SPEECHEVENT:
-      #   while len(e.words)!=0:
-      #     speech_word = e.words.pop(0)
-      #     done = word_handle(self,speech_word,done)
+      if e.type==SPEECHEVENT:
+        while len(e.words)!=0:
+          speech_word = e.words.pop(0)
+          done = word_handle(self,speech_word,done)
         
       disp(self);
       pygame.display.update();

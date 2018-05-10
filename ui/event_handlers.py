@@ -162,6 +162,19 @@ def word_handle(obj,word,done):
     obj.paused=False
   elif word == "repeat":
     obj.repeat=True;
+  if obj.state==obj.SETUP:
+    if word=="test":
+      obj.mode = obj.USER
+      obj.state = obj.READY
+      obj.counter=obj.READY_COUNTER;
+      # turn pause off 
+      obj.paused = False
+    if word=="train":
+      obj.mode = obj.TRAINING
+      obj.state = obj.READY
+      obj.counter=obj.READY_COUNTER;
+      # turn pause off 
+      obj.paused = False
   return done
 
 class myThread (threading.Thread):
