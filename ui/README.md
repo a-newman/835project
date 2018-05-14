@@ -39,55 +39,11 @@ The centerpiece of the UI. All the our files in this directory are helpers for t
 * **word_bar_pos**: The position of the bar that displays the action word.
 * **camera_feed_pos**: Position of the camera feed window. 
 * **text_in_h**, **text_in_w**, **text_in_pos**: The height, width, and the position of the text box. The box where the user would enter the words.
-    self. = (self.camera_feed_pos[0]+self.DEPTH_WINSIZE[0]+10,self.camera_feed_pos[1])
-    self.text_input = InputBox(self.text_in_pos[0], self.text_in_pos[1], self.text_in_w, self.text_in_h)
-    ####READY display parameters
-    self.quit_button = Button(text="QUIT");
-    #++++++++++
-    self.setup_button = Button(text="SETUP");
-    #++++++
-    self.puase_button = Button(text="PAUSE");
-    #++++++
+* **clock_pos**: The position of the count down clock.
+* **feedback_bar_pos** and **feedback_bar_size**: The position and size of the feedback back bar.
+* **listen**: If **false** the speech thread exits. The UI will no longer recieve speech events.
+* **ctl_word_size**, **ctl_pose**,and **ctl_size**: the font size, position, and dimensions of the control words bar.
 
-    self.sidar_bar = Sidebar(self.side_bar_pos,w=self.side_bar_w,h=self.side_bar_h,buttons=[self.quit_button,self.puase_button,self.setup_button,self.depth_button])
-    self.sidebar_surf = self.sidar_bar.draw_buttons()
-    #++++++
-    #self.clock_pos = (self.camera_feed_pos[0]+self.DEPTH_WINSIZE[0]+10,self.camera_feed_pos[1]+self.text_in_h)
-    self.clock_pos = (self.camera_feed_pos[0]+self.DEPTH_WINSIZE[0]+70,self.camera_feed_pos[1])
-    self.clock = Clock(size=self.DEPTH_WINSIZE[1] + 30);
-    ####RECODRING display parameters 
-    
-
-    ####FEEDBACK parameters
-    self.feedback_bar_pos=(self.word_bar_pos[0], self.camera_feed_pos[1]+self.DEPTH_WINSIZE[1]+10);
-    self.feedback_bar_size = self.word_bar_size;
-
-
-    
-   
-    self.speech_thread = SpeechTrigger(self);
-    self.listen = False;
-    ###
-    self.ctl_word_size = 40;
-    self.ctl_pose = self.camera_feed_pos[0],self.camera_feed_pos[1]+self.DEPTH_WINSIZE[1]+30
-    self.ctl_size = self.word_bar_size[0],300
-    self.clt_words=ControlWords(self.WORDS,font_size=self.ctl_word_size,pose=self.ctl_pose,size=self.ctl_size)
-    self.setup_clt_words=ControlWords(self.SETUP_WORDS,font_size=self.ctl_word_size,pose=self.ctl_pose,size=self.ctl_size)
-    self.ctl_surf = self.clt_words.show()
-    self.setup_ctl_surf=self.setup_clt_words.show()
-
-    ### Feedback bars
-    self.congrats_bar = bars.congrats(self.feedback_bar_size,pos = self.feedback_bar_pos);
-    self.no_data_bar = bars.noData(self.feedback_bar_size,pos = self.feedback_bar_pos);
-    self.processing_bar = bars.processing(self.feedback_bar_size,pos = self.feedback_bar_pos)
-    self.gogo_bar = bars.gogo(size=(self.clock.size, self.clock.size),pos=self.clock_pos);
-    self.correct_word_pos = (self.feedback_bar_pos[0],(self.feedback_bar_pos[1]+self.feedback_bar_size[1]))
-    ####Test words
-    self.train_bars = mappers.trainer_vocab_display_mapper(self);
-    self.test_bars = mappers.test__vocab_display_mapper(self);
-    self.sorry_bar_mapper = mappers.sorry_bar_mapper(self);
-    self.correct_word_bar = mappers.correct__word_display_mapper(self);
-##### Methods 
 
 ### Event Handlers(event_handlers.py)
 Implements a few functions that handle events including mouse clicks(mainly for acitivating buttons), timer events(by the `stransition_handle` function), and speech events(currently disabled). All those functions are activated in the `integration.py` `loop` function. 
