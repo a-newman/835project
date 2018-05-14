@@ -1,35 +1,49 @@
 import topbar as bars
 from copy import deepcopy
 def setup_display_handler(obj):
-  ##display two buttons 
+  '''
+  Handles displaying UI components in SETUP state
+  ''' 
   obj.screen.blit(obj.topbar,obj.topbar_pos);
   obj.screen.blit(obj.setup_sidebar_surf,obj.side_bar_pos);
   obj.screen.blit(obj.setup_ctl_surf,obj.ctl_pose)
+
+
+
+
 def ready_display_handler(obj):
-  #word_bar = bars.wordBar(obj.word_bar_size,obj.test_word,pos=obj.word_bar_pos)
+  '''
+  Handles displaying UI components in ready(count down) state
+  '''
   if obj.mode==obj.TRAINING:
-    word_bar = obj.train_bars[obj.test_word]#bars.wordBar(obj.word_bar_size,obj.test_word[0]+"("+obj.test_word[1]+")",pos=obj.word_bar_pos)
+    word_bar = obj.train_bars[obj.test_word]
   else:
-    word_bar = obj.test_bars[obj.test_word]#bars.wordBar(obj.word_bar_size,obj.test_word[0],pos=obj.word_bar_pos)
+    word_bar = obj.test_bars[obj.test_word]
   obj.screen.blit(obj.topbar,obj.topbar_pos);
   obj.screen.blit(word_bar,obj.word_bar_pos);
   obj.screen.blit(obj.ctl_surf,obj.clt_words.pose)
   obj.screen.blit(obj.clock.draw(count=obj.counter),obj.clock_pos)
   obj.screen.blit(obj.sidebar_surf,obj.side_bar_pos);
+
+
+
+
 def recording_display_handler(obj):
-  # word_bar = bars.wordBar(obj.word_bar_size,obj.test_word,pos=obj.word_bar_pos)
+  
   if obj.mode==obj.TRAINING:
-    word_bar = obj.train_bars[obj.test_word]#bars.wordBar(obj.word_bar_size,obj.test_word[0]+"("+obj.test_word[1]+")",pos=obj.word_bar_pos)
+    word_bar = obj.train_bars[obj.test_word]
   else:
-    word_bar = obj.test_bars[obj.test_word]#bars.wordBar(obj.word_bar_size,obj.test_word[0],pos=obj.word_bar_pos)
-  #gogo = bars.gogo(obj.DEPTH_WINSIZE,pos=obj.clock_pos);
+    word_bar = obj.test_bars[obj.test_word]
+ 
   gogo = obj.gogo_bar
   obj.screen.blit(gogo,obj.clock_pos)
   obj.screen.blit(obj.topbar,obj.topbar_pos);
   obj.screen.blit(obj.ctl_surf,obj.clt_words.pose)
   obj.screen.blit(word_bar,obj.word_bar_pos);
   obj.screen.blit(obj.sidebar_surf,obj.side_bar_pos);
-  ##########Recording simple
+
+
+
 def wait_display_handler(obj):
   obj.screen.blit(obj.topbar,obj.topbar_pos);
   obj.screen.blit(obj.sidebar_surf,obj.side_bar_pos);
@@ -57,7 +71,12 @@ def feedback_display_handler(obj):
   else:
     feed= obj.no_data_bar
     obj.screen.blit(feed, obj.feedback_bar_pos);
+
+
 def disp(obj):
+  '''
+  Maps states to display functions 
+  '''
   if obj.state==obj.SETUP:
     setup_display_handler(obj)
   elif obj.state==obj.READY:

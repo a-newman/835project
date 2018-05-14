@@ -118,7 +118,7 @@ def transition_handle(obj,background_color,skeleton_counter):
       else:
         obj.counter-=1;
 
-    ##waiting 
+    ##Processing state
     elif obj.state==obj.WAIT:
       if not obj.backend_wait:
         with obj.screen_lock:
@@ -204,6 +204,9 @@ def word_handle(obj,word,done):
   return done
 
 class myThread (threading.Thread):
+  '''
+  Runs the backend in the back ground so the rendering doesn't get intrupted
+  '''
   def __init__(self, funct, obj):
     threading.Thread.__init__(self)
     self.funct = funct

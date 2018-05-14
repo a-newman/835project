@@ -22,6 +22,9 @@ class ColorMap:
 
 
 class Button:
+  '''
+  Class for button
+  '''
   def __init__(self,screen, pose=(None,None), dimensions=(None,None),text=None,font_color=None, hoverColor=None,staticColor=None):
     self.screen = screen;
     self.x = pose[0];
@@ -112,6 +115,9 @@ def button_test():
   pygame.quit()
 #button_test()
 class CountDown(Button):
+  '''
+  Class for count down button
+  '''
   def __init__(self,screen, second=2):
     Button.__init__(self, screen)
     self.counts = ['go','GO!']+list(range(second));
@@ -171,6 +177,7 @@ class CircularArray:
     n = random.randint(0,len(self.arr)-1);
     element = self.arr.pop(n);
     self.append(element);
+
 class TextRender:
   def __init__(self,screen,word, font_color=ColorMap.RED, hover_color=ColorMap.GREEN):
     self.word = word;
