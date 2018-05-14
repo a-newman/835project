@@ -1,65 +1,73 @@
 
+'''
+Handles events and maps them their control functions 
+All the functions in this file called from the loop function in integration.py
+'''
 import threading
 from copy import deepcopy
 def mouse_handle(obj,done):
+  '''
+  handles mouse clicks. 
+  See the following lines in integration.py on how it is called
+  >> if e.type ==MOUSEBUTTONDOWN:
+  >>   done=mouse_handle(self,done);
+  '''
+  # Handle Depth button clicks 
   if obj.depth_button.is_hovered():
     obj.show_depth=not obj.show_depth
+
+  #Handle button clicks in the Setup state
   if obj.state==obj.SETUP:
-    ##if hovering mode: set the mode to mode that mode 
-    ##transition to next READY
     if obj.train_button.is_hovered():
       obj.mode = obj.TRAINING;
       obj.state = obj.READY
-      obj.counter=obj.READY_COUNTER;
-      # turn pause off 
+      obj.counter=obj.READY_COUNTER; 
       obj.paused = False
+
     elif obj.user_button.is_hovered():
-      # user mode is starting; reload the database 
-      #obj.backend['data_refresh']();
       obj.mode=obj.USER
       obj.state = obj.READY;
       obj.counter = obj.READY_COUNTER;
-      # turn pause off
       obj.paused = False
+
+  ## Handles button clicks in the ready(count down clock) state
   elif obj.state == obj.READY:
-    ##if hovering SETUP: back to hovering
-    ## if hovering PAUSE: pause
-    ## if quit then quit: leave the game
     if obj.quit_button.is_hovered():
       obj.listen=False;
       done =True;
+
     elif obj.setup_button.is_hovered():
       obj.state = obj.SETUP;
+
     elif obj.puase_button.is_hovered():
       obj.paused = not obj.paused
 
-
+  ## Handle button clicks in the recording(GO) state
   elif obj.state == obj.RECORDING:
-    ##if hovering SETUP: back to hovering
-    ## if hovering PAUSE: pause
-    ## if quit then quit: leave the game 
     if obj.quit_button.is_hovered():
       obj.listen=False;
       done =True;
+
     if obj.setup_button.is_hovered():
       obj.state = obj.SETUP;
       obj.skeletal_map = [];
+
     elif obj.puase_button.is_hovered():
       obj.paused = not obj.paused
-  elif obj.state == obj.WAIT:    ##if hovering SETUP: back to hovering
-    ## if hovering PAUSE: pause
-    ## if quit then quit: leave the game 
+
+  #Handle button clicks in Wait(PROCESSING) state
+  elif obj.state == obj.WAIT:
     if obj.quit_button.is_hovered():
       obj.listen=False;
       done =True;
+
     if obj.setup_button.is_hovered():
       obj.state = obj.SETUP;
+
     if obj.puase_button.is_hovered():
       obj.paused = not obj.paused
+  ## Handle feedback state button clicks
   elif obj.state == obj.FEEDBACK:
-    ##if hovering SETUP: back to hovering
-    ## if hovering PAUSE: pause
-    ## if quit then quit: leave the game e
     if obj.quit_button.is_hovered():
       obj.listen=False;
       done =True;
@@ -69,7 +77,13 @@ def mouse_handle(obj,done):
       obj.paused = not obj.paused
   return done
 def transition_handle(obj,background_color,skeleton_counter):
-  if not obj.paused:
+  '''
+  handles state transition and state events(timers). It is called by integration when timer event is triggered.
+  See the following lines in integration.py
+  >> elif e.type == RECORDEVENT:
+  >>  transition_handle(self,background_color,skeleton_counter)
+  '''
+  if not obj.paused: ## Time events are not handles when game is puased
     if obj.state == obj.RECORDING:
       #print obj.skeletal_map
       if obj.counter<=0:
@@ -122,6 +136,7 @@ def transition_handle(obj,background_color,skeleton_counter):
 
       else:
         obj.counter-=1;
+
     ##feedback state
     elif obj.state == obj.FEEDBACK:
       if obj.counter<=0:
@@ -135,6 +150,7 @@ def transition_handle(obj,background_color,skeleton_counter):
 
       else:
         obj.counter-=1
+
     ## state READY->countdown to word 
     elif obj.state==obj.READY:
       if obj.counter<=0:
@@ -149,17 +165,27 @@ def transition_handle(obj,background_color,skeleton_counter):
       else:
         obj.counter-=1;
 def word_handle(obj,word,done):
+  '''
+  Handles speech events. See the following lines in integration.py 
+  >>if e.type==SPEECHEVENT:
+  >>  while len(e.words)!=0:
+  >>     speech_word = e.words.pop(0)
+  >>     done = word_handle(self,speech_word,done)
+  '''
   if word=="pause":
     print "pausing"
     obj.paused = True
+
   elif word == "quit":
     print "quitting"
     obj.listen = False
     done = True;
+
   elif word == "run":
     print "running"
     
     obj.paused=False
+    
   elif word == "repeat":
     obj.repeat=True;
   if obj.state==obj.SETUP:

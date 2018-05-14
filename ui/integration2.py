@@ -48,7 +48,7 @@ class Text:
     self.text = text
     self.font_size = self.w/len(text) - 10
     font = pygame.font.Font(None, self.font_size);
-    txt_ob = font.render(self.text, True, self.font_color)
+    txt_ob = font.render(str(self.text), True, self.font_color)
     self.surf = pygame.Surface((w,h));
   def show(self):
     self.parent.blit(self.surf,self.pos);

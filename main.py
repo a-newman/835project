@@ -14,7 +14,7 @@ from ui import integration2
 # import os
 # os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
 
-from ui import integration
+# from ui import integration
 from recognize.nn_classifier import NNClassifier
 from recognize.dt_classifier import DTClassifier
 
@@ -142,7 +142,7 @@ def main():
 	# game = PykinectInt()
 	#  WordGameUI(backend_map=backend)
 	# game.display_logic()
-	integration.runUI(backend)
+	integration2.runUI(backend)
 if __name__ == "__main__":
   #with PyCallGraph(output=GraphvizOutput()): 
   main()
