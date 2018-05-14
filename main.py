@@ -59,6 +59,7 @@ class MainObj():
 			pred_gesture = self.CLASSIFIER.classify(seq)
 			print("pred_gesture", pred_gesture)
 			ui_object.word = (pred_gesture, self.DATASET.translations[pred_gesture])
+			print ui_object.word
 		else: 
 			ui_object.word = None
 		ui_object.backend_wait = False

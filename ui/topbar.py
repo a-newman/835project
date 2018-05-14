@@ -58,6 +58,12 @@ def gogo(size,pos = (0,0)):
   bar.back_color_h = (3,32,11);
   bar.font_color = (2,255,2);
   return bar.show();
-
+def correct_word_bar(size,word,pos=(0,0)):
+  bar =  Button(dims=size,text = "The correct word was: "+word);
+  bar.pos = pos;
+  bar.back_color_n = (12,12,55);
+  bar.back_color_h = (3,32,11);
+  bar.font_color = (255,4,255);
+  return bar.show();
 
 

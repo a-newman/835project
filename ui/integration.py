@@ -255,10 +255,12 @@ class PykinectInt:
     self.no_data_bar = bars.noData(self.feedback_bar_size,pos = self.feedback_bar_pos);
     self.processing_bar = bars.processing(self.feedback_bar_size,pos = self.feedback_bar_pos)
     self.gogo_bar = bars.gogo(size=(self.clock.size, self.clock.size),pos=self.clock_pos);
+    self.correct_word_pos = (self.feedback_bar_pos[0],(self.feedback_bar_pos[1]+self.feedback_bar_size[1]))
     ####Test words
     self.train_bars = mappers.trainer_vocab_display_mapper(self);
     self.test_bars = mappers.test__vocab_display_mapper(self);
     self.sorry_bar_mapper = mappers.sorry_bar_mapper(self);
+    self.correct_word_bar = mappers.correct__word_display_mapper(self);
 
   def surface_to_array(self,surface):
     buffer_interface = surface.get_buffer()

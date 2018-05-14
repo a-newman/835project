@@ -47,8 +47,13 @@ def feedback_display_handler(obj):
 
     else:
       ### Display sorry
-      feed =  obj.sorry_bar_mapper[obj.word[0]]#bars.sorry(obj.feedback_bar_size,obj.word,pos = obj.feedback_bar_pos)
+      if obj.word=="None":
+        feed =  obj.sorry_bar_mapper['aniga']
+      else:
+        feed =  obj.sorry_bar_mapper[obj.word[0]]#bars.sorry(obj.feedback_bar_size,obj.word,pos = obj.feedback_bar_pos)
       obj.screen.blit(feed, obj.feedback_bar_pos);
+      feed_two = obj.correct_word_bar[obj.test_word];
+      obj.screen.blit(feed_two, obj.correct_word_pos)
   else:
     feed= obj.no_data_bar
     obj.screen.blit(feed, obj.feedback_bar_pos);

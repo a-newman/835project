@@ -6,20 +6,23 @@ class SpeechRecog:
   def __init__(self, game_obj=None):
     self.obj = game_obj;
     self.r = sr.Recognizer()
-    self.r.energy_threshold = 4000
-    self.r.non_speaking_duration=0.001
-    self.r.pause_threshold = 0.001
+    self.r.energy_threshold = 1000
+    self.r.non_speaking_duration=0.008
+    self.r.pause_threshold = 0.008
   def run(self):
     while self.obj.listen:
-      with sr.Microphone() as source:
-        # self.r.adjust_for_ambient_noise(source)
-        audio = self.r.record(source,duration=2)
+      with sr.Microphone(1) as source:
+        #self.r.adjust_for_ambient_noise(source)
+        audio = self.r.listen(source,duration=2)
       try:
           text = self.r.recognize_google(audio, language='en-US')
           print("detected: ",text)
           self.detect(text);
           
       except sr.UnknownValueError:
+          for index, name in enumerate(sr.Microphone.list_microphone_names()): 
+            #print("mike found: " + str(index) + " " + name)
+            pass
           print("I can't hear you! Speak louder!")
       except sr.RequestError as e:
           print("Could not request results from Google Speech Recognition service; {0}".format(e))
