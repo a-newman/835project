@@ -17,65 +17,29 @@ The centerpiece of the UI. All the our files in this directory are helpers for t
 * **skeletons**: Holds the recieved skeletons for the backend and displaying 
 * **self.skeletal_map**: List of processed skeletons to be sent to the backend for storing and classifications.
 * **state**: The state of the game. Takes one of **SETUP**,**READY**,**RECORDING**,**WAIT**,**FEEDBACK**. In **SETUP** is state the game is waiting for the user to select mode, in **READY** the game is countdown for the user to get ready for the next action, in **RECORDING** the user performs the action and the game records,in **WAIT**(only in testing mode) the UI is waiting for the backend end to respond with a classification result, and finally in **FEEDBACK**(only in test mode) the UI tells the user wether they got the word right or not.
-    self.mode = self.TRAINING;
-    self.backend = backend;
-    self.wordlist = CircularArray(backend['words'])
-    self.word = "None"
-    self.test_word = self.wordlist.roll()
-    self.backend_wait = True;
-    self.show_depth = False;
-    ####
-    if self.video_display:
-      size = self.dispInfo.current_w-self.VIDEO_WINSIZE[0];
-    else:
-      size = self.dispInfo.current_w-self.DEPTH_WINSIZE[0];
-    size = size + 100
-    #self.clock_image = resize((size,size), ou_img="ui/images/_clock.gif");
-    self.sent_data = False;
-    self.use_speech = True;
-    self.repeat = False
-    self.camera_surf = pygame.Surface(self.DEPTH_WINSIZE)
-    
-    
-    ##########
-    self.counter = self.READY_COUNTER;
-    self.action = Text(self.screen,w=100, h=50,pos=(485,0),text=self.test_word[0],color=THECOLORS['white']);
-    self.count = Text(self.screen,w=100, h=100,pos=(485,55),text=str(self.counter),color=THECOLORS['white']);
-
-    ####general state display paramters
-    self.mergin_side = 20;
-    self.mergin_top = 20;
-    ###top bar
-    self.top_bar_size = (self.dispInfo.current_w-2*self.mergin_side,70);
-    self.topbar_pos = (self.mergin_side,self.mergin_side)
-    self.topbar = bars.topBar(self.top_bar_size,pos=self.topbar_pos);
-    ###side bar
-    self.side_bar_w = 100;
-    self.side_bar_h = self.dispInfo.current_h-self.mergin_top*2-self.top_bar_size[1];
-    self.side_bar_pos = (self.mergin_side,self.top_bar_size[1]+self.mergin_top);
-    ###word bar
-    w = self.dispInfo.current_w-self.side_bar_w-2*self.mergin_side
-    self.word_bar_size = (w,70);
-    self.word_bar_pos = (self.mergin_side+self.side_bar_w,self.mergin_side+self.top_bar_size[1])
-    
-    ###camera feedback pos
-    self.camera_feed_pos = (self.mergin_side+self.side_bar_w,self.word_bar_pos[1]+self.word_bar_size[1]);
-    ####SETUP display parameters
-    self.train_button_pos = (100,100);
-    self.train_button = Button(pos=self.train_button_pos,text="TRAINING");
-    #++++++++++
-    self.user_button_pos = (100,210);
-    #++++++++
-    self.depth_button = Button(text="DEPTH")
-    #++++++
-    self.user_button = Button(pos=self.user_button_pos,text="USER");
-    self.setup_sidebar = Sidebar(self.side_bar_pos,w=self.side_bar_w,h=self.side_bar_h,buttons=[self.train_button,self.user_button,self.depth_button])
-    self.setup_sidebar_surf = self.setup_sidebar.draw_buttons()
-
-    ###Text input
-    self.text_in_h = 40;
-    self.text_in_w = 100;
-    self.text_in_pos = (self.camera_feed_pos[0]+self.DEPTH_WINSIZE[0]+10,self.camera_feed_pos[1])
+* **mode**: Mode of the game. Inlcuding the project supports two, modes **TRAINING**(practice or training mode) and **USER**(test mode).
+* **backend**: Backend or classification information for calling when the skeleton data is collected.
+* **wordlist**: List of foreign langauge words as Circular Array object. The words are currently from the backend. 
+* **word**: The word returned by the backend for classification.
+* **test_word**: The word displayed to the user.
+* **backend_wait**: If **true** wait for the backend to return classification.
+* **show_depth**: If **true** the depth data from the Kinect is displayed.
+* **use_speech**: If **true** speech is used for controller the state transitions.
+* **repeat**: If **true** the system shows the last word again.
+* **camera_surf**: The pygame surface where all kinect feeds(depth, video, and skeleton) are displayed on when enabled.
+* **counter**: State life time counter. 
+* **mergin_side**: is of the screen side mergins, space between where things are drawn and where the edge of the display window on the sides.
+* **mergin_top**: top and bottom screen mergins.
+* **top_bar_size**: size(width, height) of the bar that displays the name(Louder than Words).
+* **topbar_pos**: The location of the bar that displays the name(Louder than words).
+* **side_bar_w**: Width of the sidebar where control buttons are displayed on.
+* **side_bar_h**: Height of the sidebar where control buttons are displayed on.
+* **side_bar_pos**: The position of the sidebar where control buttons are displayed on.
+* **word_bar_size**: The size of the bar that displays the action word. 
+* **word_bar_pos**: The position of the bar that displays the action word.
+* **camera_feed_pos**: Position of the camera feed window. 
+* **text_in_h**, **text_in_w**, **text_in_pos**: The height, width, and the position of the text box. The box where the user would enter the words.
+    self. = (self.camera_feed_pos[0]+self.DEPTH_WINSIZE[0]+10,self.camera_feed_pos[1])
     self.text_input = InputBox(self.text_in_pos[0], self.text_in_pos[1], self.text_in_w, self.text_in_h)
     ####READY display parameters
     self.quit_button = Button(text="QUIT");
