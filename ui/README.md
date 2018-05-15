@@ -5,7 +5,8 @@ The entry class to the UI which defines the placements of all UI elements, handl
 
 The centerpiece of the UI. All the our files in this directory are helpers for this file. All the placements and the sizes of the UI display components are defined in the contructor of this class(the init function).
 
-##### Attributes 
+**Attributes**
+
 * **screen**: The pygame display window;
 * **screen_lock**: The pygame display lock for preventing threading from doing simoultaneous renderning.
 * **draw_skeleton**: If **true** skeletons will be displayed on the screen. 
@@ -44,6 +45,13 @@ The centerpiece of the UI. All the our files in this directory are helpers for t
 * **listen**: If **false** the speech thread exits. The UI will no longer recieve speech events.
 * **ctl_word_size**, **ctl_pose**,and **ctl_size**: the font size, position, and dimensions of the control words bar.
 
+**Methods**
+
+- **collect**: Subscribes to the skeleton data from the Kinect 
+- **draw_skeletons**: Draws the skeleton data on the screen 
+- **word_trigger**: Speech call back function 
+- **depth_frame_ready**: Display the depth, also calls the display functions from `disp_func.py`.
+- **video_frame_ready**: Display the depth, also calls the display functions from `disp_func.py`.
 
 ### Event Handlers(event_handlers.py)
 Implements the following functions for handling events.
