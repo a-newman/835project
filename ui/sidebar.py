@@ -3,6 +3,21 @@ import pygame
 from pygame.color import THECOLORS
 
 class Sidebar:
+  '''
+  A class that implements the side bar where buttons are displayed on.
+
+  parameters
+
+  - (w,h): dimensions of the surface bounding the bar 
+  - pos: position of the bar in the display window
+  - buttons: list of buttons to display
+
+  methods 
+
+  - draw_buttons: draws the buttons on the bar surface 
+  - get_button_pos: gets position of button with given in index in the list of buttons
+  - button_update: reinitializes a given button
+  '''
   def __init__(self,pos,w=200,h=800,buttons=[]):
     self.pos = pos
     self.buttons = buttons;

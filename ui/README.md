@@ -93,9 +93,22 @@ if e.type==SPEECHEVENT:
 ### Sidebar(sidebar.py)
 
 Contains the class, **Sidebar**, that impelements the sidebar that displays the control button. 
-##### Attribute
-##### Methods 
+```python
+class Sidebar:
+```
+A class that implements the side bar where buttons are displayed on.
 
+**parameters**
+
+- **(w,h)**: dimensions of the surface bounding the bar 
+- **pos**: position of the bar in the display window
+- **buttons**: list of buttons to display
+
+**methods** 
+
+- **draw_buttons**: draws the buttons on the bar surface 
+- **get_button_pos**: gets position of button with given in index in the list of buttons
+- **button_update**: reinitializes a given button
 
 ### bars(topbar.py)
 
@@ -104,7 +117,6 @@ The implements the bars that display is the project name, action word, feedback,
 ### Speech detection(speech_detection.py)
 
 The speech recognition modules. It uses Python's [Speech Recognition]() library with the [Google Web API Speech recogition Engine]() for backend.
-### 
 
 ### Data Utils(data_utils.py)
 Implements the data structure that defines the skeleton data sent to the backend. 
