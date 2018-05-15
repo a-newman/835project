@@ -123,15 +123,17 @@ class SpeechRecog:
 
 A class that encapsolutes speech reocognition.
 
-`attributes`
+**attributes**
 
 - **obj**: PyKinect integration object PyKinectInt
 - **r**: recognizer obj, see the speech reocognition
-  methods
-  - **run**: speech recogntion loop method
-  - **is_word_text**: True if the given word is in the detected speech.
-  - **word_search**: search word in speech
-  - **detect**: speech recognition calls this function to search the control words.
+
+**methods**
+
+- **run**: speech recogntion loop method
+- **is_word_text**: True if the given word is in the detected speech.
+- **word_search**: search word in speech
+-  **detect**: speech recognition calls this function to search the control words.
 
 ### Data Utils(data_utils.py)
 Implements the data structure that defines the skeleton data sent to the backend. 
