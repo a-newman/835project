@@ -1,5 +1,13 @@
 import numpy as np;
 class Skeletal:
+  '''
+  A class that defines a skeleton as a list of joint positins
+
+  parameters
+  - head, spine, shoulders, etc: each as a single 3d position.
+  methods:
+  - is_not_empty: true if not all coordinates are zero.
+  '''
   def __init__(self,data = 0):
     self.head = []
     self.spine = [] 
@@ -44,5 +52,10 @@ class Skeletal:
 
 
 class ScanFrame:
+  '''
+  A class that defines a frame, list of skeletons detected by the Kinect at once.
+  parameters
+  - skeletons: The list of skeletal objects
+  '''
   def __init__(self, skeletons):
     self.skeletons = skeletons;

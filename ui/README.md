@@ -116,7 +116,22 @@ The implements the bars that display is the project name, action word, feedback,
 
 ### Speech detection(speech_detection.py)
 
-The speech recognition modules. It uses Python's [Speech Recognition]() library with the [Google Web API Speech recogition Engine]() for backend.
+The speech recognition modules. It uses Python's [Speech Recognition]() library with the [Google Web API Speech recogition Engine]() for backend. The file implements the following classes.
+```python
+class SpeechRecog:
+```
+
+A class that encapsolutes speech reocognition.
+
+`attributes`
+
+- **obj**: PyKinect integration object PyKinectInt
+- **r**: recognizer obj, see the speech reocognition
+  methods
+  - **run**: speech recogntion loop method
+  - **is_word_text**: True if the given word is in the detected speech.
+  - **word_search**: search word in speech
+  - **detect**: speech recognition calls this function to search the control words.
 
 ### Data Utils(data_utils.py)
 Implements the data structure that defines the skeleton data sent to the backend. 

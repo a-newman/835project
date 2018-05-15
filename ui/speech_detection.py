@@ -3,6 +3,17 @@ import threading
 import re
 import speech_recognition as sr
 class SpeechRecog:
+  '''
+  A class that encapsolutes speech reocognition.
+  attributes
+  - obj: PyKinect integration object PyKinectInt
+  - r: recognizer obj, see the speech reocognition
+  methods
+  - run: speech recogntion loop method
+  - is_word_text: True if the given word is in the detected speech.
+  - word_search: search word in speech
+  - detect: speech recognition calls this function to search the control words.
+  '''
   def __init__(self, game_obj=None):
     self.obj = game_obj;
     self.r = sr.Recognizer()
