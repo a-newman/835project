@@ -46,7 +46,43 @@ The centerpiece of the UI. All the our files in this directory are helpers for t
 
 
 ### Event Handlers(event_handlers.py)
-Implements a few functions that handle events including mouse clicks(mainly for acitivating buttons), timer events(by the `stransition_handle` function), and speech events(currently disabled). All those functions are activated in the `integration.py` `loop` function. 
+Implements the following functions for handling events.
+
+`mouse_handle`
+handles mouse clicks.
+Parameters:
+- **obj**: a pykinect integration object `PykinectInt` see `integration.py`
+- **done**: Signal for the UI loop to exit when user clicks, set to **true** when the user clicks on the **quit** button.
+   
+See the following lines in `integration.py` on how it is called
+  >> if e.type ==MOUSEBUTTONDOWN:
+  >>   done=mouse_handle(self,done);
+ 
+
+`transition_handle`
+  handles state transition and state events(timers). It is called by integration when timer event is triggered.
+parameters:
+- **obj**: a pykinect integration object `PykinectInt` see `integration.py`
+- **background_color**: background color of the screen during the following state.
+- **skeleton_counter**: Counts the number of skeleton messages recieved from the kinect so far, effective in **RECORDING** state only.
+
+See the following lines in integration.py
+  >> elif e.type == RECORDEVENT:
+  >>  transition_handle(self,background_color,skeleton_counter)
+
+word_handle(obj,word,done):
+Handles speech events. 
+parameters:
+- **obj**: a pykinect integration object `PykinectInt` see `integration.py`
+- **word**: The detected control word.
+- **done**: **done**: Signal for the UI loop to exit when user clicks, set to **true** when the detected word is **quit**.
+
+See the following lines in integration.py
+  >>if e.type==SPEECHEVENT:
+  >>  while len(e.words)!=0:
+  >>     speech_word = e.words.pop(0)
+  >>     done = word_handle(self,speech_word,done)
+
 
 ### Sidebar(sidebar.py)
 Implements the sidebar that contains the control functions(e.g. SETUP). check the following lines of code in `integration.py` on how they are used. 
