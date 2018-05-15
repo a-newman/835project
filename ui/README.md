@@ -120,6 +120,23 @@ The speech recognition modules. It uses Python's [Speech Recognition]() library 
 
 ### Data Utils(data_utils.py)
 Implements the data structure that defines the skeleton data sent to the backend. 
+```python
+class Skeletal:
+```
+A class that defines a skeleton as a list of joint positins
+
+**parameters**
+- **head**, **spine**, **shoulders**, etc: each as a single 3d position.
+methods:
+- **is_not_empty**: true if not all coordinates are zero.
+
+```python
+class ScanFrame:
+```
+A class that defines a frame, list of skeletons detected by the Kinect at once.
+
+**parameters**
+- **skeletons**: The list of skeletal objects
 
 ### Control Words(control_words.py)
 
