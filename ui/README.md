@@ -143,15 +143,17 @@ class CircularArray:
 ```python
 class Clock:
 ```
-a class that defines the count down clock
-  attributes
-    - size: dimensions of the surface containing the clock
-    - in_img: Path to the image containing the back clock
-    - out_img: Path to save the image to when resized
-  methods
-    - get_image: resizes and returns the resized input image
-    - get_diagnol: returns the diagnol of the rectangle with the dimensions of this surface
-    - draw: does the local rendering and returns the final surface.
+a class that defines the count down clock.
+*attributes*
+
+- **size**: dimensions of the surface containing the clock
+- **in_img**: Path to the image containing the back clock
+- **out_img**: Path to save the image to when resized
+
+*methods*
+- g**et_image**: resizes and returns the resized input image
+- **get_diagnol**: returns the diagnol of the rectangle with the dimensions of this surface
+- **draw**: does the local rendering and returns the final surface.
 
 ### Button(button.py)
 Contains the following class.
