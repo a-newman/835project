@@ -119,13 +119,16 @@ Contains a class that implements a text box for the user to type in words.
 class InputBox:
 ```
  class that defines a text box as Pygame surface
-  parameters 
-    - (w,h): dimensions of the box
-    - (x,y): coordinates(position of the box) in the display window.
-  methods
-    - handle_event: handles keyboard and mouse events(e.g. user type a new word) 
-    - update: changes the width of the box for long text 
-    - draw: renders the text box on the input screen.
+
+**parameters**
+
+- **(w,h)**: dimensions of the box
+- **(x,y)**: coordinates(position of the box) in the display window.
+  
+**methods**
+- **handle_event**: handles keyboard and mouse events(e.g. user type a new word) 
+- **update**: changes the width of the box for long text 
+- **draw**: renders the text box on the input screen.
 
 ### UI utils 
 
@@ -134,23 +137,28 @@ Implements helper classes and functions. The following are the more relevant one
 class CircularArray:
 ```
  Defines a circular array class.
-  attributes
-    - arr: A python list containing the elements of the Array
-  Methods
-    - roll: pops the first element from the list(arr), appends to the end of the list(arr), and return that element.
-    - randRoll: pops a random element from the list(arr), appends it to the end of the list(arr), and returns that element 
+
+  **attributes**
+
+  - **arr**: A python list containing the elements of the Array
+  
+  **Methods**
+
+  - **roll**: pops the first element from the list(arr), appends to the end of the list(arr), and return that element.
+  - **randRoll**: pops a random element from the list(arr), appends it to the end of the list(arr), and returns that element 
 
 ```python
 class Clock:
 ```
 a class that defines the count down clock.
-*attributes*
+
+**attributes**
 
 - **size**: dimensions of the surface containing the clock
 - **in_img**: Path to the image containing the back clock
 - **out_img**: Path to save the image to when resized
 
-*methods*
+**methods**
 - g**et_image**: resizes and returns the resized input image
 - **get_diagnol**: returns the diagnol of the rectangle with the dimensions of this surface
 - **draw**: does the local rendering and returns the final surface.
@@ -161,17 +169,20 @@ Contains the following class.
 class Button:
 ```
 A class that defines a clickable button as Pygame surface.
-  attributes 
-    - `dims`: Button dimensions
-    - `pos`: Position of the display Window
-    - `text`: The libel of the Button
-  methods
-   - `set_font_size`: Fits the text into the bounding box of the Button
-   - `se_font_color`: Changes the font color
-   - `reinitialize`: reinializes the button class
-   - `is_hovered`: True if the mouse is hovering the button
-   - `show`: Does the internal rendering calls and returns the button as Pygame surface
-   - `set_dims`: sets the dimensions of the button to the new dimensions passed into this  method
+
+**attributes**
+- **dims**: Button dimensions
+- **pos**: Position of the display Window
+- **text**: The libel of the Button
+  
+**methods**
+
+- **set_font_size**: Fits the text into the bounding box of the Button
+- **se_font_color**: Changes the font color
+- **reinitialize**: reinializes the button class
+- **is_hovered**: True if the mouse is hovering the button
+- **show**: Does the internal rendering calls and returns the button as Pygame surface
+- **set_dims**: sets the dimensions of the button to the new dimensions passed into this  method
 
 ### Word display map(word_display_map.py)
 
