@@ -1,6 +1,20 @@
 import pygame
 from pygame.color import THECOLORS
 class Button:
+  '''
+  A class that defines a clickable button as Pygame surface.
+  attributes 
+    - dims: Button dimensions
+    - pos: Position of the display Window
+    - text: The libel of the Button
+  methods
+   - set_font_size: Fits the text into the bounding box of the Button
+   - se_font_color: Changes the font color
+   - reinitialize: reinializes the button class
+   - is_hovered: True if the mouse is hovering the button
+   - show: Does the internal rendering calls and returns the button as Pygame surface
+   - set_dims: sets the dimensions of the button to the new dimensions passed into this  method
+  '''
   def __init__(self,dims=(100,100),pos=(100,100),text = "button"):
     ####Sizes
     self.dims = dims

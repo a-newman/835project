@@ -166,6 +166,14 @@ def countDown_test():
 ##countDown_test()
 
 class CircularArray:
+  '''
+  Defines a circular array class.
+  attributes
+    - arr: A python list containing the elements of the Array
+  Methods
+    - roll: pops the first element from the list(arr), appends to the end of the list(arr), and return that element.
+    - randRoll: pops a random element from the list(arr), appends it to the end of the list(arr), and returns that element 
+  '''
   def __init__(self,array):
     self.arr = array;
   def roll(self):
@@ -275,6 +283,17 @@ def resize(size,img = 'ui/images/clock.gif',ou_img = 'ui/images/clock.gif'):
 
 
 class Clock:
+  '''
+  a class that defines the count down clock
+  attributes
+    - size: dimensions of the surface containing the clock
+    - in_img: Path to the image containing the back clock
+    - out_img: Path to save the image to when resized
+  methods
+    - get_image: resizes and returns the resized input image
+    - get_diagnol: returns the diagnol of the rectangle with the dimensions of this surface
+    - draw: does the local rendering and returns the final surface.
+  '''
   def __init__(self, size, in_img="ui/images/clock.gif",out_img="ui/images/_clock.gif"):
     self.surf  = pygame.Surface((size,size));
     self.in_img = in_img;

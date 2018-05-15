@@ -9,6 +9,16 @@ COLOR_ACTIVE = pg.Color('dodgerblue2')
 
 
 class InputBox:
+  '''
+  class that defines a text box as Pygame surface
+  parameters 
+    - (w,h): dimensions of the box
+    - (x,y): coordinates(position of the box) in the display window.
+  methods
+    - handle_event: handles keyboard and mouse events(e.g. user type a new word) 
+    - update: changes the width of the box for long text 
+    - draw: renders the text box on the input screen.
+  '''
   
 
   def __init__(self, x, y, w, h, text=''):
