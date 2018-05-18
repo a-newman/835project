@@ -19,11 +19,13 @@ The following libraries/SDKs are required to run this system:
 - pygame 
 - SpeechRecognition library (available via pip: https://pypi.org/project/SpeechRecognition/#description) with Google's speech recognition API back-end
 - Windows 10 operating system 
+- Visual Studio 2015 for C++
 - Kinect SDK version 1.7.0
 - PyKinect SDK for python (version 1): https://github.com/Microsoft/PTVS/tree/master/Python/Product/PyKinect 
 
 ### Instructions: 
-- Install python, the Kinect SDK (from an installer on the Microsoft website), and pip
+- Install python and pip
+- Install the official Kinect SDK and Visual Studio using installers on the Microsoft website
 - Use pip to install numpy, pygame, pykinect, and the speech recognition library 
 - run the system by running `main.py` 
 
