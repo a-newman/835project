@@ -1,6 +1,1 @@
-{
-	"classifier": "nn",
-	"dataset": "test_mb_2",
-	"save_data": true,
-	"mutate_classifier": false
-}
+{"save_data": true, "mutate_classifier": false, "classifier": "nn", "dataset": "test_mubarik"}
